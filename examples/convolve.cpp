@@ -11,7 +11,7 @@
 #include <morph/HexGridVisual.h>
 #include <morph/HexGrid.h>
 #include <morph/ReadCurves.h>
-#include <morph/Random.h>
+#include <morph/random.h>
 #include <morph/scale.h>
 #include <morph/vec.h>
 
@@ -30,8 +30,8 @@ int main()
 
     // Populate a vector of floats with data
     std::vector<float> data (hg.num(), 0.0f);
-    //morph::RandNormal<float> rng (0.1f, 0.05f);
-    morph::RandUniform<float> rng;
+    //morph::rand_normal<float> rng (0.1f, 0.05f);
+    morph::rand_uniform<float> rng;
     float nonconvolvedSum = 0.0f;
     for (float& d : data) {
         d = rng.get();

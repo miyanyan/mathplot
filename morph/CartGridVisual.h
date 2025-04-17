@@ -4,7 +4,6 @@
 #include <morph/VisualDataModel.h>
 #include <morph/ColourMap.h>
 #include <morph/CartGrid.h>
-#include <morph/MathAlgo.h>
 #include <morph/vec.h>
 #include <iostream>
 #include <vector>

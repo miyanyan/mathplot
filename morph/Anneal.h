@@ -16,7 +16,7 @@
 #include <morph/vvec.h>
 #include <morph/vec.h>
 #include <morph/random.h>
-#include <morph/HdfData.h>
+#include <morph/hdfdata.h>
 
 namespace morph {
 
@@ -318,7 +318,7 @@ namespace morph {
         //! parameters too, along with the temperature histories.
         void save (const std::string& path) const
         {
-            morph::HdfData data(path, morph::FileAccess::TruncateWrite);
+            morph::hdfdata data(path, morph::file_access_mode::truncate_write);
             data.add_contained_vals ("/param_hist_accepted", this->param_hist_accepted);
             data.add_contained_vals ("/f_param_hist_accepted", this->f_param_hist_accepted);
             data.add_contained_vals ("/param_hist_rejected", this->param_hist_rejected);

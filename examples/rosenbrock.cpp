@@ -5,11 +5,11 @@
 #include <morph/NM_Simplex.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/random.h>
 #include <morph/Visual.h>
 #include <morph/TriFrameVisual.h>
 #include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
-#include <morph/MathAlgo.h>
 #include <iostream>
 #include <chrono>
 
@@ -67,7 +67,7 @@ int main()
     for (size_t i = 0; i < hg.num(); ++i) {
         banana_vals[i] = banana (hg.d_x[i], hg.d_y[i]);
     }
-    morph::range<FLT> mm = morph::MathAlgo::maxmin(banana_vals);
+    morph::range<FLT> mm = morph::range<FLT>::get_from (banana_vals);
     std::cout << "Banana surface range: " << mm << std::endl;
     auto hgv = std::make_unique<morph::HexGridVisual<FLT>>(&hg, _offset);
     v.bindmodel (hgv);
@@ -90,7 +90,7 @@ int main()
     // Temporary variable
     FLT val = FLT{0};
 
-    morph::RandUniform<float> rng(-3, 3);
+    morph::rand_uniform<float> rng(-3, 3);
 
     // This is the same as the NM_Simplex::run function, but it is reproduced here to *visualize*
     // the Simplex as it descends the surface. For a more compact way to write your NM_Simplex, see
