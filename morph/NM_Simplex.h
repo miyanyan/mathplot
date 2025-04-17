@@ -13,7 +13,8 @@
 #include <cstdint>
 #include <vector>
 #include <functional>
-#include <morph/MathAlgo.h>
+#include <algorithm>
+#include <morph/algo.h>
 #include <morph/vvec.h>
 
 namespace morph {
@@ -240,14 +241,14 @@ namespace morph {
             // Order the vertices so that the first vertex is the best and the last one is the worst
             if (this->downhill) {
                 // Best is lowest
-                MathAlgo::bubble_sort_lo_to_hi<T> (this->values, this->vertex_order);
+                morph::algo::bubble_sort_lo_to_hi<T> (this->values, this->vertex_order);
             } else {
-                MathAlgo::bubble_sort_hi_to_lo<T> (this->values, this->vertex_order);
+                morph::algo::bubble_sort_hi_to_lo<T> (this->values, this->vertex_order);
             }
 
             // if ready to stop, set state and return (we order before testing if we stop, as the
             // returning of the best value relies on the vertices being ordered).
-            T sd = MathAlgo::compute_sd<T> (this->values);
+            T sd = this->values.std();
             if (sd < this->termination_threshold) {
                 this->state = NM_Simplex_State::ReadyToStop;
                 this->stopreason = NM_Simplex_Stop_Reason::TerminationThreshold;

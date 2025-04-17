@@ -14,7 +14,7 @@
 #include <limits>
 #include <cmath>
 #include <morph/mathconst.h>
-#include <morph/math.h>
+#include <morph/algo.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
 #include <morph/quaternion.h>

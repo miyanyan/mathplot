@@ -22,7 +22,7 @@
 #endif
 
 #include <morph/range.h>
-#include <morph/math.h>
+#include <morph/algo.h>
 #include <morph/vvec.h>
 
 namespace morph::graphing {
@@ -32,9 +32,9 @@ namespace morph::graphing {
     template <typename F>
     static std::string number_format (const F num, const F adjacent_num)
     {
-        morph::range<int> num_sigcols = morph::math::significant_cols<F> (num);
+        morph::range<int> num_sigcols = morph::algo::significant_cols<F> (num);
         F num_diff = std::abs (num - adjacent_num);
-        morph::range<int> diff_sigcols = morph::math::significant_cols<F> (num_diff);
+        morph::range<int> diff_sigcols = morph::algo::significant_cols<F> (num_diff);
 
         // Whats the num_diff maxcol? is it 9.5 plus? In which case it would round up
         if (num_diff * morph::math::pow (F{10}, -diff_sigcols.max) >= F{9.5}) { diff_sigcols.max += 1; }
@@ -44,11 +44,11 @@ namespace morph::graphing {
 
         // What's the best precision value - actual value? If it's non-negligible, then
         // add to precision. I think this is the graphing specific logic that I need.
-        F rounded = morph::math::round_to_col (num, min_col);
+        F rounded = morph::algo::round_to_col (num, min_col);
 
         while (min_col > (diff_sigcols.max - 2) && std::abs (rounded - num) > morph::math::pow (F{10}, min_col - 1)) {
             min_col -= 1;
-            rounded = morph::math::round_to_col (num, min_col);
+            rounded = morph::algo::round_to_col (num, min_col);
         }
 
 #ifdef MORPH_HAVE_STD_FORMAT

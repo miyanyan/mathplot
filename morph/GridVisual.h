@@ -2,8 +2,7 @@
 
 #include <morph/ColourMap.h>
 #include <morph/VisualDataModel.h>
-#include <morph/Grid.h>
-#include <morph/GridFeatures.h>
+#include <morph/grid.h>
 #include <morph/vec.h>
 #include <morph/flags.h>
 #include <iostream>
@@ -12,6 +11,19 @@
 #include <unordered_map>
 
 namespace morph {
+
+    /*!
+     * How to visualize a grid. You could draw a triangle map with vertices at the centres of the
+     * elements or you could draw a rectangular pixel for each element. Triangles is
+     * faster. RectInterp gives a nice pixellated rendering.
+     */
+    enum class GridVisMode
+    {
+        Triangles,  // Render triangles with a triangle vertex at the centre of each Rect.
+        RectInterp, // Render each rect as an actual rectangle made of 4 triangles, interpolating heights with neighbours
+        Pixels,     // Render each rect as a rectangular pixel, with all z values the same
+        Columns     // Render each rect as a rectangular column, with sides
+    };
 
     /*!
      * Boolean options used in GridVisual. For meanings, see the setters of the same
@@ -34,7 +46,7 @@ namespace morph {
     };
 
     /*!
-     * GridVisual a visualizer for the morph::Grid class
+     * GridVisual a visualizer for the morph::grid class
      *
      * \tparam T the type of the *data* which this GridVisual will visualize.
      *
@@ -49,7 +61,7 @@ namespace morph {
     {
     public:
 
-        GridVisual(const morph::Grid<I, C>* _grid, const vec<float> _offset)
+        GridVisual(const morph::grid<I, C>* _grid, const vec<float> _offset)
         {
             // Set up...
             this->options_defaults();
@@ -393,7 +405,7 @@ namespace morph {
             }
         }
 
-        //! Do the computations to initialize the vertices that will represent the HexGrid.
+        //! Do the computations to initialize the vertices that will represent the Grid.
         void initializeVertices()
         {
             // Optionally compute an offset to ensure that the cartgrid is centred about the mv_offset.
@@ -501,7 +513,7 @@ namespace morph {
             I i0 = static_cast<I>(sz_start);
             I ind_idx = i0;
             I six_ci_sz = ci_sz * I{6};
-            if (this->grid->get_order() == morph::GridOrder::bottomleft_to_topright) {
+            if (this->grid->get_order() == morph::gridorder::bottomleft_to_topright) {
                 for (I ri = 0; ri < ri_sz; ++ri) {
                     ind_idx = i0 + ri * six_ci_sz;
                     for (I ci = 0; ci < ci_sz; ++ci) {
@@ -516,7 +528,7 @@ namespace morph {
                         this->indices[ind_idx++] = (ii + dims[0] + 1);  // NNE
                     }
                 }
-            } else if (this->grid->get_order() == morph::GridOrder::topleft_to_bottomright) {
+            } else if (this->grid->get_order() == morph::gridorder::topleft_to_bottomright) {
                 for (I ri = 0; ri < ri_sz; ++ri) {
                     ind_idx = i0 + ri * six_ci_sz;
                     for (I ci = 0; ci < ci_sz; ++ci) {
@@ -531,7 +543,7 @@ namespace morph {
                         this->indices[ind_idx++] = (ii + dims[0]);     // NS
                     }
                 }
-            } else if (this->grid->get_order() == morph::GridOrder::bottomleft_to_topright_colmaj) {
+            } else if (this->grid->get_order() == morph::gridorder::bottomleft_to_topright_colmaj) {
                 for (I ri = 0; ri < ri_sz; ++ri) {
                     ind_idx = i0 + ri * six_ci_sz;
                     for (I ci = 0; ci < ci_sz; ++ci) {
@@ -546,7 +558,7 @@ namespace morph {
                         this->indices[ind_idx++] = (ii + dims[1] + 1); // NNE
                     }
                 }
-            } else if (this->grid->get_order() == morph::GridOrder::topleft_to_bottomright_colmaj) {
+            } else if (this->grid->get_order() == morph::gridorder::topleft_to_bottomright_colmaj) {
                 for (I ri = 0; ri < ri_sz; ++ri) {
                     ind_idx = i0 + ri * six_ci_sz;
                     for (I ci = 0; ci < ci_sz; ++ci) {
@@ -563,7 +575,7 @@ namespace morph {
                 }
 
             } else {
-                throw std::runtime_error ("morph::GridVisual: Unhandled morph::GridOrder");
+                throw std::runtime_error ("morph::GridVisual: Unhandled morph::gridorder");
             }
 
             this->idx += this->grid->n();
@@ -1035,12 +1047,12 @@ namespace morph {
             this->options.set (gridvisual_flags::border_tubular, true);
         }
 
-        //! Set this to true to adjust the positions that the GridVisual uses to plot the Grid so
-        //! that the Grid is centralised around the VisualModel::mv_offset.
+        //! Set this to true to adjust the positions that the GridVisual uses to plot the grid so
+        //! that the grid is centralised around the VisualModel::mv_offset.
         void centralize (bool flag_value = true)
         { this->options.set (gridvisual_flags::centralize, flag_value); }
 
-        //! Show a sphere at the grid's origin? This can be useful when placing several Grids with
+        //! Show a sphere at the grid's origin? This can be useful when placing several grids with
         //! different sized pixels in a scene - it helps you to figure out the scene coordinates at
         //! which to place each grid.
         void showorigin (bool flag_value = true)
@@ -1059,7 +1071,7 @@ namespace morph {
         //! The colour used for the grid (default is grey)
         std::array<float, 3> grid_colour = morph::colour::grey80;
 
-        //! The grid thickness in multiples of a pixel in the Grid
+        //! The grid thickness in multiples of a pixel in the grid
         float grid_thickness = 0.07f;
 
         //! If you need to override the pixels-relationship to the grid thickness, set it here
@@ -1076,7 +1088,7 @@ namespace morph {
         //! The colour for the border
         std::array<float, 3> border_colour = morph::colour::grey80;
 
-        //! The border thickness in multiples of a pixel in the Grid
+        //! The border thickness in multiples of a pixel in the grid
         float border_thickness = 0.15f;
 
         //! If you need to override the pixels-relationship to the border thickness, set it here
@@ -1100,7 +1112,7 @@ namespace morph {
 
         /*!
          * A list of those pixel indices that should be drawn with an individual
-         * border. The key is the pixel index within the Grid. The value is the colour
+         * border. The key is the pixel index within the grid. The value is the colour
          * for the border. This container may also be filled (with arbitrary colours) if
          * the 'enclosing' border is to be drawn.
          */
@@ -1223,8 +1235,8 @@ namespace morph {
             return clr;
         }
 
-        //! The morph::Grid<> to visualize
-        const morph::Grid<I, C>* grid;
+        //! The morph::grid<> to visualize
+        const morph::grid<I, C>* grid;
 
         //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
         std::vector<float> dcopy;

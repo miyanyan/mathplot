@@ -28,7 +28,7 @@
 #include <morph/graphing.h>
 #include <morph/graphstyles.h>
 #include <morph/ColourMap.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/DatasetStyle.h>
 #include <morph/VisualTextModel.h>
 
@@ -357,13 +357,13 @@ namespace morph {
         }
 
         //! setdata overload that plots quivers on a grid, scaling the grid's coordinates suitably?
-        void setdata (const morph::Grid<unsigned int, Flt>& g, const morph::vvec<morph::vec<Flt, 2>>& _quivs,
+        void setdata (const morph::grid<unsigned int, Flt>& g, const morph::vvec<morph::vec<Flt, 2>>& _quivs,
                       const DatasetStyle& ds)
         {
             // _quivs should have same size as g.n()
             if (_quivs.size() != g.n()) {
                 std::stringstream ee;
-                ee << "GraphVisual::setdata: Size mismatch. Grid has " << g.n()
+                ee << "GraphVisual::setdata: Size mismatch. grid has " << g.n()
                    << " elements but there are " << _quivs.size() << " quivers";
                 throw std::runtime_error (ee.str());
             }
@@ -415,7 +415,7 @@ namespace morph {
                 // Transform the coordinate data into temporary containers
                 std::vector<Flt> ad (g.n(), Flt{0});
                 std::vector<Flt> sd (g.n(), Flt{0});
-                // Extract x coordinates and y coordinates from Grid
+                // Extract x coordinates and y coordinates from grid
                 morph::vvec<Flt> g_v_x (g.n(), Flt{0});
                 morph::vvec<Flt> g_v_y (g.n(), Flt{0});
                 for (unsigned int i = 0; i < g.n(); i++) {
@@ -750,8 +750,8 @@ namespace morph {
                          && morph::is_copyable_container<Ctnr2>::value, void>
         compute_scaling (const Ctnr1& _abscissae, const Ctnr2& _data, const morph::axisside axisside)
         {
-            morph::range<Flt> data_range = morph::MathAlgo::maxmin (_data);
-            morph::range<Flt> absc_range = morph::MathAlgo::maxmin (_abscissae);
+            morph::range<Flt> data_range = morph::range<Flt>::get_from (_data);
+            morph::range<Flt> absc_range = morph::range<Flt>::get_from (_abscissae);
 
             this->resetsize (this->width, this->height);
 
@@ -1907,7 +1907,7 @@ namespace morph {
         //! Linear scaling for any quivers, which is independent from the length scaling and can be used for colours
         morph::scale<float> quiver_linear_scale;
         morph::scale<float> quiver_colour_scale;
-        //! The dx from the morph::Grid, but scaled with abscissa_scale and ord1_scale to be in 'VisualModel units'
+        //! The dx from the morph::grid, but scaled with abscissa_scale and ord1_scale to be in 'VisualModel units'
         morph::vec<Flt, 3> quiver_grid_spacing;
         //! A scaling for the abscissa.
         morph::scale<Flt> abscissa_scale;

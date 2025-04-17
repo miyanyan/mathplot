@@ -14,7 +14,6 @@
 #include <morph/BezCurvePath.h>
 #include <morph/BezCoord.h>
 #include <morph/mathconst.h>
-#include <morph/MathAlgo.h>
 #include <morph/debug.h>
 #include <morph/mat22.h>
 

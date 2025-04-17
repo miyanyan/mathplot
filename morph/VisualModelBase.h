@@ -23,7 +23,7 @@
 #include <morph/VisualCommon.h>
 #include <morph/colour.h>
 #include <morph/base64.h>
-#include <morph/MathAlgo.h>
+#include <morph/algo.h>
 #include <iostream>
 #include <vector>
 #include <array>
@@ -34,6 +34,7 @@
 #include <functional>
 #include <cstddef>
 #include <cmath>
+#include <bitset>
 
 namespace morph {
 
@@ -2296,17 +2297,17 @@ namespace morph {
             vec<float, 2> l_n_1 = e_p.less_one_dim() + (n_ortho * hw) - n_vec;
             vec<float, 2> l_n_2 = n_p.less_one_dim() + (n_ortho * hw) + n_vec;
 
-            std::bitset<2> isect = morph::MathAlgo::segments_intersect<float> (l_p_1, l_p_2, l_c_1, l_c_2);
+            std::bitset<2> isect = morph::algo::segments_intersect<float> (l_p_1, l_p_2, l_c_1, l_c_2);
             if (isect.test(0) == true && isect.test(1) == false) { // test for intersection but not colinear
-                c1_p = morph::MathAlgo::crossing_point (l_p_1, l_p_2, l_c_1, l_c_2);
+                c1_p = morph::algo::crossing_point (l_p_1, l_p_2, l_c_1, l_c_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c1_p = /*s_p.less_one_dim() +*/ (c_ortho * hw);
             } else { // no intersection. prev could have been start
                 c1_p = /*s_p.less_one_dim() +*/ (c_ortho * hw);
             }
-            isect = morph::MathAlgo::segments_intersect<float> (l_c_1, l_c_2, l_n_1, l_n_2);
+            isect = morph::algo::segments_intersect<float> (l_c_1, l_c_2, l_n_1, l_n_2);
             if (isect.test(0) == true && isect.test(1) == false) {
-                c4_p = morph::MathAlgo::crossing_point (l_c_1, l_c_2, l_n_1, l_n_2);
+                c4_p = morph::algo::crossing_point (l_c_1, l_c_2, l_n_1, l_n_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c4_p = e_p.less_one_dim() + (c_ortho * hw);
             } else { // no intersection, prev could have been end
@@ -2321,18 +2322,18 @@ namespace morph {
             vec<float, 2> o_l_n_1 = e_p.less_one_dim() - (n_ortho * hw) - n_vec;
             vec<float, 2> o_l_n_2 = n_p.less_one_dim() - (n_ortho * hw) + n_vec;
 
-            isect = morph::MathAlgo::segments_intersect<float> (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
+            isect = morph::algo::segments_intersect<float> (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
             if (isect.test(0) == true && isect.test(1) == false) { // test for intersection but not colinear
-                c2_p = morph::MathAlgo::crossing_point (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
+                c2_p = morph::algo::crossing_point (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c2_p = /*s_p.less_one_dim()*/ - (c_ortho * hw);
             } else { // no intersection. prev could have been start
                 c2_p = /*s_p.less_one_dim()*/ - (c_ortho * hw);
             }
 
-            isect = morph::MathAlgo::segments_intersect<float> (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
+            isect = morph::algo::segments_intersect<float> (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
             if (isect.test(0) == true && isect.test(1) == false) {
-                c3_p = morph::MathAlgo::crossing_point (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
+                c3_p = morph::algo::crossing_point (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c3_p = e_p.less_one_dim() - (c_ortho * hw);
             } else { // no intersection. next could have been end

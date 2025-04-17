@@ -10,7 +10,7 @@
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/GridVisual.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 
 int main()
 {
@@ -29,7 +29,7 @@ int main()
     //   morph::Grid g(size_t n_x, size_t n_y);
     // grid_spacing, grid_zero, use of memory, wrapping and ordering are all possible arguments to
     // the constructor.
-    morph::Grid grid(Nside, Nside, grid_spacing);
+    morph::grid grid(Nside, Nside, grid_spacing);
 
     std::cout << "Number of pixels in grid:" << grid.n() << std::endl;
 

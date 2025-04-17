@@ -11,7 +11,6 @@ install(
   BezCoord.h
   BezCurve.h
   BezCurvePath.h
-  bootstrap.h
   CartGrid.h
   colour.h
   ColourMap.h
@@ -19,53 +18,30 @@ install(
   colourmaps_cet.h
   colourmaps_crameri.h
   Config.h
-  constexpr_math.h
   crc32.h
   debug.h
   DirichDom.h
   DirichVtx.h
   flags.h
-  geometry.h
   Gridct.h
   GridFeatures.h
-  Grid.h
-  HdfData.h
   HexGrid.h
   Hex.h
   hexyhisto.h
-  histo.h
   keys.h
   lenthe_colormap.hpp
   loadpng.h
   lodepng.h
-  mat22.h
-  mat33.h
-  mat44.h
-  MathAlgo.h
-  mathconst.h
-  math.h
-  MathImpl.h
   Mnist.h
   NM_Simplex.h
   Process.h
   quaternion.h
-  Random.h
-  range.h
-  RD_Base.h
   ReadCurves.h
   Rect.h
-  rngd.h
-  rng.h
-  rngs.h
-  scale.h
   ShapeAnalysis.h
   tools.h
-  trait_tests.h
   unicode.h
-  vec.h
   version.h
-  vvec.h
-  Winder.h
 
   DatasetStyle.h
   graphing.h
@@ -153,8 +129,6 @@ if(WIN32)
 endif()
 
 # There are also headers in sub directories
-add_subdirectory(nn) # 'nn' for neural network code
-add_subdirectory(bn) # 'bn' for boolean net code
 add_subdirectory(gl) # GL common and compute code
 add_subdirectory(glad) # GLAD header library
 add_subdirectory(healpix) # Public, but slightly modified HEALPix headers

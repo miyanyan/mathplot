@@ -13,10 +13,9 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <morph/MathAlgo.h>
 #include <morph/vvec.h>
 #include <morph/vec.h>
-#include <morph/Random.h>
+#include <morph/random.h>
 #include <morph/HdfData.h>
 
 namespace morph {
@@ -217,7 +216,7 @@ namespace morph {
         //! for the current location, x, in parameter space.
         morph::vvec<T> tangents;
         //! The random number generator used in the acceptance_check function.
-        morph::RandUniform<T> rng_u;
+        morph::rand_uniform<T> rng_u;
 
     public: // User-accessible methods.
 

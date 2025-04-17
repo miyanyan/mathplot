@@ -6,7 +6,6 @@
 #include <morph/VisualDataModel.h>
 #include <morph/ColourMap.h>
 #include <morph/HexGrid.h>
-#include <morph/MathAlgo.h>
 #include <morph/vec.h>
 #include <iostream>
 #include <vector>

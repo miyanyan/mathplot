@@ -140,6 +140,9 @@ include_directories(${GLFW3_INCLUDE_DIR})
 find_package(Freetype REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
+# Include the maths subdirectory (sebsjames/maths is git-submoduled)
+include_directories(${PROJECT_SOURCE_DIR}/maths)
+
 # Use packaged nlohmann json
 find_package(nlohmann_json REQUIRED)
 
