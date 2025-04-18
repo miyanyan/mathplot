@@ -3,7 +3,7 @@
 #include <array>
 #include <morph/mathconst.h>
 #include <morph/vec.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/GridVisual.h>
 
 namespace morph {
@@ -14,9 +14,9 @@ namespace morph {
      *
      * \tparam T the type of the *data* which this CurvyTellyVisual will visualize.
      *
-     * \tparam I The type for the Grid indexing (defaults to unsigned int)
+     * \tparam I The type for the grid indexing (defaults to unsigned int)
      *
-     * \tparam C The type for the Grid coordinates (default float, must be a signed type)
+     * \tparam C The type for the grid coordinates (default float, must be a signed type)
      *
      * \tparam glver The OpenGL version in use in your program
      */
@@ -41,7 +41,7 @@ namespace morph {
         bool centroidize = false;
 
         // Note constructor forces GridVisual::centralize to be true, which is important when drawing a curvy CartGrid
-        CurvyTellyVisual(const morph::Grid<I, C>* _cg, const morph::vec<float> _offset)
+        CurvyTellyVisual(const morph::grid<I, C>* _cg, const morph::vec<float> _offset)
             : morph::GridVisual<T, I, C, glver>(_cg, _offset) { this->centralize (true); }
 
         void drawcurvygrid()

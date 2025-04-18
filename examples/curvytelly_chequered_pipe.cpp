@@ -4,7 +4,7 @@
 #include <morph/mathconst.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/VisualCompoundRay.h>
 #include <morph/CurvyTellyVisual.h>
 
@@ -22,7 +22,7 @@ int main()
     constexpr float radius = 1.0f;
     constexpr float circum = morph::mathconst<float>::two_pi * radius;
     constexpr morph::vec<float, 2> grid_spacing = { circum/n_x, length/n_y };
-    morph::Grid grid(n_x, n_y, grid_spacing);
+    morph::grid grid(n_x, n_y, grid_spacing);
     std::cout << "Number of pixels in grid:" << grid.n() << std::endl;
 
     // The Grid is wrapped around its y axis, so different values of y give different stripes. Here

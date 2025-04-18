@@ -6,7 +6,7 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
-#include <morph/Random.h>
+#include <morph/random.h>
 #include <morph/histo.h>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
@@ -19,8 +19,8 @@ int main()
 
     // Create N normalized vectors at random.
     morph::vvec<morph::vec<float, n>> vVecs(N);
-    morph::RandUniform<float> rn_u(-1.0f, 1.0f);
-    morph::RandNormal<float> rn_n(1.0f, 0.06f);
+    morph::rand_uniform<float> rn_u(-1.0f, 1.0f);
+    morph::rand_normal<float> rn_n(1.0f, 0.06f);
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < n; ++j) {
             vVecs[i][j] = rn_u.get();

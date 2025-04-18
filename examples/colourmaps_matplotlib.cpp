@@ -9,8 +9,6 @@
 #include <morph/vec.h>
 #include <morph/Visual.h>
 #include <morph/ColourBarVisual.h>
-#include <morph/Grid.h>
-#include <morph/GridVisual.h>
 
 int main()
 {

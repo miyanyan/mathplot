@@ -6,7 +6,7 @@
 #include <sstream>
 #include <morph/vvec.h>
 #include <morph/bootstrap.h>
-#include <morph/Random.h>
+#include <morph/random.h>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
 #include <morph/histo.h>
@@ -19,11 +19,11 @@ int main()
     // Test bootstrap computation of standard error of the mean for a distribution.
     morph::Config conf ("../examples/bootstrap.json");
 
-    // First, generate numbers from a normal distribution. Args of RandNormal constructor are mean, sigma.
+    // First, generate numbers from a normal distribution. Args of rand_normal constructor are mean, sigma.
     double dist1_mean = conf.get<double>("dist1_mean", 5.0);
     double dist1_sigma = conf.get<double>("dist1_sigma", 2.0);
     unsigned int dist1_n = conf.get<unsigned int>("dist1_n", 1000);
-    morph::RandNormal<double, std::mt19937_64> rnorm (dist1_mean, dist1_sigma);
+    morph::rand_normal<double, std::mt19937_64> rnorm (dist1_mean, dist1_sigma);
     morph::vvec<double> dist;
     dist.set_from (rnorm.get(dist1_n));
 
@@ -69,7 +69,7 @@ int main()
     double dist2_mean = conf.get<double>("dist2_mean", 5.0);
     double dist2_sigma = conf.get<double>("dist2_sigma", 2.0);
     unsigned int dist2_n = conf.get<unsigned int>("dist2_n", 1000);
-    morph::RandNormal<double, std::mt19937_64> rnorm2 (dist2_mean, dist2_sigma);
+    morph::rand_normal<double, std::mt19937_64> rnorm2 (dist2_mean, dist2_sigma);
     morph::vvec<double> dist2;
     dist2.set_from (rnorm2.get(dist2_n));
     double eom2 = morph::bootstrap<double>::error_of_mean (dist2, num_resamples);

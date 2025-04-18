@@ -4,7 +4,7 @@
 #include <morph/mathconst.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/VisualCompoundRay.h>
 #include <morph/CurvyTellyVisual.h>
 
@@ -12,7 +12,7 @@ int main()
 {
     morph::VisualCompoundRay<> v(1600, 1000, "CurvyTellyVisual as a stripey pipe");
 
-    // Make a Grid to display the stripes.
+    // Make a grid to display the stripes.
     // In x, make it as many wide as there will be facets on the tube.
     // In y, make it as many long as you want there to be stripes
     // Choose x/y spacing to suit required circumference and length
@@ -22,7 +22,7 @@ int main()
     constexpr float radius = 1.0f;
     constexpr float circum = morph::mathconst<float>::two_pi * radius;
     constexpr morph::vec<float, 2> grid_spacing = { circum/n_x, length/n_y };
-    morph::Grid grid(n_x, n_y, grid_spacing);
+    morph::grid grid(n_x, n_y, grid_spacing);
     std::cout << "Number of pixels in grid:" << grid.n() << std::endl;
 
     // The Grid is wrapped around its y axis, so different values of y give different stripes. Here

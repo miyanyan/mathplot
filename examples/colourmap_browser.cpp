@@ -11,10 +11,11 @@
 #include <cmath>
 
 #include <morph/vec.h>
+#include <morph/grid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/GridVisual.h>
-#include <morph/Grid.h>
 #include <morph/CyclicColourVisual.h>
 
 struct myvisual final : public morph::Visual<>
@@ -41,7 +42,7 @@ protected:
 static constexpr unsigned int Nside_w = 512;
 static constexpr unsigned int Nside_h = 256;
 
-morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type, const morph::Grid<>& grid, const std::vector<float>& data)
+morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type, const morph::grid<>& grid, const std::vector<float>& data)
 {
     morph::VisualModel<>* vmp = nullptr;
     morph::ColourMap<float> nextmap (display_map_type);
@@ -85,7 +86,7 @@ int main()
     constexpr float barw = 2.56f;
     constexpr float barh = 0.5f;
     constexpr morph::vec<float, 2> grid_spacing = {barw/static_cast<float>(Nside_w), barh/static_cast<float>(Nside_h)};
-    morph::Grid grid(Nside_w, Nside_h, grid_spacing);
+    morph::grid grid(Nside_w, Nside_h, grid_spacing);
 
     // Our data is a ramp with a sine wave embossed on it
     std::vector<float> data(grid.n(), 0.0);

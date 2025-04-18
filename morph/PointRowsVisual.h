@@ -2,7 +2,6 @@
 
 #include <morph/tools.h>
 #include <morph/VisualDataModel.h>
-#include <morph/MathAlgo.h>
 #include <morph/scale.h>
 #include <morph/vec.h>
 #include <iostream>
@@ -180,17 +179,16 @@ namespace morph {
                         must_be_r1n = false;
                     } else {
                         // Compute distances to compute angles to decide
-                        float r1_to_r2_sq = MathAlgo::distance_sq<float, 3> ((*this->dataCoords)[r1], (*this->dataCoords)[r2]);
+                        float r1_to_r2_sq = ((*this->dataCoords)[r1] - (*this->dataCoords)[r2]).length_sq();
+                        float r1_to_r1n_sq = ((*this->dataCoords)[r1] - (*this->dataCoords)[r1n]).length_sq();
+                        float r1_to_r2n_sq = ((*this->dataCoords)[r1] - (*this->dataCoords)[r2n]).length_sq();
+                        float r2_to_r1n_sq = ((*this->dataCoords)[r2] - (*this->dataCoords)[r1n]).length_sq();
+                        float r2_to_r2n_sq = ((*this->dataCoords)[r2] - (*this->dataCoords)[r2n]).length_sq();
 
-                        float r1_to_r1n_sq = MathAlgo::distance_sq<float, 3> ((*this->dataCoords)[r1], (*this->dataCoords)[r1n]);
-                        float r1_to_r2n_sq = MathAlgo::distance_sq<float, 3> ((*this->dataCoords)[r1], (*this->dataCoords)[r2n]);
-                        float r2_to_r1n_sq = MathAlgo::distance_sq<float, 3> ((*this->dataCoords)[r2], (*this->dataCoords)[r1n]);
-                        float r2_to_r2n_sq = MathAlgo::distance_sq<float, 3> ((*this->dataCoords)[r2], (*this->dataCoords)[r2n]);
-
-                        float r1_to_r1n = sqrt(r1_to_r1n_sq);
-                        float r1_to_r2n = sqrt(r1_to_r2n_sq);
-                        float r2_to_r1n = sqrt(r2_to_r1n_sq);
-                        float r2_to_r2n = sqrt(r2_to_r2n_sq);
+                        float r1_to_r1n = std::sqrt(r1_to_r1n_sq);
+                        float r1_to_r2n = std::sqrt(r1_to_r2n_sq);
+                        float r2_to_r1n = std::sqrt(r2_to_r1n_sq);
+                        float r2_to_r2n = std::sqrt(r2_to_r2n_sq);
 
                         float asq = r1_to_r2_sq;
                         float bsq = r2_to_r1n_sq;

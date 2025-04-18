@@ -4,9 +4,10 @@
  */
 
 #include <morph/vvec.h>
+#include <morph/grid.h>
+
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/Grid.h>
 #include <morph/Config.h>
 
 // A simple Izhikevich neuron model class
@@ -161,13 +162,13 @@ int main (int argc, char** argv)
     qurng.linspace (u_range.min, u_range.max, qN);
     morph::vvec<morph::vec<float, 2>> du_dv_vecfield;
     iz.vectorfield (qurng, qvrng, du_dv_vecfield);
-    // Now plot with a Grid and a GraphVisual? Or initially with a QuiverVisual
+    // Now plot with a grid and a GraphVisual? Or initially with a QuiverVisual
     morph::vec<float, 2> gridspacing = {
         (v_range.span()) / (qN-1),
         (u_range.span()) / (qN-1)
     };
     morph::vec<float, 2> gridzero = { v_range.min, u_range.min };
-    morph::Grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
+    morph::grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
 
     /*
      * Visualize results

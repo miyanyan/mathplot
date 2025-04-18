@@ -11,8 +11,8 @@
 #include <morph/vec.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
+#include <morph/grid.h>
 #include <morph/GridVisual.h>
-#include <morph/Grid.h>
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
     // Create a grid to show in the scene
     constexpr unsigned int Nside = 400; // You can change this
     constexpr morph::vec<float, 2> grid_spacing = {0.01f, 0.01f};
-    morph::Grid grid(Nside, Nside, grid_spacing);
+    morph::grid grid(Nside, Nside, grid_spacing);
     std::cout << "Number of pixels in grid:" << grid.n() << std::endl;
 
     // Make some dummy data (a sine wave) to make an interesting surface

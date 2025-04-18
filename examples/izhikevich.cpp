@@ -8,7 +8,7 @@
 #include <morph/vvec.h>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/Config.h>
 
 // A simple Izhikevich neuron model class
@@ -145,7 +145,7 @@ int main()
         (u_range.span()) / (qN-1)
     };
     morph::vec<float, 2> gridzero = { v_range.min, u_range.min };
-    morph::Grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
+    morph::grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
 
     /*
      * Visualize results

@@ -4,11 +4,12 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/grid.h>
+
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/GridVisual.h>
-#include <morph/Grid.h>
 
 int main()
 {
@@ -18,17 +19,17 @@ int main()
     morph::vec<float, 2> nul = { 0.0f, 0.0f };
     // Top left to bottom right order matches image loaded by loadpng and avoids the need for a
     // vec<bool, 2> flip arg to morph::loadpng.
-    morph::Grid g1(256U, 65U, dx, nul, morph::GridDomainWrap::Horizontal, // Triangles, TLBR
-                   morph::GridOrder::topleft_to_bottomright);
+    morph::grid g1(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // Triangles, TLBR
+                   morph::gridorder::topleft_to_bottomright);
 
-    morph::Grid g2(256U, 65U, dx, nul, morph::GridDomainWrap::Horizontal, // Triangles, BLTR
-                   morph::GridOrder::bottomleft_to_topright);
+    morph::grid g2(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // Triangles, BLTR
+                   morph::gridorder::bottomleft_to_topright);
 
-    morph::Grid g3(256U, 65U, dx, nul, morph::GridDomainWrap::Horizontal, // RectInterp TLBR
-                   morph::GridOrder::topleft_to_bottomright);
+    morph::grid g3(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // RectInterp TLBR
+                   morph::gridorder::topleft_to_bottomright);
 
-    morph::Grid g4(256U, 65U, dx, nul, morph::GridDomainWrap::Horizontal, // RectInterp, BLTR
-                   morph::GridOrder::bottomleft_to_topright);
+    morph::grid g4(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // RectInterp, BLTR
+                   morph::gridorder::bottomleft_to_topright);
 
     // Load an image
     std::string fn = "../examples/bike256_65.png";

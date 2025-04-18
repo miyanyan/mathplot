@@ -4,7 +4,7 @@
 #include <morph/GraphVisual.h>
 #include <morph/vvec.h>
 #include <morph/mathconst.h>
-#include <morph/Random.h>
+#include <morph/random.h>
 
 int main()
 {
@@ -20,8 +20,8 @@ int main()
     gv->setlimits (0, 1, 0, 1);
 
     // Two random number generators
-    morph::RandNormal<double> rn1 (0.2, 0.07);
-    morph::RandNormal<double> rn2 (0.6, 0.04);
+    morph::rand_normal<double> rn1 (0.2, 0.07);
+    morph::rand_normal<double> rn2 (0.6, 0.04);
 
     // Three coordinates, which will be randomly sampled using rngs
     morph::vec<double, 2> x1 = {rn1.get(), rn1.get()};

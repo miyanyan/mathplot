@@ -1,24 +1,3 @@
-# Implements 'Subbarrel Patterns in Somatosensory Cortical Barrels Can
-# Emerge from Local Dynamic Instabilities', Ermentrout, Simons and
-# Land, PLOS Comp Biol 2009
-add_subdirectory(Ermentrout2009)
-
-# The Lotka-Volterra population model. See Pau, 1992, p654.
-add_subdirectory(LotkaVolterra)
-
-# The Schnakenberg RD model.
-add_subdirectory(schnakenberg)
-
-# A retinotectal model published by Simpson and Goodhill, 2011
-add_subdirectory(SimpsonGoodhill)
-
-# Shader compute examples. Not supported on Apple, which is limited to
-# OpenGL 4.1 or Windows because I want to keep the GL header inclusion
-# simple on these examples.
-if(NOT APPLE AND NOT WIN32)
-  add_subdirectory(gl_compute)
-endif()
-
 # Examples showing how to use morphologica with Qt. Compiled only if
 # find_package found Qt5
 if(Qt5_FOUND)
@@ -151,14 +130,6 @@ target_link_libraries(helloversion OpenGL::GL glfw Freetype::Freetype)
 
 add_executable(myvisual myvisual.cpp)
 target_link_libraries(myvisual OpenGL::GL glfw Freetype::Freetype)
-
-if(ARRAY_LITERAL_TEMPL_ARGS_ARE_OK)
-  add_executable(gridct_simple gridct_simple.cpp)
-  target_link_libraries(gridct_simple OpenGL::GL glfw Freetype::Freetype)
-
-  add_executable(gridct_image gridct_image.cpp)
-  target_link_libraries(gridct_image OpenGL::GL glfw Freetype::Freetype)
-endif()
 
 # morph::Grid is runtime-configured
 add_executable(grid_simple grid_simple.cpp)
@@ -441,9 +412,6 @@ target_link_libraries(randvec OpenGL::GL glfw Freetype::Freetype)
 # Demo of morph's bootstrap implementation
 add_executable(bootstrap bootstrap.cpp)
 target_link_libraries(bootstrap OpenGL::GL glfw Freetype::Freetype)
-
-add_executable(rng rng.cpp)
-target_link_libraries(rng)
 
 add_executable(scale scale.cpp)
 

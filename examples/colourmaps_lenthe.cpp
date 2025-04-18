@@ -9,7 +9,7 @@
 #include <morph/vec.h>
 #include <morph/Visual.h>
 #include <morph/ColourBarVisual.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/GridVisual.h>
 
 int main()
@@ -74,7 +74,7 @@ int main()
     constexpr float pw = 0.03f; // pixel width
     constexpr int N = 20;
     constexpr morph::vec<float, 2> grid_spacing = { pw, pw };
-    morph::Grid grid(N, N, grid_spacing);
+    morph::grid grid(N, N, grid_spacing);
     // Dummy data encodes 2D data
     std::vector<morph::vec<float, 3>> data(grid.n());
     for (int j = 0; j < grid.n(); ++j) {

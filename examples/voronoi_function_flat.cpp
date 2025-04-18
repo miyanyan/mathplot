@@ -9,7 +9,7 @@
 #include <morph/Visual.h>
 #include <morph/VoronoiVisual.h>
 #include <morph/vec.h>
-#include <morph/Random.h>
+#include <morph/random.h>
 #include <iostream>
 
 static constexpr int n_points = 1000;
@@ -20,7 +20,7 @@ int main()
 
     morph::Visual v(1024, 768, "VoronoiVisual");
 
-    morph::RandUniform<float> rngxy(-2.0f, 2.0f, 1000);
+    morph::rand_uniform<float> rngxy(-2.0f, 2.0f, 1000);
 
     // make n_points random coordinates
     std::vector<morph::vec<float>> points(n_points);

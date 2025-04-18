@@ -13,8 +13,8 @@
 #include <morph/vec.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
+#include <morph/grid.h>
 #include <morph/GridVisual.h>
-#include <morph/Grid.h>
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
     constexpr float barw = 2.56f;
     constexpr float barh = 0.5f;
     constexpr morph::vec<float, 2> grid_spacing = {barw/static_cast<float>(Nside_w), barh/static_cast<float>(Nside_h)};
-    morph::Grid grid(Nside_w, Nside_h, grid_spacing);
+    morph::grid grid(Nside_w, Nside_h, grid_spacing);
 
     // Our data is a ramp with a sine wave embossed on it
     std::vector<float> data(grid.n(), 0.0);

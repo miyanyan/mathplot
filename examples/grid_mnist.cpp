@@ -6,7 +6,7 @@
 #include <morph/vec.h>
 #include <morph/vvec.h>
 #include <morph/Visual.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/GridVisual.h>
 #include <morph/Mnist.h>
 
@@ -27,7 +27,7 @@ int main (int argc, char** argv)
     m::Visual v(1280, 1280, "Mnist char");
     // Create a Grid for visualising the numeral...
     constexpr morph::vec<float, 2> grid_spacing = {0.05f, 0.05f};
-    m::Grid g(28u, 28u, grid_spacing);
+    m::grid g(28u, 28u, grid_spacing);
 
     // Create a visual for the numeral in it's as-written Cartesian representation
     m::vec<float> offset = {0,0,0};

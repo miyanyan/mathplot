@@ -41,6 +41,7 @@
 #include <utility>
 #include <tuple>
 #include <stdexcept>
+#include <morph/random.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
 
@@ -193,7 +194,7 @@ namespace morph {
                 for (auto i = range.first; i != range.second; ++i, ++rsz) {}
                 //std::cout << "range contains " << rsz << " elements\n";
                 // Choose random number between 0 and rsz. Select that one.
-                morph::RandUniform<size_t> rng(0, rsz);
+                morph::rand_uniform<size_t> rng(0, rsz);
                 size_t tgt = rng.get();
                 auto i = range.first;
                 size_t j = 0;
@@ -216,7 +217,7 @@ namespace morph {
                 size_t rsz = 0;
                 for (auto i = range.first; i != range.second; ++i, ++rsz) {}
                 // Choose random number between 0 and rsz. Select that one.
-                morph::RandUniform<size_t> rng(0, rsz);
+                morph::rand_uniform<size_t> rng(0, rsz);
                 size_t tgt = rng.get();
                 auto i = range.first;
                 size_t j = 0;

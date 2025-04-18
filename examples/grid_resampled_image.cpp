@@ -4,10 +4,10 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/grid.h>
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
-#include <morph/Grid.h>
 #include <morph/GridVisual.h>
 #include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
@@ -23,11 +23,11 @@ int main()
     morph::vec<float, 2> dx2 = dx * scaledown;
     // Top left to bottom right order matches image loaded by loadpng and avoids the need for a
     // vec<bool, 2> flip arg to morph::loadpng.
-    morph::Grid g1(256U, 64U, dx);
+    morph::grid g1(256U, 64U, dx);
     std::cout << "g1 extents: (xmin,xmax,ymin,ymax): " << g1.extents() << std::endl;
 
     // Resample onto a lower res grid
-    morph::Grid g2(256U/scaledown, 64U/scaledown, dx2);
+    morph::grid g2(256U/scaledown, 64U/scaledown, dx2);
     std::cout << "g2 extents: (xmin,xmax,ymin,ymax): " << g2.extents() << std::endl;
 
     // Load an image

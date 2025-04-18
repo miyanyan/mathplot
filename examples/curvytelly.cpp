@@ -4,7 +4,7 @@
 #include <morph/mathconst.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/quaternion.h>
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
@@ -20,7 +20,7 @@ int main()
 
     // CurvyTellyVisual needs a Grid as an underlying data structure
     morph::vec<float, 2> grid_spacing = { 0.1f, 0.01f };
-    morph::Grid grid(dims[0], dims[1], grid_spacing);
+    morph::grid grid(dims[0], dims[1], grid_spacing);
 
     morph::vec<float> offset = { 0, 0, 0 };
     auto ctv = std::make_unique<morph::CurvyTellyVisual<float>>(&grid, offset);

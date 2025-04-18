@@ -10,7 +10,6 @@
 #include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
 #include <morph/PolygonVisual.h>
-#include <morph/MathAlgo.h>
 #include <iostream>
 #include <chrono>
 
@@ -51,7 +50,7 @@ int main()
     for (size_t i = 0; i < hg.num(); ++i) {
         banana_vals[i] = banana ({hg.d_x[i], hg.d_y[i]});
     }
-    morph::range<FLT> mm = morph::MathAlgo::maxmin(banana_vals);
+    morph::range<FLT> mm = morph::range<FLT>::get_from (banana_vals);
     std::cout << "Banana surface range: " << mm << std::endl;
     auto hgv = std::make_unique<morph::HexGridVisual<FLT>>(&hg, offset);
     v.bindmodel (hgv);

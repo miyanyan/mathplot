@@ -10,7 +10,7 @@
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/GridVisual.h>
-#include <morph/Grid.h>
+#include <morph/grid.h>
 
 int main()
 {
@@ -27,10 +27,10 @@ int main()
     constexpr morph::vec<float, 2> grid_spacing = {0.2f, 0.2f};
 
     // The simplest declaration of Grid is:
-    //   morph::Grid g(size_t n_x, size_t n_y);
+    //   morph::grid g(size_t n_x, size_t n_y);
     // grid_spacing, grid_zero, use of memory, wrapping and ordering are all possible arguments to
     // the constructor.
-    morph::Grid<unsigned int, float> grid(N_pix_w, N_pix_h, grid_spacing);
+    morph::grid<unsigned int, float> grid(N_pix_w, N_pix_h, grid_spacing);
 
     std::cout << "Number of pixels in grid:" << grid.n() << std::endl;
 
@@ -42,7 +42,7 @@ int main()
     }
 
     float step = 0.64f;
-    // Add a GridVisual to display the Grid within the morph::Visual scene
+    // Add a GridVisual to display the grid within the morph::Visual scene
     morph::vec<float, 3> offset = { -step * grid.width(), step * grid.height(), 0.0f };
 
     // 1) visualizing vector with GridVisMode = RectInterp

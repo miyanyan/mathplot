@@ -11,7 +11,7 @@
 #include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
 
-#include <morph/Grid.h>
+#include <morph/grid.h>
 #include <morph/GridVisual.h>
 
 #include <morph/TriaxesVisual.h>
@@ -141,7 +141,7 @@ int main()
         // Create a grid to show in the scene
         constexpr unsigned int Nside = 20;
         constexpr morph::vec<float, 2> grid_spacing = {0.05f, 0.05f};
-        morph::Grid grid(Nside, Nside, grid_spacing);
+        morph::grid grid(Nside, Nside, grid_spacing);
         // Data
         std::vector<float> data(grid.n(), 0.0);
         for (unsigned int ri=0; ri<grid.n(); ++ri) {
@@ -167,8 +167,8 @@ int main()
     {
         morph::vec<float, 2> dx = { 0.005f, 0.005f };
         morph::vec<float, 2> nul = { 0.0f, 0.0f };
-        morph::Grid g2(256U, 65U, dx, nul, morph::GridDomainWrap::Horizontal, // Triangles, BLTR
-                       morph::GridOrder::bottomleft_to_topright);
+        morph::grid g2(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // Triangles, BLTR
+                       morph::gridorder::bottomleft_to_topright);
         // Load an image
         std::string fn = "../examples/bike256_65.png";
         morph::vvec<float> image_data;
@@ -268,7 +268,7 @@ int main()
         (umax - umin) / (qN-1)
     };
     morph::vec<float, 2> gridzero = { vmin, umin };
-    morph::Grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
+    morph::grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
 
     // Visualize results
     morph::vvec<float> t(N, 0.0f);
