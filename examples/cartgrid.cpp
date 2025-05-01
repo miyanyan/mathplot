@@ -7,10 +7,11 @@
 #include <cmath>
 
 #include <morph/vec.h>
+#include <morph/cartgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/CartGridVisual.h>
-#include <morph/CartGrid.h>
 
 int main()
 {
@@ -30,11 +31,11 @@ int main()
     v.addLabel ("This is a\nmorph::CartGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a HexGrid to show in the scene
-    morph::CartGrid cg(0.01, 0.01, 1, 1);
+    morph::cartgrid cg(0.01, 0.01, 1, 1);
     std::cout << "Number of pixels in grid:" << cg.num() << std::endl;
 
     // *NB* This call (or any other 'set boundary' call) is essential, as it sets up the
-    // d_ vectors in the CartGrid. Without it, the CartGrid will be unusable!
+    // d_ vectors in the cartgrid. Without it, the cartgrid will be unusable!
     cg.setBoundaryOnOuterEdge();
 
     // Make some dummy data (a sine wave) to make an interesting surface

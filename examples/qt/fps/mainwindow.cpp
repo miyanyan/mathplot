@@ -1,14 +1,15 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include <morph/vec.h>
+#include <morph/vvec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/qt/viswidget.h>
 #include <morph/GraphVisual.h>
 #include <morph/TriangleVisual.h>
-#include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
 #include <morph/ScatterVisual.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
 
 #include <QVBoxLayout>
 #include <QFrame>
@@ -51,8 +52,8 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::setupHexGridVisual()
 {
-    // First set up the HexGrid
-    this->hg = std::make_unique<morph::HexGrid> (0.02f, 15.0f, 0.0f);
+    // First set up the hexgrid
+    this->hg = std::make_unique<morph::hexgrid> (0.02f, 15.0f, 0.0f);
     this->hg->setCircularBoundary (4.0f);
 
     // Make some dummy data (a radially symmetric Bessel fn) to make an interesting surface

@@ -9,14 +9,15 @@
 #include <string>
 #include <cmath>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
-#include <morph/ReadCurves.h>
 #include <morph/random.h>
 #include <morph/scale.h>
 #include <morph/vec.h>
+#include <morph/hexgrid.h>
+
+#include <morph/Visual.h>
+#include <morph/VisualDataModel.h>
+#include <morph/HexGridVisual.h>
+#include <morph/ReadCurves.h>
 
 int main()
 {
@@ -28,7 +29,7 @@ int main()
     v.setSceneTransZ (-3.0f);
 
     // Create an elliptical hexgrid for the input/output domains
-    morph::HexGrid hg(0.01, 3, 0);
+    morph::hexgrid hg(0.01, 3, 0);
     hg.setEllipticalBoundary (0.45, 0.3);
 
     // Populate a vector of floats with data
@@ -40,9 +41,9 @@ int main()
         nonconvolvedSum += d;
     }
 
-    // Create a circular HexGrid to contain the Gaussian convolution kernel
+    // Create a circular hexgrid to contain the Gaussian convolution kernel
     float sigma = 0.025f;
-    morph::HexGrid kernel(0.01, 20.0f*sigma, 0);
+    morph::hexgrid kernel(0.01, 20.0f*sigma, 0);
     kernel.setCircularBoundary (6.0f*sigma);
     std::vector<float> kerneldata (kernel.num(), 0.0f);
     // Once-only parts of the calculation of the Gaussian.
@@ -53,7 +54,7 @@ int main()
     float sum = 0;
     for (auto& k : kernel.hexen) {
         // Gaussian profile based on the hex's distance from centre, which is
-        // already computed in each Hex as Hex::r
+        // already computed in each hex as hex::r
         gauss = (one_over_sigma_root_2_pi * std::exp ( -(k.r*k.r) / two_sigma_sq ));
         kerneldata[k.vi] = gauss;
         sum += gauss;
@@ -64,7 +65,7 @@ int main()
     // A vector for the result
     std::vector<float> convolved (hg.num(), 0.0f);
 
-    // Call the convolution method from HexGrid:
+    // Call the convolution method from hexgrid:
     hg.convolve (kernel, kerneldata, data, convolved);
 
     float convolvedSum = 0.0f;

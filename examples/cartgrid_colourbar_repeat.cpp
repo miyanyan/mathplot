@@ -7,10 +7,11 @@
 #include <cmath>
 
 #include <morph/vec.h>
+#include <morph/cartgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/CartGridVisual.h>
-#include <morph/CartGrid.h>
 #include <morph/ColourBarVisual.h>
 
 int main()
@@ -30,11 +31,11 @@ int main()
     v.addLabel ("This is a\nmorph::CartGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a HexGrid to show in the scene
-    morph::CartGrid cg(0.01, 0.01, 1, 1);
+    morph::cartgrid cg(0.01, 0.01, 1, 1);
     std::cout << "Number of pixels in grid:" << cg.num() << std::endl;
 
     // *NB* This call (or any other 'set boundary' call) is essential, as it sets up the
-    // d_ vectors in the CartGrid. Without it, the CartGrid will be unusable!
+    // d_ vectors in the cartgrid. Without it, the cartgrid will be unusable!
     cg.setBoundaryOnOuterEdge();
 
     // Make some dummy data (a sine wave) to make an interesting surface
@@ -45,7 +46,7 @@ int main()
         data[ri] = 0.05f + 0.05f*std::sin(20.0f*cg.d_x[ri]) * std::sin(10.0f*cg.d_y[ri]) ; // Range 0->1
     }
 
-    // Add a CartGridVisual to display the CartGrid within the morph::Visual scene
+    // Add a CartGridVisual to display the cartgrid within the morph::Visual scene
     morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto cgv = std::make_unique<morph::CartGridVisual<float>>(&cg, offset);
     v.bindmodel (cgv);

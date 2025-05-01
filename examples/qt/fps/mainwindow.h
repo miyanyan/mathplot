@@ -9,7 +9,7 @@ QT_END_NAMESPACE
 
 #include <memory>
 #include <morph/vvec.h>
-#include <morph/HexGrid.h>
+#include <morph/hexgrid.h>
 
 class MainWindow : public QMainWindow
 {
@@ -45,7 +45,7 @@ private:
     morph::vvec<float> data;
     morph::vvec<float> r;
     float k = 0.0f;
-    std::unique_ptr<morph::HexGrid> hg;
+    std::unique_ptr<morph::hexgrid> hg;
 
     // A location for a graph within the Visual scene inside the viswidget
     morph::vec<float> graphlocn = {1.5f, 0.0f, 0.0f};

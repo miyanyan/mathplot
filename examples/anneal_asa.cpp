@@ -7,7 +7,7 @@
 #include <morph/vvec.h>
 #include <morph/vec.h>
 #include <morph/Config.h>
-#include <morph/Hex.h>
+#include <morph/hex.h>
 #include <morph/hexgrid.h>
 #ifdef VISUALISE
 # include <morph/Visual.h>
@@ -258,11 +258,11 @@ void setup_objective()
     F two_sigma_sq = F{2} * sigma * sigma;
     F gauss = F{0};
     F sum = F{0};
-    morph::Hex chex = *hg->vhexen[200];
-    morph::Hex chex2 = *hg->vhexen[2000];
+    morph::hex chex = *hg->vhexen[200];
+    morph::hex chex2 = *hg->vhexen[2000];
     for (auto& k : hg->hexen) {
         // Gaussian profile based on the hex's distance from centre, which is
-        // already computed in each Hex as Hex::r. Don't want this for these. Want dist from some hex/coords
+        // already computed in each hex as hex::r. Don't want this for these. Want dist from some hex/coords
         F r = k.distanceFrom (chex);
         gauss = (one_over_sigma_root_2_pi * std::exp ( -(r*r) / two_sigma_sq ));
         obj_f_a[k.vi] = gauss;
@@ -356,6 +356,6 @@ F objective_hg (const morph::vvec<F>& params)
     // Find the hex nearest the coordinate defined by params and return its value
     morph::vvec<float> _params = params.as_float();
     morph::vec<float, 2> coord = { _params[0], _params[1] };
-    std::list<morph::Hex>::iterator hn = hg->findHexNearest (coord);
+    std::list<morph::hex>::iterator hn = hg->findHexNearest (coord);
     return obj_f[hn->vi];
 }

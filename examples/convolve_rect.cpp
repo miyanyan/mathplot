@@ -6,20 +6,21 @@
 #include <string>
 #include <cmath>
 
+#include <morph/vec.h>
+#include <morph/vvec.h>
+#include <morph/cartgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/CartGridVisual.h>
-#include <morph/CartGrid.h>
 #include <morph/ReadCurves.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
 
 int main()
 {
     int rtn = 0;
 
     // This'll be a 256x64 grid. This constructor creates a 'non-centred' cartgrid.
-    morph::CartGrid cg(0.01f, 0.01f, 0.0f, 0.0f, 256*0.01f-0.01f, 64*0.01f-0.01f);
+    morph::cartgrid cg(0.01f, 0.01f, 0.0f, 0.0f, 256*0.01f-0.01f, 64*0.01f-0.01f);
     cg.setBoundaryOnOuterEdge();
 
     // Populate a vector of floats with data
@@ -28,8 +29,8 @@ int main()
     float nonconvolvedSum = data.sum();
 
     // Create a small CartGrid to contain the convolution kernel
-    //morph::CartGrid kernel (0.01f, 0.01f, 0.05f, 0.05f);
-    morph::CartGrid kernel (0.01f, 0.01f, 0.0f, 0.0f, 5*0.01f-0.01f, 5*0.01f-0.01f);
+    //morph::cartgrid kernel (0.01f, 0.01f, 0.05f, 0.05f);
+    morph::cartgrid kernel (0.01f, 0.01f, 0.0f, 0.0f, 5*0.01f-0.01f, 5*0.01f-0.01f);
     kernel.setBoundaryOnOuterEdge();
 
     morph::vvec<float> kdata(kernel.num());

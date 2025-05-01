@@ -1,13 +1,15 @@
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/ColourMap.h>
-#include <morph/CartGrid.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <vector>
 #include <array>
+
+#include <morph/cartgrid.h>
+#include <morph/vec.h>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
+#include <morph/ColourMap.h>
 
 #define R_NE(hi) (this->cg->d_ne[hi])
 #define R_HAS_NE(hi) (this->cg->d_ne[hi] == -1 ? false : true)
@@ -48,7 +50,7 @@ namespace morph {
     {
     public:
         //! Single constructor for simplicity
-        CartGridVisual(const CartGrid* _cg, const vec<float> _offset)
+        CartGridVisual(const cartgrid* _cg, const vec<float> _offset)
         {
             // Set up...
             morph::vec<float> pixel_offset = { _cg->getd()/2.0f, _cg->getv()/2.0f, 0.0f };
@@ -151,7 +153,7 @@ namespace morph {
                 this->vertex_push (0.0f, 0.0f, 1.0f, this->vertexNormals);
             }
 
-            // Build indices based on neighbour relations in the CartGrid
+            // Build indices based on neighbour relations in the cartgrid
             for (unsigned int ri = 0; ri < nrect; ++ri) {
                 if (R_HAS_NNE(ri) && R_HAS_NE(ri)) {
                     this->indices.push_back (ri);
@@ -451,7 +453,7 @@ namespace morph {
         CartVisMode cartVisMode = CartVisMode::RectInterp;
 
         //! Set this to true to adjust the positions that the CartGridVisual uses to plot
-        //! the CartGrid so that the CartGrid is centralised around the
+        //! the cartgrid so that the cartgrid is centralised around the
         //! VisualModel::mv_offset.
         bool centralize = false;
 
@@ -459,7 +461,7 @@ namespace morph {
         bool showborder = false;
         //! The colour for the border
         std::array<float, 3> border_colour = morph::colour::grey80;
-        //! The border thickness in multiples of a pixel in the CartGrid
+        //! The border thickness in multiples of a pixel in the cartgrid
         float border_thickness = 0.33f;
         //! If you need to override the pixels-relationship to the border thickness, set it here
         float border_thickness_fixed = 0.0f;
@@ -486,8 +488,8 @@ namespace morph {
             return clr;
         }
 
-        //! The CartGrid to visualize
-        const CartGrid* cg;
+        //! The cartgrid to visualize
+        const cartgrid* cg;
 
         //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
         std::vector<float> dcopy;

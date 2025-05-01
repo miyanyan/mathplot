@@ -11,63 +11,58 @@
  */
 
 #include <iostream>
-
-#include <morph/ReadCurves.h>
-#include <morph/tools.h>
-#include <morph/ColourMap.h>
-#include <morph/HexGrid.h>
 #include <utility>
 #include <vector>
 #include <fstream>
 #include <cstdlib>
-#include <morph/BezCoord.h>
 
+#include <morph/bezcoord.h>
+#include <morph/hexgrid.h>
+
+#include <morph/ReadCurves.h>
+#include <morph/tools.h>
+#include <morph/ColourMap.h>
 #include <morph/Visual.h>
 #include <morph/HexGridVisual.h>
-
-using namespace std;
-using morph::ReadCurves;
-using morph::BezCoord;
-using std::vector;
 
 int main(int argc, char** argv)
 {
     int rtn = -1;
 
     if (argc < 2 && argc > 0) {
-        cerr << "Usage: " << argv[0]
-             << " ./path/to/curves.svg [domain-span (mm default:3)] [hexdia (mm default:0.01)]" << endl;
+        std::cerr << "Usage: " << argv[0]
+                  << " ./path/to/curves.svg [domain-span (mm default:3)] [hexdia (mm default:0.01)]" << std::endl;
         return rtn;
     }
     float gridspan = 3.0f;
     if (argc > 2) {
         gridspan = std::atof (argv[2]);
-        cout << "User supplied grid width: " << gridspan << " mm" << endl;
+        std::cout << "User supplied grid width: " << gridspan << " mm" << std::endl;
     }
     float hexdia = 0.01f;
     if (argc > 3) {
         hexdia = std::atof (argv[3]);
-        cout << "User supplied hex size: " << hexdia << " mm" << endl;
+        std::cout << "User supplied hex size: " << hexdia << " mm" << std::endl;
         if (hexdia < 0.003f) {
-            cerr << "Very small hex dia - memory use may be large." << endl;
+            std::cerr << "Very small hex dia - memory use may be large." << std::endl;
         }
     }
 
     try {
         // Read the curves
-        ReadCurves r(argv[1]);
+        morph::ReadCurves r(argv[1]);
         // Create a HexGrid
-        morph::HexGrid hg(hexdia, gridspan, 0);
+        morph::hexgrid hg(hexdia, gridspan, 0);
         // Apply the curves as a boundary
-        cout << "Number of hexes before setting boundary: " << hg.num() << endl;
+        std::cout << "Number of hexes before setting boundary: " << hg.num() << std::endl;
         hg.setBoundary (r.getCorticalPath());
 
-        cout << "HexGrid extent:" << endl;
-        cout << "  x range: " << hg.getXmin() << " to " << hg.getXmax() << endl;
-        cout << "  y range: " << hg.getXmin(90) << " to " << hg.getXmax(90) << endl;
-        cout << "Scaling is " << r.getScale_mmpersvg() << " mm per SVG unit, or "
-             << r.getScale_svgpermm() << " units/mm" << endl;
-        cout << "Number of hexes within the boundary: " << hg.num() << endl;
+        std::cout << "hexgrid extent:" << std::endl;
+        std::cout << "  x range: " << hg.getXmin() << " to " << hg.getXmax() << std::endl;
+        std::cout << "  y range: " << hg.getXmin(90) << " to " << hg.getXmax(90) << std::endl;
+        std::cout << "Scaling is " << r.getScale_mmpersvg() << " mm per SVG unit, or "
+                  << r.getScale_svgpermm() << " units/mm" << std::endl;
+        std::cout << "Number of hexes within the boundary: " << hg.num() << std::endl;
 
         // Display with morph::Visual
         morph::Visual v(1600, 1000, "Your SVG defined boundary");
@@ -76,7 +71,7 @@ int main(int argc, char** argv)
         auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
         v.bindmodel (hgv);
         // Set up data for the HexGridVisual and colour hexes according to their state as being boundary/inside/domain, etc
-        vector<float> colours (hg.num(), 0.0f);
+        std::vector<float> colours (hg.num(), 0.0f);
         static constexpr float cl_boundary_and_in = 0.9f;
         static constexpr float cl_bndryonly = 0.8f;
         static constexpr float cl_domain = 0.5f;
@@ -104,8 +99,8 @@ int main(int argc, char** argv)
         v.addVisualModel (hgv);
         v.keepOpen();
 
-    } catch (const exception& e) {
-        cerr << "Caught exception reading " << argv[1] << ": " << e.what() << endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Caught exception reading " << argv[1] << ": " << e.what() << std::endl;
         rtn = -1;
     }
 

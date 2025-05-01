@@ -9,7 +9,7 @@ QT_END_NAMESPACE
 
 #include <memory>
 #include <morph/vvec.h>
-#include <morph/HexGrid.h>
+#include <morph/hexgrid.h>
 
 class MainWindow : public QMainWindow
 {
@@ -43,10 +43,10 @@ private:
     // The data you add to VisualModels has to be maintained in memory after you use
     // setScalarData() to add it to your VisualModels. That ensures that the information
     // is present when the VisualModel::finalize() function is called. This is also true
-    // for the HexGrid that is used in the HexGridVisual that's created in the
+    // for the hexgrid that is used in the HexGridVisual that's created in the
     // constructor.
     morph::vvec<float> data;
-    std::unique_ptr<morph::HexGrid> hg;
+    std::unique_ptr<morph::hexgrid> hg;
 
     // A location for a graph within the Visual scene inside the viswidget
     morph::vec<float, 3> graphlocn = {1.5f, 0.0f, 0.0f};
