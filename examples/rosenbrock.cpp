@@ -2,13 +2,14 @@
  * Test Nelder Mead Simplex algorithm on the Rosenbrock banana function.
  */
 
-#include <morph/NM_Simplex.h>
+#include <morph/hexgrid.h>
+#include <morph/optimization/nm_simplex.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
 #include <morph/random.h>
+
 #include <morph/Visual.h>
 #include <morph/TriFrameVisual.h>
-#include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
 #include <iostream>
 #include <chrono>
@@ -61,7 +62,7 @@ int main()
     std::cout << "test point on banana function = " << test << " (should be 0).\n";
 
     // Evaluate banana function and plot
-    morph::HexGrid hg (0.01, 10, 0);
+    morph::hexgrid hg (0.01, 10, 0);
     hg.setCircularBoundary (2.5);
     std::vector<FLT> banana_vals(hg.num(), 0.0f);
     for (size_t i = 0; i < hg.num(); ++i) {
@@ -80,7 +81,7 @@ int main()
     hgv->finalize();
     v.addVisualModel (hgv);
 
-    morph::NM_Simplex<FLT> simp(i_vertices);
+    morph::optimization::nm_simplex<FLT> simp(i_vertices);
 
     // The smaller you make the threshold, the nearer the algo will get
     simp.termination_threshold = std::numeric_limits<FLT>::epsilon();
@@ -104,31 +105,31 @@ int main()
 
         // Now do the business
         unsigned int lcount = 0;
-        while (simp.state != morph::NM_Simplex_State::ReadyToStop && !v.readyToFinish()) {
+        while (simp.state != morph::optimization::nm_simplex_state::ReadyToStop && !v.readyToFinish()) {
 
             // Perform optimisation steps slowly
             std::chrono::steady_clock::duration sinceoptstep = std::chrono::steady_clock::now() - lastoptstep;
             if (std::chrono::duration_cast<std::chrono::milliseconds>(sinceoptstep).count() > 50) {
                 lcount++;
-                if (simp.state == morph::NM_Simplex_State::NeedToComputeThenOrder) {
+                if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeThenOrder) {
                     // 1. apply objective to each vertex
                     for (unsigned int i = 0; i <= simp.n; ++i) {
                         simp.values[i] = banana (simp.vertices[i][0], simp.vertices[i][1]);
                     }
                     simp.order();
 
-                } else if (simp.state == morph::NM_Simplex_State::NeedToOrder) {
+                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToOrder) {
                     simp.order();
 
-                } else if (simp.state == morph::NM_Simplex_State::NeedToComputeReflection) {
+                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeReflection) {
                     val = banana (simp.xr[0], simp.xr[1]);
                     simp.apply_reflection (val);
 
-                } else if (simp.state == morph::NM_Simplex_State::NeedToComputeExpansion) {
+                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeExpansion) {
                     val = banana (simp.xe[0], simp.xe[1]);
                     simp.apply_expansion (val);
 
-                } else if (simp.state == morph::NM_Simplex_State::NeedToComputeContraction) {
+                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeContraction) {
                     val = banana (simp.xc[0], simp.xc[1]);
                     simp.apply_contraction (val);
                 }

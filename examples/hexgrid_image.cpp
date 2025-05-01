@@ -8,17 +8,18 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 
 int main()
 {
     morph::Visual v(1600, 1000, "Demo of HexGrid::resampleImage");
 
-    morph::HexGrid hg(0.01f, 3.0f, 0.0f);
+    morph::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (1.2f);
 
     // Load an image with the help of morph::loadpng().

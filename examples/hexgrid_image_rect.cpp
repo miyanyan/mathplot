@@ -9,17 +9,18 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 
 int main()
 {
-    morph::Visual v(1600, 1000, "Demo of HexGrid::resampleImage");
+    morph::Visual v(1600, 1000, "Demo of hexgrid::resampleImage");
 
-    morph::HexGrid hg(0.01f, 3.0f, 0.0f);
+    morph::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setRectangularBoundary (2.0f, 0.5f);
 
     // Load a rectangular image with the help of morph::loadpng().
@@ -28,12 +29,12 @@ int main()
     morph::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
     std::cout << "Loaded image with dims: " << dims << std::endl;
 
-    // This controls how large the photo will be on the HexGrid
+    // This controls how large the photo will be on the hexgrid
     morph::vec<float,2> image_scale = {2.0f, 2.0f};
     // You can shift the photo with an offset if necessary
     morph::vec<float,2> image_offset = {0.0f, 0.0f};
 
-    // Here's the HexGrid method that will resample the square pixel grid onto the hex grid
+    // Here's the hexgrid method that will resample the square pixel grid onto the hex grid
     morph::vvec<float> hex_image_data = hg.resampleImage (image_data, dims[0], image_scale, image_offset);
 
     // Now visualise with a HexGridVisual

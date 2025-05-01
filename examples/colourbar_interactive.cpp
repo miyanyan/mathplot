@@ -8,10 +8,11 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 #include <morph/ColourBarVisual.h>
 
 // This is the standard way to incorporate key-operations into a morphologica program. See also myvisual.cpp.
@@ -19,8 +20,8 @@ struct myvisual final : public morph::Visual<>
 {
     myvisual (int width, int height, const std::string& title) : morph::Visual<> (width, height, title)
     {
-        // Set up HexGrid
-        this->hg = std::make_unique<morph::HexGrid>(0.01f, 3.0f, 0.0f);
+        // Set up hexgrid
+        this->hg = std::make_unique<morph::hexgrid>(0.01f, 3.0f, 0.0f);
         this->hg->setCircularBoundary (0.6f);
         std::cout << "Number of pixels in grid:" << this->hg->num() << std::endl;
         // Initialize the function
@@ -38,8 +39,8 @@ protected:
     // Data container for a function
     morph::vvec<float> data;
 
-    // A HexGrid to show in the scene.
-    std::unique_ptr<morph::HexGrid> hg;
+    // A hexgrid to show in the scene.
+    std::unique_ptr<morph::hexgrid> hg;
 
     // A colourmap for the wobbly function
     static constexpr morph::ColourMapType colour_map_type = morph::ColourMapType::Inferno;
@@ -68,7 +69,7 @@ protected:
         if (this->cbvp_vert != nullptr) { this->removeVisualModel (cbvp_vert); }
         if (this->cbvp_horz != nullptr) { this->removeVisualModel (cbvp_horz); }
 
-        // Add a HexGridVisual to display the HexGrid within the morph::Visual scene
+        // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
         morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>>(this->hg.get(), offset);
         this->bindmodel (hgv);

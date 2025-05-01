@@ -1,8 +1,8 @@
 /*
- * Apply an inverse Mercator projection to a HexGrid to place it on a sphere. Then visualize.
+ * Apply an inverse Mercator projection to a hexgrid to place it on a sphere. Then visualize.
  */
 
-#include <morph/HexGrid.h>
+#include <morph/hexgrid.h>
 #include <morph/Visual.h>
 #include <morph/ScatterVisual.h>
 #include <morph/scale.h>
@@ -15,7 +15,7 @@ int main()
 {
     using mc = morph::mathconst<float>;
 
-    morph::Visual v(1024, 768, "Inverse Mercator HexGrid");
+    morph::Visual v(1024, 768, "Inverse Mercator hexgrid");
     v.showCoordArrows (true);
     v.lightingEffects();
 
@@ -26,10 +26,10 @@ int main()
     // Have a Sphere of radius 1
     constexpr float r_sph = 1.0f;
 
-    // Make a HexGrid of width similar to sphere
+    // Make a hexgrid of width similar to sphere
     constexpr float hex_d = 0.1f;
     constexpr float hex_span = 3.0f * mc::two_pi * r_sph;
-    morph::HexGrid hg(hex_d, hex_span, 0.0f);
+    morph::hexgrid hg(hex_d, hex_span, 0.0f);
     hg.setCircularBoundary(0.6f * mc::pi * r_sph);
 
     // hg has d_x and d_y. Can make up a new container of 3D locations for each hex.

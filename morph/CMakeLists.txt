@@ -5,13 +5,8 @@
 # Header installation (list from ls *.h* -1, then re-ordered into functionality groups)
 install(
   FILES
-  AllocAndRead.h
   Anneal.h
   base64.h
-  BezCoord.h
-  BezCurve.h
-  BezCurvePath.h
-  CartGrid.h
   colour.h
   ColourMap.h
   ColourMap_Lists.h
@@ -19,25 +14,17 @@ install(
   colourmaps_crameri.h
   Config.h
   crc32.h
-  debug.h
   DirichDom.h
   DirichVtx.h
   flags.h
-  Gridct.h
   GridFeatures.h
-  HexGrid.h
-  Hex.h
-  hexyhisto.h
   keys.h
   lenthe_colormap.hpp
   loadpng.h
   lodepng.h
   Mnist.h
-  NM_Simplex.h
   Process.h
-  quaternion.h
   ReadCurves.h
-  Rect.h
   ShapeAnalysis.h
   tools.h
   unicode.h

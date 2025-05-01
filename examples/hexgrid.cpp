@@ -7,10 +7,11 @@
 #include <cmath>
 
 #include <morph/vec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 
 int main()
 {
@@ -33,7 +34,7 @@ int main()
 
     // Create a HexGrid to show in the scene. Hexes outside the circular boundary will
     // all be discarded.
-    morph::HexGrid hg(0.01f, 3.0f, 0.0f);
+    morph::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (0.6f);
     std::cout << "Number of pixels in grid:" << hg.num() << std::endl;
 

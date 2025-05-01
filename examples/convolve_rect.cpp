@@ -56,7 +56,7 @@ int main()
     // A vector for the result
     morph::vvec<float> convolved (cg.num(), 0.0f);
 
-    // Call the convolution method from HexGrid:
+    // Call the convolution method from cartgrid:
     cg.convolve (kernel, kdata, data, convolved);
 
     float convolvedSum = 0.0f;

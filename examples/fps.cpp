@@ -9,11 +9,12 @@
 #include <sstream>
 
 #include <morph/vec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/VisualTextModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 
 int main()
 {
@@ -24,10 +25,10 @@ int main()
     morph::VisualTextModel<>* fps_tm;
     v.addLabel ("0 FPS", {0.13f, -0.23f, 0.0f}, fps_tm); // With fps_tm can update the VisualTextModel with fps_tm->setupText("new text")
 
-    // Create a HexGrid to show in the scene
+    // Create a hexgrid to show in the scene
     constexpr float hex_to_hex = 0.02f;
 
-    morph::HexGrid hg(hex_to_hex, 15.0f, 0.0f);
+    morph::hexgrid hg(hex_to_hex, 15.0f, 0.0f);
     hg.setEllipticalBoundary (4.0f, 4.0f);
     std::cout << "Number of hexes in grid:" << hg.num() << std::endl;
     std::stringstream sss;

@@ -12,11 +12,12 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 
 enum class spherical_projection
 {
@@ -38,7 +39,7 @@ int main()
 
     constexpr float hex_d = 0.02;
     constexpr float hex_span = mc::two_pi * r_sph;
-    morph::HexGrid hg(hex_d, 2.0f*hex_span, 0.0f);
+    morph::hexgrid hg(hex_d, 2.0f * hex_span, 0.0f);
     if constexpr (proj == spherical_projection::splodge) {
         hg.setCircularBoundary (0.95f * r_sph);
     } else {
@@ -126,7 +127,7 @@ int main()
     v.bindmodel (hgv);
     // Set the image data as the scalar data for the HexGridVisual
     hgv->setScalarData (&hex_image_data);
-    // This will make it a spherical projection (these coords will override the 2D coords in the HexGrid)
+    // This will make it a spherical projection (these coords will override the 2D coords in the hexgrid)
     hgv->setDataCoords (&sphere_coords);
     // The inverse greyscale map is appropriate for a monochrome image
     hgv->cm.setType (morph::ColourMapType::Inferno);
@@ -141,7 +142,7 @@ int main()
     // The only real difference is that this has no hgv->setDataCoords(&sphere_coords) call.
     hgv->cm.setType (morph::ColourMapType::Inferno);
     hgv->zScale.setParams (0, 1); // sets a z offset of 1 across the hexgrid
-    hgv->addLabel (std::string("2D HexGrid"),
+    hgv->addLabel (std::string("2D hexgrid"),
                    morph::vec<float>{1.2*r_sph, -1.2*r_sph, 1},
                    morph::TextFeatures(0.05f));
     hgv->finalize();

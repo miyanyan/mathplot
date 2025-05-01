@@ -8,10 +8,11 @@
 
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 #include <morph/ColourBarVisual.h>
 
 int main()
@@ -31,8 +32,8 @@ int main()
     // Position with some scene trans setup code (try Ctrl-z in the program and see stdout):
     v.setSceneTrans (morph::vec<float,3>({-0.140266f, 0.237435f, -3.5f}));
 
-    // A HexGrid to show in the scene.
-    morph::HexGrid hg(0.01f, 3.0f, 0.0f);
+    // A hexgrid to show in the scene.
+    morph::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (0.6f);
     std::cout << "Number of pixels in grid:" << hg.num() << std::endl;
 
@@ -42,7 +43,7 @@ int main()
         data[ri] = 0.00001f + 0.05f + 0.05f*std::sin(20.0f*hg.d_x[ri]) * std::sin(10.0f*hg.d_y[ri]) ; // Range 0->1
     }
 
-    // Add a HexGridVisual to display the HexGrid within the morph::Visual scene
+    // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
     morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);

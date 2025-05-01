@@ -5,7 +5,7 @@
 #include <morph/scale.h>
 #include <morph/VisualDataModel.h>
 #include <morph/ColourMap.h>
-#include <morph/HexGrid.h>
+#include <morph/hexgrid.h>
 #include <morph/vec.h>
 #include <iostream>
 #include <vector>
@@ -63,7 +63,7 @@ namespace morph {
     {
     public:
         //! Simplest constructor. Use this in all new code!
-        HexGridVisual(const HexGrid* _hg, const vec<float> _offset)
+        HexGridVisual(const hexgrid* _hg, const vec<float> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -157,7 +157,7 @@ namespace morph {
 
         void initializeVertices() { this->initializeVertices (false); }
         //! Do the computations to initialize the vertices that will represent the
-        //! HexGrid.
+        //! hexgrid.
         void initializeVertices(const bool update)
         {
             this->idx = 0;
@@ -233,7 +233,7 @@ namespace morph {
             for (unsigned int hi = 0; hi < nhex; ++hi) {
                 std::array<float, 3> clr = this->setColour (hi);
                 // If dataCoords has been populated, use these for hex positions, allowing for
-                // mapping of the 2D HexGrid onto a 3D manifold.
+                // mapping of the 2D hexgrid onto a 3D manifold.
                 if (this->dataCoords == nullptr) {
                     if (update == false) {
                         this->vertexPositions[hi * 3] = this->zoom * this->hg->d_x[hi];
@@ -241,7 +241,7 @@ namespace morph {
                     }
                     this->vertexPositions[hi * 3 + 2] = this->zoom * dcopy[hi];
 
-                } else { // Otherwise use the positions directly in the HexGrid:
+                } else { // Otherwise use the positions directly in the hexgrid:
                     if (update == false) {
                         this->vertexPositions[hi * 3] = (*this->dataCoords)[hi][0];
                         this->vertexPositions[hi * 3 + 1] = (*this->dataCoords)[hi][1];
@@ -264,7 +264,7 @@ namespace morph {
                 }
             }
 
-            // Build indices based on neighbour relations in the HexGrid
+            // Build indices based on neighbour relations in the hexgrid
             // Only needs to happen *on init*. On update, this will not change :)
             if (update == false) {
                 std::size_t ind_sz = 0;
@@ -298,7 +298,7 @@ namespace morph {
                 this->computeHexes();
             }
 
-            // Optionally show some hexes to verify the hex overlap area computation (see HexGrid::shiftdata)
+            // Optionally show some hexes to verify the hex overlap area computation (see hexgrid::shiftdata)
             if (this->showoverlap == true) {
                 this->computeOverlapIndices();
             }
@@ -323,7 +323,7 @@ namespace morph {
 
             this->setupScaling();
 
-            // x and y coords on the HexGrid. May be replaced if dataCoords has been set.
+            // x and y coords on the hexgrid. May be replaced if dataCoords has been set.
             float _x = 0.0f;
             float _y = 0.0f;
             // These Ts are all floats, right?
@@ -754,7 +754,7 @@ namespace morph {
         }
 
         // Compute indices to visualise hexes that have been shifted wrt one
-        // another. Used to verify the HexGrid::shiftdata function.
+        // another. Used to verify the hexgrid::shiftdata function.
         void computeOverlapIndices()
         {
             // Show points and lines for hex overlap/shift
@@ -1146,9 +1146,9 @@ namespace morph {
             return clr;
         }
 
-        //! The HexGrid to visualize. This is not expected to change (update methods may
-        //! assume the HexGrid has remained unaltered)
-        const HexGrid* hg;
+        //! The hexgrid to visualize. This is not expected to change (update methods may
+        //! assume the hexgrid has remained unaltered)
+        const morph::hexgrid* hg;
 
         //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
         morph::vvec<float> dcopy;

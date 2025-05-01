@@ -5,9 +5,10 @@
 #include <morph/Anneal.h>
 #include <morph/vec.h>
 #include <morph/vvec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/TriFrameVisual.h>
-#include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
 #include <morph/PolygonVisual.h>
 #include <iostream>
@@ -44,7 +45,7 @@ int main()
     v.lightingEffects (true);
 
     morph::vec<float> offset = {0,0,0};
-    morph::HexGrid hg (0.01, 10, 0);
+    morph::hexgrid hg (0.01, 10, 0);
     hg.setCircularBoundary (2.5);
     std::vector<FLT> banana_vals(hg.num(), 0.0f);
     for (size_t i = 0; i < hg.num(); ++i) {

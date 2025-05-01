@@ -5,16 +5,17 @@
 #include <morph/vec.h>
 #include <morph/vvec.h>
 #include <morph/grid.h>
+#include <morph/hexgrid.h>
+
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/GridVisual.h>
-#include <morph/HexGrid.h>
 #include <morph/HexGridVisual.h>
 
 int main()
 {
-    morph::Visual v(1400, 1300, "Demo of Grid showing a resampled image");
+    morph::Visual v(1400, 1300, "Demo of grid showing a resampled image");
     v.setSceneTrans (morph::vec<float,3>({-2.60691f, 1.39885f, -11.1f}));
 
     unsigned int scaledown = 2U;
@@ -44,21 +45,21 @@ int main()
     }
 
     // Resample
-    // This allows you to expand or contract the image on the Grid.
+    // This allows you to expand or contract the image on the grid.
     morph::vec<float,2> image_scale = {1.0f, 1.0f};
-    // You can shift the image with an offset if necessary. Use the units of the target Grid/HexGrid
+    // You can shift the image with an offset if necessary. Use the units of the target grid/hexgrid
     morph::vec<float,2> image_offset = {0.0f, 0.0f};
 
     morph::vvec<float> img_resampled = g2.resample_image (image_data, dims[0], image_scale, image_offset);
 
-    // Resample to HexGrid too, for good measure
+    // Resample to hexgrid too, for good measure
     morph::vec<float, 2> g2_dx = g2.get_dx();
-    morph::HexGrid hg(g2_dx[0], g2.width()*2.0f, 0.0f);
+    morph::hexgrid hg(g2_dx[0], g2.width()*2.0f, 0.0f);
     hg.setRectangularBoundary (g2.width(), g2.height()); // Make rectangular boundary same size as g2
 
-    // Here's the HexGrid method that will resample the square pixel grid onto the hex
-    // grid Because HexGrids are not naturally rectangular, a scaling of {1,1} does not
-    // expand the image to fit the HexGrid. Instead, we scale by the width of g2, which
+    // Here's the hexgrid method that will resample the square pixel grid onto the hex
+    // grid Because hexgrids are not naturally rectangular, a scaling of {1,1} does not
+    // expand the image to fit the hexgrid. Instead, we scale by the width of g2, which
     // scales the interpreted image (which is interpreted as having width 1.0) to the
     // correct dimensions.
     morph::vec<float,2> hex_image_scale = { g2.width(), g2.width() };
@@ -82,7 +83,7 @@ int main()
     gv2->setScalarData (&img_resampled);
     gv2->cm.setType (morph::ColourMapType::GreyscaleInv);
     gv2->zScale.null_scaling();
-    gv2->addLabel ("Resampled to coarser Grid", {0, -0.2, 0}, morph::TextFeatures(0.1f));
+    gv2->addLabel ("Resampled to coarser grid", {0, -0.2, 0}, morph::TextFeatures(0.1f));
     gv2->finalize();
     v.addVisualModel (gv2);
 
@@ -91,7 +92,7 @@ int main()
     hgv->setScalarData (&hex_image_data);
     hgv->cm.setType (morph::ColourMapType::GreyscaleInv);
     hgv->zScale.null_scaling();
-    hgv->addLabel ("Resampled to HexGrid", {-g2.width() / 2.0f, -0.2f - g2.height() / 2.0f, 0}, morph::TextFeatures(0.1f));
+    hgv->addLabel ("Resampled to hexgrid", {-g2.width() / 2.0f, -0.2f - g2.height() / 2.0f, 0}, morph::TextFeatures(0.1f));
     hgv->finalize();
     v.addVisualModel (hgv);
 

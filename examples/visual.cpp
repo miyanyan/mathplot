@@ -7,10 +7,11 @@
 #include <cmath>
 
 #include <morph/vec.h>
+#include <morph/hexgrid.h>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
 #include <morph/HexGridVisual.h>
-#include <morph/HexGrid.h>
 
 int main()
 {
@@ -40,8 +41,8 @@ int main()
     v.addLabel ("This is a morph::CoordArrows object", {0.03f, -0.23f, 0.0f});
     v.addLabel ("This is a\nmorph::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
-    // Create a HexGrid to show in the scene
-    morph::HexGrid hg(0.01, 3, 0);
+    // Create a hexgrid to show in the scene
+    morph::hexgrid hg(0.01, 3, 0);
     hg.setCircularBoundary (0.3);
     std::cout << "Number of hexes in grid:" << hg.num() << std::endl;
 
@@ -51,7 +52,7 @@ int main()
         data[hi] = 0.05 + 0.05*std::sin(10*hg.d_x[hi]); // Range 0->1
     }
 
-    // Add a HexGridVisual to display the HexGrid within the morph::Visual scene
+    // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
     morph::vec<float, 3> offset = { 0.0, -0.05, 0.0 };
     auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);

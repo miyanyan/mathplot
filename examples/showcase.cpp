@@ -8,7 +8,7 @@
 
 #include <morph/GraphVisual.h>
 
-#include <morph/HexGrid.h>
+#include <morph/hexgrid.h>
 #include <morph/HexGridVisual.h>
 
 #include <morph/grid.h>
@@ -114,10 +114,10 @@ int main()
     }
 
     /*
-     * HexGrid
+     * hexgrid
      */
     {
-        morph::HexGrid hg(0.06f, 3.0f, 0.0f);
+        morph::hexgrid hg(0.06f, 3.0f, 0.0f);
         hg.setCircularBoundary (0.6f);
         // Make some dummy data (a sine wave) to make an interesting surface
         std::vector<float> data(hg.num(), 0.0f);

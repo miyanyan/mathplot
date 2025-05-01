@@ -8,7 +8,7 @@
 #include <morph/vec.h>
 #include <morph/Config.h>
 #include <morph/Hex.h>
-#include <morph/HexGrid.h>
+#include <morph/hexgrid.h>
 #ifdef VISUALISE
 # include <morph/Visual.h>
 # include <morph/VisualDataModel.h>
@@ -24,7 +24,7 @@
 typedef double F;
 
 // A global hexgrid for the locations of the objective function
-std::unique_ptr<morph::HexGrid> hg;
+std::unique_ptr<morph::hexgrid> hg;
 // And a vvec to be the data
 morph::vvec<F> obj_f;
 
@@ -36,7 +36,7 @@ void setup_objective();
 void setup_objective_boha();
 
 // Return values of the objective function. Params contains coordinates into the
-// HexGrid. Values from obj_f are returned.
+// hexgrid. Values from obj_f are returned.
 F objective (const morph::vvec<F>& params);
 F objective_boha (const morph::vvec<F>& params);
 F objective_hg (const morph::vvec<F>& params);
@@ -224,7 +224,7 @@ int main (int argc, char** argv)
               << ", num_worse_accepted: " << anneal.num_worse_accepted << " (as proportion: "
               << ((double)anneal.num_worse_accepted/(double)anneal.num_worse) << ")\n\n";
 
-    std::cout << "FINISHED in " << anneal.steps << " calls to Anneal::step() (HexGrid has " << hg->num() << " hexes).\n"
+    std::cout << "FINISHED in " << anneal.steps << " calls to Anneal::step() (hexgrid has " << hg->num() << " hexes).\n"
               << "Best parameters: " << anneal.x_best << "\n"
               << "Best params obj: " << anneal.f_x_best
               << " vs. " << obj_f.min() << ", the true obj_f.min().\n"
@@ -244,7 +244,7 @@ int main (int argc, char** argv)
 // This sets up a noisy 2D objective function with multiple peaks
 void setup_objective()
 {
-    hg = std::make_unique<morph::HexGrid>(0.01f, 1.5f, 0.0f);
+    hg = std::make_unique<morph::hexgrid>(0.01f, 1.5f, 0.0f);
     hg->setCircularBoundary(1);
     obj_f.resize (hg->num());
 
@@ -292,11 +292,11 @@ void setup_objective()
     obj_f = obj_f_a + obj_f_b + noise;
 
     // Then smooth...
-    // Create a circular HexGrid to contain the Gaussian convolution kernel
+    // Create a circular hexgrid to contain the Gaussian convolution kernel
     sigma = F{0.005};
     one_over_sigma_root_2_pi = F{1} / sigma * F{2.506628275};
     two_sigma_sq = F{2} * sigma * sigma;
-    morph::HexGrid kernel(F{0.01}, F{20}*sigma, 0);
+    morph::hexgrid kernel(F{0.01}, F{20}*sigma, 0);
     kernel.setCircularBoundary (F{6}*sigma);
     std::vector<F> kerneldata (kernel.num(), F{0});
     gauss = F{0};
@@ -311,7 +311,7 @@ void setup_objective()
     // A vector for the result
     morph::vvec<F> convolved (hg->num(), F{0});
 
-    // Call the convolution method from HexGrid:
+    // Call the convolution method from hexgrid:
     hg->convolve (kernel, kerneldata, obj_f, convolved);
 
     obj_f.swap (convolved);
@@ -324,7 +324,7 @@ void setup_objective()
 // during the anneal, we'll use the actual function values
 void setup_objective_boha()
 {
-    hg = std::make_unique<morph::HexGrid>(0.01f, 2.5f, 0.0f);
+    hg = std::make_unique<morph::hexgrid>(0.01f, 2.5f, 0.0f);
     hg->setCircularBoundary(1.2f);
     obj_f.resize (hg->num());
     F a = F{1}, b = F{2}, c=F{0.3}, d=F{0.4}, alpha=morph::mathconst<F>::three_pi, gamma=morph::mathconst<F>::four_pi;
