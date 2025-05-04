@@ -1,7 +1,8 @@
-#include "morph/BezCurve.h"
 #include <utility>
 #include <iostream>
 #include <fstream>
+
+#include <morph/bezcurve.h>
 
 using namespace std;
 using morph::BezCoord;

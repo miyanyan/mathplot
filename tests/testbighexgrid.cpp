@@ -2,17 +2,19 @@
  * Test a big hex grid with many hexes. Apply boundary as an ellipse.
  */
 
-#include "morph/Visual.h"
-#include "morph/VisualDataModel.h"
-#include "morph/HexGridVisual.h"
-#include "morph/HexGrid.h"
-#include "morph/ReadCurves.h"
-#include "morph/tools.h"
 #include <utility>
 #include <iostream>
 #include <fstream>
 #include <cmath>
-#include "morph/vec.h"
+
+#include <morph/vec.h>
+#include <morph/hexgrid.h>
+
+#include "morph/Visual.h"
+#include "morph/VisualDataModel.h"
+#include "morph/HexGridVisual.h"
+#include "morph/ReadCurves.h"
+#include "morph/tools.h"
 
 int main()
 {
@@ -22,7 +24,7 @@ int main()
     v.zNear = 0.001;
 
     try {
-        morph::HexGrid hg(0.002, 8, 0);
+        morph::hexgrid hg(0.002, 8, 0);
         hg.setEllipticalBoundary (1.6,2);
 
         std::cout << hg.extent() << std::endl;

@@ -2,12 +2,13 @@
 #include <iostream>
 #include <cmath>
 
+#include <morph/hexgrid.h>
+#include <morph/vec.h>
+
 #include "morph/Visual.h"
 #include "morph/HexGridVisual.h"
 #include "morph/ColourMap.h"
 #include "morph/tools.h"
-#include "morph/HexGrid.h"
-#include "morph/vec.h"
 
 int main (int argc, char** argv)
 {
@@ -24,7 +25,7 @@ int main (int argc, char** argv)
     std::cout << "NB: Provide a cmd line arg (anything) to see the graphical window for this program" << std::endl;
 
     try {
-        morph::HexGrid hg(0.01, 3.0f, 0.0f);
+        morph::hexgrid hg(0.01, 3.0f, 0.0f);
         hg.setEllipticalBoundary (1, 0.7);
 
         std::cout << hg.extent() << std::endl;

@@ -12,8 +12,10 @@
 #include <map>
 #include <limits>
 #include <stdexcept>
-#include <morph/Hex.h>
-#include <morph/HexGrid.h>
+
+#include <morph/hex.h>
+#include <morph/hexgrid.h>
+
 #include <morph/DirichDom.h>
 #include <morph/DirichVtx.h>
 
@@ -29,7 +31,7 @@ namespace morph {
     };
 
     /*!
-     * A helper class, containing pattern analysis code to analyse patterns within HexGrids.
+     * A helper class, containing pattern analysis code to analyse patterns within hexgrids.
      */
     template <typename Flt>
     class ShapeAnalysis
@@ -41,17 +43,17 @@ namespace morph {
          * Obtain the contours (as a vector of list<Hex>) in the scalar fields f, where threshold is
          * crossed.
          */
-        static std::vector<std::list<Hex> > get_contours (HexGrid* hg,
+        static std::vector<std::list<hex> > get_contours (hexgrid* hg,
                                                           std::vector<std::vector<Flt> >& f,
                                                           Flt threshold) {
 
             unsigned int nhex = hg->num();
             unsigned int N = f.size();
 
-            std::vector<std::list<Hex> > rtn;
+            std::vector<std::list<hex> > rtn;
             // Initialise
             for (unsigned int li = 0; li < N; ++li) {
-                std::list<Hex> lh;
+                std::list<hex> lh;
                 rtn.push_back (lh);
             }
 
@@ -107,9 +109,9 @@ namespace morph {
 
         /*!
          * Like get_contours, but returns a full hexgrid's worth of Flts instead of
-         * lists of Hexes.
+         * lists of hexes.
          */
-        static std::vector<Flt> get_contour_map (HexGrid* hg,
+        static std::vector<Flt> get_contour_map (hexgrid* hg,
                                                  std::vector<std::vector<Flt> >& f,
                                                  Flt threshold) {
 
@@ -170,7 +172,7 @@ namespace morph {
 
         //! Like get_contour_map, but no pre-normalizing and sets contours to the flag value
         //! (used by SPW in SOM model analysis steps)
-        static std::vector<Flt> get_contour_map_flag_nonorm (HexGrid* hg,std::vector<Flt> & f, Flt threshold, Flt flagVal) {
+        static std::vector<Flt> get_contour_map_flag_nonorm (hexgrid* hg,std::vector<Flt> & f, Flt threshold, Flt flagVal) {
             unsigned int nhex = hg->num();
             std::vector<Flt> rtn (nhex, 0.0);
             for (auto h : hg->hexen) {
@@ -193,7 +195,7 @@ namespace morph {
         //! Like get_contour_map, but for N vector<Flt>s in @f, return N+1 positive values in the
         //! return vector. Good for plotting contours with ColourMapType::RainbowZeroBlack or
         //! ColourMapType::RainbowZeroWhite
-        static std::vector<Flt> get_contour_map_nozero (HexGrid* hg,
+        static std::vector<Flt> get_contour_map_nozero (hexgrid* hg,
                                                         std::vector<std::vector<Flt> >& f,
                                                         Flt threshold) {
 
@@ -253,12 +255,12 @@ namespace morph {
         }
 
         /*!
-         * Take a set of variables, @f, for the given HexGrid @hg. Return a vector of Flts (again,
-         * based on the HexGrid @hg) which marks each hex with the outer index of the @f which has
+         * Take a set of variables, @f, for the given hexgrid @hg. Return a vector of Flts (again,
+         * based on the hexgrid @hg) which marks each hex with the outer index of the @f which has
          * highest value in that hex, scaled and converted to a float.
          */
         static std::vector<Flt>
-        dirichlet_regions (HexGrid* hg, std::vector<std::vector<Flt> >& f) {
+        dirichlet_regions (hexgrid* hg, std::vector<std::vector<Flt> >& f) {
             unsigned int N = f.size();
 
             // Single variable to return
@@ -282,13 +284,13 @@ namespace morph {
         }
 
         /*!
-         * @regions is a vector of a size specified in the HexGrid @hg containing N
+         * @regions is a vector of a size specified in the hexgrid @hg containing N
          * unique IDs. For each unique ID, compute the centroid of all the hexes
          * having that ID. Return a map keyed by ID, containing the coordinates of
          * each centroid.
          */
         static std::map<Flt, morph::vec<Flt, 2> >
-        region_centroids (HexGrid* hg, const std::vector<Flt>& regions) {
+        region_centroids (hexgrid* hg, const std::vector<Flt>& regions) {
             std::map<Flt, morph::vec<Flt, 2> > centroids;
             std::map<Flt, Flt> counts;
             for (unsigned int h = 0; h<regions.size(); ++h) {
@@ -305,12 +307,12 @@ namespace morph {
         }
 
         /*!
-         * A method to test the hex give by @h, which must live on the HexGrid pointed to by @hg, to
+         * A method to test the hex give by @h, which must live on the hexgrid pointed to by @hg, to
          * see if it is a Dirichlet vertex. If so, a vertex should be created in @vertices.
          */
         static void
-        vertex_test (HexGrid* hg, std::vector<Flt>& f,
-                     std::list<Hex>::iterator h, std::list<DirichVtx<Flt> >& vertices) {
+        vertex_test (hexgrid* hg, std::vector<Flt>& f,
+                     std::list<hex>::iterator h, std::list<DirichVtx<Flt> >& vertices) {
 
             // For each hex, examine its neighbours, counting number of different neighbours.
             std::set<Flt> n_ids;
@@ -420,7 +422,7 @@ namespace morph {
         /*!
          * Walk an edge between two domains. Common code used by walk_to_neighbour and walk_to_next.
          *
-         * @f The map of identities for the HexGrid @hg
+         * @f The map of identities for the hexgrid @hg
          *
          * @v The starting Dirichlet vertex at which the edge starts
          *
@@ -451,14 +453,14 @@ namespace morph {
             // side. _Initially_, point hexit at the hex that's on the inside of the domain for
             // which v is a Dirichlet vertex - v.hi. At least, this is what you do when walking OUT
             // to a neighbour vertex that's part of another domain.
-            std::list<Hex>::iterator hexit = v.hi;
+            std::list<hex>::iterator hexit = v.hi;
             // point hexit_neighb to the hexes on the edgedoms[1] side
-            std::list<Hex>::iterator hexit_neighb = v.hi;
+            std::list<hex>::iterator hexit_neighb = v.hi;
             // The first hex, inside the domain.
-            std::list<Hex>::iterator hexit_first = v.hi;
+            std::list<hex>::iterator hexit_first = v.hi;
             // Temporary hex pointers
-            std::list<Hex>::iterator hexit_next = v.hi;
-            std::list<Hex>::iterator hexit_last = v.hi;
+            std::list<hex>::iterator hexit_next = v.hi;
+            std::list<hex>::iterator hexit_last = v.hi;
 
             // Set true when we find the partner vertex.
             bool partner_found = false;
@@ -485,7 +487,7 @@ namespace morph {
                         Flt y_ = hexit_first->get_neighbour(i)->y - v_init[1];
                         Flt distance = sqrt (x_*x_ + y_*y_);
                         if constexpr (dbg) { std::cout << "vertex to hex-centre distance: " << distance << std::endl; }
-                        if constexpr (dbg) { std::cout << "HexGrid long radius distance: " << hexit_first->getLR() << std::endl; }
+                        if constexpr (dbg) { std::cout << "hexgrid long radius distance: " << hexit_first->getLR() << std::endl; }
                         bool correct_distance = distance-hexit_first->getLR() < 0.001 ? true : false;
                         if (correct_distance) {
                             if (f[hexit_first->get_neighbour(i)->vi] != edgedoms[1]
@@ -795,9 +797,9 @@ namespace morph {
         }
 
         /*!
-         * Walk out to the next vertex from vertx @v on HexGrid @hg for which identities are in @f.
+         * Walk out to the next vertex from vertx @v on hexgrid @hg for which identities are in @f.
          *
-         * @hg The HexGrid on which the action takes place
+         * @hg The hexgrid on which the action takes place
          *
          * @f The identity variable.
          *
@@ -849,7 +851,7 @@ namespace morph {
          * vertices so that @domain can be stored, reset and the next Dirichlet domain can be found.
          */
         static bool
-        process_domain (HexGrid* hg, std::vector<Flt>& f,
+        process_domain (hexgrid* hg, std::vector<Flt>& f,
                         typename std::list<DirichVtx<Flt>>::iterator dv,
                         std::list<DirichVtx<Flt>>& vertices,
                         DirichDom<Flt>& domain,
@@ -936,21 +938,21 @@ namespace morph {
 
         /*!
          * Determine the locations of the vertices on a Hex grid which are surrounded by three
-         * different values of @f. @f is indexed by the HexGrid @hg. Return a list containing lists
+         * different values of @f. @f is indexed by the hexgrid @hg. Return a list containing lists
          * of the vertices, each of which define a domain.
          */
         static std::list<DirichDom<Flt>>
-        dirichlet_vertices (HexGrid* hg, std::vector<Flt>& f, std::list<DirichVtx<Flt>>& vertices) {
+        dirichlet_vertices (hexgrid* hg, std::vector<Flt>& f, std::list<DirichVtx<Flt>>& vertices) {
 
             // 1. Go though and find a list of all vertices, in no particular order.  This will
             // lead to duplications because >1 domain for a given ID, f, is possible early in
             // simulations. From this list, I can find vertex sets, whilst deleting from the list
             // until it is empty, and know that I will have discovered all the domain vertex sets.
             // list<DirichVtx<Flt> > vertices;
-            std::list<Hex>::iterator h = hg->hexen.begin();
+            std::list<hex>::iterator h = hg->hexen.begin();
             while (h != hg->hexen.end()) {
                 vertex_test (hg, f, h, vertices);
-                // Move on to the next Hex in hexen
+                // Move on to the next hex in hexen
                 ++h;
             }
 

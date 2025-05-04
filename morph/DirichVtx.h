@@ -8,13 +8,13 @@
  */
 #pragma once
 
-#include <morph/mathconst.h>
 #include <cmath>
 #include <limits>
 #include <list>
 #include <string>
-#include <morph/HexGrid.h>
-#include <morph/HdfData.h>
+#include <morph/mathconst.h>
+#include <morph/hexgrid.h>
+#include <morph/hdfdata.h>
 
 namespace morph {
 
@@ -77,12 +77,12 @@ namespace morph {
         morph::vec<Flt, 2> neighb = { Flt{0}, Flt{0} };
 
         /*!
-         * An iterator into the accompanying list of Hexes. Intended to be an iterator into
-         * HexGrid::hexen. This points to the hex containing the vertex that is this
+         * An iterator into the accompanying list of hexes. Intended to be an iterator into
+         * hexgrid::hexen. This points to the hex containing the vertex that is this
          * DirichVtx. Important so that from one DirichVtx, we can find our way along an edge to
          * the next vertex.
          */
-        std::list<Hex>::iterator hi;
+        std::list<hex>::iterator hi;
 
         /*!
          * P_i is a point on the line. In this code, I project A_i+1 onto the line to find the
@@ -108,19 +108,19 @@ namespace morph {
 
         /*!
          * Construct with passed in Flt coord, set the threshold on the basis of being passed in
-         * the Hex to Hex distance d.
+         * the hex to hex distance d.
          */
         DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d)
             : v(p)
         {
             // This is half of the shortest possible distance in the y direction between two
-            // adjacent Hex vertices.
+            // adjacent hex vertices.
             this->threshold = d/(4.0f*morph::mathconst<float>::sqrt_of_3);
         }
 
         /*!
          * Construct with passed in Flt pair; set the threshold on the basis of being passed in
-         * the Hex to Hex distance d and also set the value of the vertex to be @id
+         * the hex to hex distance d and also set the value of the vertex to be @id
          */
         DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d, const Flt& id)
             : v(p), f(id)
@@ -130,7 +130,7 @@ namespace morph {
 
         /*!
          * Construct with passed in Flt pair; set the threshold on the basis of being passed in
-         * the Hex to Hex distance d, set the value of the vertex to be @id and finally, set
+         * the hex to hex distance d, set the value of the vertex to be @id and finally, set
          * this->neighb (with @oth).
          */
         DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d, const Flt& id, const morph::vec<Flt, 2>& oth)
@@ -141,11 +141,11 @@ namespace morph {
 
         /*!
          * Construct with passed in Flt pair; set the threshold on the basis of being passed in
-         * the Hex to Hex distance d, set the value of the vertex to be @id, set this->neighb
-         * (with @oth) and finally, set the list<Hex> iterator @hex.
+         * the hex to hex distance d, set the value of the vertex to be @id, set this->neighb
+         * (with @oth) and finally, set the list<hex> iterator @hex.
          */
         DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d, const Flt& id,
-                   const morph::vec<Flt, 2>& oth, const std::list<Hex>::iterator hex)
+                   const morph::vec<Flt, 2>& oth, const std::list<hex>::iterator hex)
             : v(p), f(id), neighb(oth), hi(hex) {
             this->threshold = d/(4.0f*morph::mathconst<float>::sqrt_of_3);
         }
@@ -297,7 +297,7 @@ namespace morph {
         }
 
         //! Save data from the DirichVtx. Not saving ALL members of this class (e.g. omitting threshold)
-        void save (HdfData& data, const std::string& pathroot) const
+        void save (hdfdata& data, const std::string& pathroot) const
         {
             std::string p("");
             p = pathroot + "/v";

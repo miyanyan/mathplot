@@ -1,9 +1,11 @@
-#include <morph/vec.h>
-#include <morph/tools.h>
-#include <morph/ColourMap.h>
 #include <utility>
 #include <iostream>
-#include <morph/HexGrid.h>
+
+#include <morph/vec.h>
+#include <morph/hexgrid.h>
+
+#include <morph/tools.h>
+#include <morph/ColourMap.h>
 #include <morph/ReadCurves.h>
 #include <morph/Visual.h>
 #include <morph/HexGridVisual.h>
@@ -16,7 +18,7 @@ int main()
         std::string curvepath = "../../tests/trialmod.svg";
         morph::ReadCurves r(curvepath);
 
-        morph::HexGrid hg(0.02, 7, 0);
+        morph::hexgrid hg(0.02, 7, 0);
         hg.setBoundary (r.getCorticalPath());
 
         std::cout << hg.extent() << std::endl;

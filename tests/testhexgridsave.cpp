@@ -1,6 +1,6 @@
 // include HexGrid with the optional load() and save() methods
 #define HEXGRID_COMPILE_LOAD_AND_SAVE 1
-#include <morph/HexGrid.h>
+#include <morph/hexgrid.h>
 
 #include <morph/ReadCurves.h>
 #include <morph/tools.h>
@@ -19,14 +19,14 @@ int main()
     unsigned int hexnum = 0;
 
     cout << "Start " << tools::timeNow() << endl;
-    // Create and then write a HexGrid
+    // Create and then write a hexgrid
     try {
         string pwd = tools::getPwd();
         string curvepath = "../../tests/trial.svg";
 
         ReadCurves r(curvepath);
 
-        HexGrid hg(0.01, 3, 0);
+        hexgrid hg(0.01, 3, 0);
         hg.setBoundary (r.getCorticalPath());
 
         cout << hg.extent() << endl;
@@ -45,15 +45,15 @@ int main()
     cout << "Generated " << tools::timeNow() << endl;
     // Now read it back
     try {
-        HexGrid hg("../trialhexgrid.h5");
+        hexgrid hg("../trialhexgrid.h5");
 
         cout << "Read " << tools::timeNow() << endl;
 
         // Make sure read-in grid has same number of hexes as the generated one.
         if (hexnum != hg.num()) { rtn = -1; }
 
-        // Create a HexGrid Visual
-        morph::Visual v(1600, 1000, "HexGrid");
+        // Create a hexgrid Visual
+        morph::Visual v(1600, 1000, "hexgrid");
         v.lightingEffects();
         morph::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);

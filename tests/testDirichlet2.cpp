@@ -6,15 +6,16 @@
 //
 
 #include <iostream>
-
-#include <morph/HexGrid.h>
-#include <morph/ReadCurves.h>
-#include <morph/tools.h>
-#include <morph/ColourMap.h>
 #include <vector>
 #include <list>
 #include <array>
 #include <stdexcept>
+
+#include <morph/hexgrid.h>
+
+#include <morph/ReadCurves.h>
+#include <morph/tools.h>
+#include <morph/ColourMap.h>
 #include <morph/ShapeAnalysis.h>
 #include <morph/Visual.h>
 #include <morph/PolygonVisual.h>
@@ -26,7 +27,7 @@ int main()
 {
     int rtn = 0;
     try {
-        HexGrid hg(0.2, 1, 0);
+        hexgrid hg(0.2, 1, 0);
 
         hg.setBoundaryOnOuterEdge();
 
