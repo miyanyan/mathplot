@@ -6,6 +6,8 @@
 #include <vector>
 #include <cmath>
 
+#include <sm/vec>
+
 #include <morph/Visual.h>
 #include <morph/ColourMap.h>
 #include <morph/CyclicColourVisual.h>
@@ -17,13 +19,13 @@ int main()
     morph::Visual v(1600, 1000, titlestr);
     v.backgroundBlack();
 
-    morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // TextFeatures is a nice way to specify font size, colour (and other things) for your addLabel() calls.
     morph::TextFeatures tf (0.5f, morph::colour::white);
 
     // HSVWHeel for Grid1
-    morph::vec<float, 3> woffset = offset;
+    sm::vec<float, 3> woffset = offset;
     auto hsvw_vis = std::make_unique<morph::CyclicColourVisual<float>>(woffset);
     v.bindmodel (hsvw_vis);
     hsvw_vis->setColour (morph::colour::white);

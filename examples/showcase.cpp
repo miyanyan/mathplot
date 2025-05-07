@@ -1,19 +1,15 @@
 // A showcase of different visual models
 
-#include <morph/vvec.h>
-#include <morph/mathconst.h>
+#include <sm/vvec>
+#include <sm/mathconst>
+#include <sm/hexgrid>
+#include <sm/grid>
+
 #include <morph/loadpng.h>
-
 #include <morph/Visual.h>
-
 #include <morph/GraphVisual.h>
-
-#include <morph/hexgrid.h>
 #include <morph/HexGridVisual.h>
-
-#include <morph/grid.h>
 #include <morph/GridVisual.h>
-
 #include <morph/TriaxesVisual.h>
 #include <morph/ScatterVisual.h>
 
@@ -59,7 +55,7 @@ struct izhi
     }
 
     // Compute nullclines. For Vn, the given input membrane voltages, return u and v nullclines in u_nc and v_nc
-    void nullclines (const morph::vvec<float>& Vn, morph::vvec<float>& u_nc,  morph::vvec<float>& v_nc)
+    void nullclines (const sm::vvec<float>& Vn, sm::vvec<float>& u_nc,  sm::vvec<float>& v_nc)
     {
         u_nc.resize (Vn.size(), 0.0f);
         v_nc.resize (Vn.size(), 0.0f);
@@ -70,8 +66,8 @@ struct izhi
     }
 
     // Compute the vectorfield of du and dv vs. u and v
-    void vectorfield (const morph::vvec<float>& _u, const morph::vvec<float>& _v,
-                      morph::vvec<morph::vec<float, 2>>& vecfield)
+    void vectorfield (const sm::vvec<float>& _u, const sm::vvec<float>& _v,
+                      sm::vvec<sm::vec<float, 2>>& vecfield)
     {
         if (_u.size() != _v.size()) { return; }
         vecfield.resize (_u.size() * _v.size(), {0,0});
@@ -89,18 +85,18 @@ int main()
     namespace uc = morph::unicode;
 
     morph::Visual v(1920, 1080, "morphologica showcase");
-    v.setSceneTrans (morph::vec<float,3>({1.30124f, -0.730136f, -8.2f}));
+    v.setSceneTrans (sm::vec<float,3>({1.30124f, -0.730136f, -8.2f}));
     v.lightingEffects();
 
     /*
      * GraphVisual show-off
      */
     {
-        auto gv1 = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({0,1,0}));
+        auto gv1 = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,1,0}));
         v.bindmodel (gv1);
         gv1->axisstyle = morph::axisstyle::twinax;
         gv1->setsize (1.6, 1.6);
-        morph::vvec<double> x;
+        sm::vvec<double> x;
         x.linspace (-0.5, 0.8, 14);
         std::string ds1legend = uc::toUtf8 (uc::alpha) + "(x) = x" + uc::toUtf8 (uc::ss3);
         gv1->setdata (x, x.pow(3), ds1legend);
@@ -108,7 +104,7 @@ int main()
         std::string ds2legend = uc::toUtf8 (uc::beta) + "(x) = 100x" + uc::toUtf8 (uc::ss2);
         gv1->setdata (x, x.pow(2)*100, ds2legend, morph::axisside::right);
         gv1->ylabel2 = uc::toUtf8 (uc::beta);
-        gv1->addLabel ("morph::GraphVisual with morph::axisstyle::twinax", morph::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
+        gv1->addLabel ("morph::GraphVisual with morph::axisstyle::twinax", sm::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
         gv1->finalize();
         v.addVisualModel (gv1);
     }
@@ -117,19 +113,19 @@ int main()
      * hexgrid
      */
     {
-        morph::hexgrid hg(0.06f, 3.0f, 0.0f);
+        sm::hexgrid hg(0.06f, 3.0f, 0.0f);
         hg.setCircularBoundary (0.6f);
         // Make some dummy data (a sine wave) to make an interesting surface
         std::vector<float> data(hg.num(), 0.0f);
         for (unsigned int ri=0; ri<hg.num(); ++ri) {
             data[ri] = 0.05f + 0.15f*std::sin(10.0f*hg.d_x[ri]) * std::sin(1.8f*hg.d_y[ri]) ; // Range 0->1
         }
-        auto hgv = std::make_unique<morph::HexGridVisual<float,morph::gl::version_4_1>>(&hg, morph::vec<float>({-2,-0.5,0}));
+        auto hgv = std::make_unique<morph::HexGridVisual<float,morph::gl::version_4_1>>(&hg, sm::vec<float>({-2,-0.5,0}));
         v.bindmodel (hgv);
         hgv->setScalarData (&data);
         hgv->cm.setType (morph::ColourMapType::Inferno);
         hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or morph::HexVisMode::Triangles for a smoother surface plot
-        hgv->addLabel ("morph::HexGridVisual", morph::vec<float>({0,-0.7,0}), morph::TextFeatures(0.05));
+        hgv->addLabel ("morph::HexGridVisual", sm::vec<float>({0,-0.7,0}), morph::TextFeatures(0.05));
         hgv->finalize();
         v.addVisualModel (hgv);
     }
@@ -140,8 +136,8 @@ int main()
     {
         // Create a grid to show in the scene
         constexpr unsigned int Nside = 20;
-        constexpr morph::vec<float, 2> grid_spacing = {0.05f, 0.05f};
-        morph::grid grid(Nside, Nside, grid_spacing);
+        constexpr sm::vec<float, 2> grid_spacing = {0.05f, 0.05f};
+        sm::grid grid(Nside, Nside, grid_spacing);
         // Data
         std::vector<float> data(grid.n(), 0.0);
         for (unsigned int ri=0; ri<grid.n(); ++ri) {
@@ -150,13 +146,13 @@ int main()
             float y = coord[1];
             data[ri] = 0.02f * std::exp (x) * std::exp (2*(y));
         }
-        morph::vec<float, 3> offset = { -1.1f, -1.0f, 0.0f };
+        sm::vec<float, 3> offset = { -1.1f, -1.0f, 0.0f };
         auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
         v.bindmodel (gv);
         gv->gridVisMode = morph::GridVisMode::Columns;
         gv->setScalarData (&data);
         gv->cm.setType (morph::ColourMapType::Twilight);
-        gv->addLabel ("morph::GridVisual", morph::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
+        gv->addLabel ("morph::GridVisual", sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
         gv->finalize();
         v.addVisualModel (gv);
     }
@@ -165,33 +161,33 @@ int main()
      * GridVisual showing image
      */
     {
-        morph::vec<float, 2> dx = { 0.005f, 0.005f };
-        morph::vec<float, 2> nul = { 0.0f, 0.0f };
-        morph::grid g2(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // Triangles, BLTR
-                       morph::gridorder::bottomleft_to_topright);
+        sm::vec<float, 2> dx = { 0.005f, 0.005f };
+        sm::vec<float, 2> nul = { 0.0f, 0.0f };
+        sm::grid g2(256U, 65U, dx, nul, sm::griddomainwrap::horizontal, // Triangles, BLTR
+                    sm::gridorder::bottomleft_to_topright);
         // Load an image
         std::string fn = "../examples/bike256_65.png";
-        morph::vvec<float> image_data;
-        morph::loadpng (fn, image_data, morph::vec<bool, 2>({false,true}));
+        sm::vvec<float> image_data;
+        morph::loadpng (fn, image_data, sm::vec<bool, 2>({false,true}));
 
         // Now visualise with a GridVisual
-        auto gv2 = std::make_unique<morph::GridVisual<float>>(&g2, morph::vec<float>({0.2,-0.5,0}));
+        auto gv2 = std::make_unique<morph::GridVisual<float>>(&g2, sm::vec<float>({0.2,-0.5,0}));
         v.bindmodel (gv2);
         gv2->gridVisMode = morph::GridVisMode::Pixels;
         gv2->setScalarData (&image_data);
         gv2->cm.setType (morph::ColourMapType::GreyscaleInv);
         gv2->zScale.null_scaling();
-        gv2->addLabel ("morph::GridVisual (flat, pixels)", morph::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
+        gv2->addLabel ("morph::GridVisual (flat, pixels)", sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
         gv2->finalize();
         v.addVisualModel (gv2);
-        auto gv3 = std::make_unique<morph::GridVisual<float>>(&g2, morph::vec<float>({0.2,-1,0}));
+        auto gv3 = std::make_unique<morph::GridVisual<float>>(&g2, sm::vec<float>({0.2,-1,0}));
         v.bindmodel (gv3);
         gv3->gridVisMode = morph::GridVisMode::Columns;
         gv3->interpolate_colour_sides (true);
         gv3->setScalarData (&image_data);
         gv3->cm.setType (morph::ColourMapType::Plasma);
         gv3->zScale.setParams (0.1, 0); // Reduce height in 'z'
-        gv3->addLabel ("morph::GridVisual (columns)", morph::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
+        gv3->addLabel ("morph::GridVisual (columns)", sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
         gv3->finalize();
         v.addVisualModel (gv3);
     }
@@ -204,14 +200,14 @@ int main()
      * ScatterVisual (with axes)
      */
     // First the Triaxes:
-    auto scat_offs = morph::vec<float>({-4,-1.0,0});
+    auto scat_offs = sm::vec<float>({-4,-1.0,0});
     auto tav = std::make_unique<morph::TriaxesVisual<float>>(scat_offs);
     v.bindmodel (tav);
     tav->axisstyle = morph::axisstyle::L;
     // Specify axes min and max with a min and max vector
     //                                         x      y       z
-    tav->input_min = morph::vec<float, 3>({ -1.0f,  0.0f,   0.0f });
-    tav->input_max = morph::vec<float, 3>({  1.0f, 10.0f, 100.0f });
+    tav->input_min = sm::vec<float, 3>({ -1.0f,  0.0f,   0.0f });
+    tav->input_max = sm::vec<float, 3>({  1.0f, 10.0f, 100.0f });
     // Set the axis labels
     tav->xlabel = "x";
     tav->ylabel = "y";
@@ -221,8 +217,8 @@ int main()
     // Second the scatter vis:
     auto sv = std::make_unique<morph::ScatterVisual<float>> (scat_offs);
     v.bindmodel (sv);
-    morph::vvec<morph::vec<float, 3>> points(20*20);
-    morph::vvec<float> data(20*20);
+    sm::vvec<sm::vec<float, 3>> points(20*20);
+    sm::vvec<float> data(20*20);
     sv->setDataCoords (&points);
     sv->setScalarData (&data);
     sv->radiusFixed = 0.03f;
@@ -237,8 +233,8 @@ int main()
     constexpr bool twodee = true;
 
     // Perform an Izhikevich neuron model simulation
-    morph::vvec<float> _u(N, 0.0f);
-    morph::vvec<float> _v(N, 0.0f);
+    sm::vvec<float> _u(N, 0.0f);
+    sm::vvec<float> _v(N, 0.0f);
     izhi iz;
     for (unsigned int i = 0; i < N; ++i) {
         iz.step();
@@ -246,9 +242,9 @@ int main()
         _u[i] = iz.u;
     }
     // Compute nullclines
-    morph::vvec<float> u_nc;
-    morph::vvec<float> v_nc;
-    morph::vvec<float> vrng;
+    sm::vvec<float> u_nc;
+    sm::vvec<float> v_nc;
+    sm::vvec<float> vrng;
     vrng.linspace (-80.0f, -20.0f, 1000);
     iz.nullclines (vrng, u_nc, v_nc);
     // Compute du/dv vector field
@@ -257,21 +253,21 @@ int main()
     constexpr float umax = -3.6f;
     constexpr float vmin = -80.0f;
     constexpr float vmax = -20.0f;
-    morph::vvec<float> qurng; // y axis
-    morph::vvec<float> qvrng; // x axis
+    sm::vvec<float> qurng; // y axis
+    sm::vvec<float> qvrng; // x axis
     qvrng.linspace (vmin, vmax, qN);
     qurng.linspace (umin, umax, qN);
-    morph::vvec<morph::vec<float, 2>> du_dv_vecfield;
+    sm::vvec<sm::vec<float, 2>> du_dv_vecfield;
     iz.vectorfield (qurng, qvrng, du_dv_vecfield);
-    morph::vec<float, 2> gridspacing = {
+    sm::vec<float, 2> gridspacing = {
         (vmax - vmin) / (qN-1),
         (umax - umin) / (qN-1)
     };
-    morph::vec<float, 2> gridzero = { vmin, umin };
-    morph::grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
+    sm::vec<float, 2> gridzero = { vmin, umin };
+    sm::grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
 
     // Visualize results
-    morph::vvec<float> t(N, 0.0f);
+    sm::vvec<float> t(N, 0.0f);
     t.linspace (0.0f, N/100.0f, N);
 
     // Set default dataset graphing styles
@@ -282,8 +278,8 @@ int main()
     ds.markerstyle = morph::markerstyle::uphexagon;
 
     // Graph membrane voltage vs. time
-    morph::vec<float> izoff = {-4, 1, 0};
-    auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0})+izoff);
+    sm::vec<float> izoff = {-4, 1, 0};
+    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0})+izoff);
     v.bindmodel (gv);
     gv->twodimensional = twodee;
     gv->setsize (1,0.8);
@@ -293,11 +289,11 @@ int main()
     ds.markerstyle = morph::markerstyle::diamond;
     gv->setdata (t, _v, ds);
     gv->finalize();
-    gv->addLabel ("using morph::stylepolicy::both\nand morph::markerstyle::diamond", morph::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
+    gv->addLabel ("using morph::stylepolicy::both\nand morph::markerstyle::diamond", sm::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
     v.addVisualModel (gv);
 
     // Graph u(t)
-    auto gu = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,1.1,0})+izoff);
+    auto gu = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,1.1,0})+izoff);
     v.bindmodel (gu);
     gu->twodimensional = twodee;
     gu->setsize (1,0.5);
@@ -308,13 +304,13 @@ int main()
     ds.linecolour = morph::colour::crimson;
     ds.markerstyle = morph::markerstyle::uphexagon;
     gu->setdata (t, _u, ds);
-    gu->addLabel ("using morph::stylepolicy::both\nand morph::markerstyle::diamond", morph::vec<float>({0.3,0.6,0}), morph::TextFeatures(0.05));
+    gu->addLabel ("using morph::stylepolicy::both\nand morph::markerstyle::diamond", sm::vec<float>({0.3,0.6,0}), morph::TextFeatures(0.05));
     gu->finalize();
     v.addVisualModel (gu);
 
     // Graph nullclines, u vs v and vector field
     ds.showlines = false;
-    auto gp = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({1.5,0,0})+izoff);
+    auto gp = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({1.5,0,0})+izoff);
     v.bindmodel (gp);
     gp->twodimensional = twodee;
     gp->setsize (1.6, 1.6);
@@ -342,7 +338,7 @@ int main()
     ds.markerstyle = morph::markerstyle::quiver;
     gp->setdata (grid, du_dv_vecfield, ds);
     gp->finalize();
-    gp->addLabel ("using morph::markerstyle::quiver", morph::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
+    gp->addLabel ("using morph::markerstyle::quiver", sm::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
     v.addVisualModel (gp);
 
     /*
@@ -357,7 +353,7 @@ int main()
                 float x = 0.1f*i + 0.1f;
                 float y = 0.1f*j;
                 // z is some function of x, y
-                float z = std::sin(q*morph::mathconst<float>::pi/100.0f) * x * std::exp(-(x*x) - (y*y));
+                float z = std::sin (q * sm::mathconst<float>::pi / 100.0f) * x * std::exp(-(x * x) - (y * y));
                 points[k] = {x, y, z};
                 data[k] = z;
                 k++;

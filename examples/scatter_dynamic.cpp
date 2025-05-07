@@ -1,16 +1,19 @@
 /*
  * A dynamic, updating version of the scatter plot example
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
 #include <iostream>
+
+#include <sm/mathconst>
+#include <sm/vec>
+#include <sm/vvec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/ScatterVisual.h>
 
 int main()
 {
@@ -21,13 +24,13 @@ int main()
     // Set a blueish background:
     v.bgcolour = {0.6f, 0.6f, 0.8f, 0.5f};
     v.lightingEffects();
-    morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+    sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
 
     // Do the initial set up of the ScatterVisual object
     auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
     v.bindmodel (sv);
-    morph::vvec<morph::vec<float, 3>> points(20*20);
-    morph::vvec<float> data(20*20);
+    sm::vvec<sm::vec<float, 3>> points(20*20);
+    sm::vvec<float> data(20*20);
     sv->setDataCoords (&points);
     sv->setScalarData (&data);
     sv->radiusFixed = 0.03f;
@@ -43,7 +46,7 @@ int main()
     // is then passed into the morph::ColourMap. With the right scaling, we get the full
     // range of colours in the colour map. compute_scaling() is the easiest way to do
     // this - you just pass in the min and max of the expected range. colourScale is an
-    // object of type morph::Scale.
+    // object of type sm::scale.
     svp->colourScale.compute_scaling (-0.45f, 0.45f);
 
     unsigned int q = 0;
@@ -54,7 +57,7 @@ int main()
                 float x = 0.1f*i + 0.1f;
                 float y = 0.1f*j;
                 // z is some function of x, y
-                float z = std::sin(q*morph::mathconst<float>::pi/100.0f) * x * std::exp(-(x*x) - (y*y));
+                float z = std::sin (q * sm::mathconst<float>::pi / 100.0f) * x * std::exp (-(x * x) - (y * y));
                 points[k] = {x, y, z};
                 data[k] = z;
                 k++;

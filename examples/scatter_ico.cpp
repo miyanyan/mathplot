@@ -4,18 +4,20 @@
  * triangles for the faces and another set of scatter plot spheres for the face centres.
  */
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
-#include <morph/TriangleVisual.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/geometry.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
+
+#include <sm/scale>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/geometry>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/ScatterVisual.h>
+#include <morph/TriangleVisual.h>
 
 int main()
 {
@@ -25,20 +27,20 @@ int main()
     v.showCoordArrows (true);
     v.lightingEffects();
 
-    morph::geometry::polyhedron<float> ico = morph::geometry::icosahedron<float>();
+    sm::geometry::polyhedron<float> ico = sm::geometry::icosahedron<float>();
 
     // Coordinates of face centres
-    morph::vvec<morph::vec<float, 3>> fcentres(20, {0.0, 0.0, 0.0});
+    sm::vvec<sm::vec<float, 3>> fcentres(20, {0.0, 0.0, 0.0});
     for (unsigned int i = 0; i < 20; ++i) {
         fcentres[i] = (ico.vertices[ico.faces[i][0]] + ico.vertices[ico.faces[i][1]] + ico.vertices[ico.faces[i][2]]).as_float() / 3.0f;
     }
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-        morph::scale<float, float> scale;
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::scale<float, float> scale;
         scale.setParams (1.0, 0.0);
 
-        morph::vvec<float> data(12, 0.06f);
-        morph::vvec<float> data2(20, 0.95f);
+        sm::vvec<float> data(12, 0.06f);
+        sm::vvec<float> data2(20, 0.95f);
 
         auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
         v.bindmodel (sv);

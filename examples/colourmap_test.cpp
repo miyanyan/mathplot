@@ -10,10 +10,11 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
+#include <sm/vec>
+#include <sm/grid>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
-#include <morph/grid.h>
 #include <morph/GridVisual.h>
 
 int main()
@@ -25,8 +26,8 @@ int main()
     constexpr unsigned int Nside_h = 32;
     constexpr float barw = 2.56f;
     constexpr float barh = 0.5f;
-    constexpr morph::vec<float, 2> grid_spacing = {barw/static_cast<float>(Nside_w), barh/static_cast<float>(Nside_h)};
-    morph::grid grid(Nside_w, Nside_h, grid_spacing);
+    constexpr sm::vec<float, 2> grid_spacing = {barw/static_cast<float>(Nside_w), barh/static_cast<float>(Nside_h)};
+    sm::grid grid(Nside_w, Nside_h, grid_spacing);
 
     // Our data is a ramp with a sine wave embossed on it
     std::vector<float> data(grid.n(), 0.0);
@@ -55,7 +56,7 @@ int main()
     cmtypes.push_back (morph::ColourMapType::MonovalBlue);
 
     float step = 0.6f;
-    morph::vec<float, 3> offset = { -step * grid.width(), -step * grid.height(), 0.0f };
+    sm::vec<float, 3> offset = { -step * grid.width(), -step * grid.height(), 0.0f };
     for (auto cmtype : cmtypes) {
         auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
         v.bindmodel (gv);
@@ -63,7 +64,7 @@ int main()
         gv->setScalarData (&data);
         gv->cm.setType (cmtype);
         gv->zScale.null_scaling();
-        gv->addLabel (gv->cm.getTypeStr(), morph::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05f));
+        gv->addLabel (gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05f));
         gv->finalize();
         v.addVisualModel (gv);
         offset[1] -= grid.height() * 1.35;

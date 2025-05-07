@@ -5,11 +5,13 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <morph/scale.h>
-#include <morph/vec.h>
+
+#include <sm/scale>
+#include <sm/vec>
+#include <sm/grid>
+
 #include <morph/Visual.h>
 #include <morph/ColourBarVisual.h>
-#include <morph/grid.h>
 #include <morph/GridVisual.h>
 
 int main()
@@ -17,12 +19,12 @@ int main()
     // Contructor args are width, height, title
     std::string title_str = "ColourMaps, misc";
     morph::Visual v(1500, 750, title_str);
-    v.setSceneTrans (morph::vec<float,3>{ float{-1.6529}, float{0.232221}, float{-3.6} });
+    v.setSceneTrans (sm::vec<float,3>{ float{-1.6529}, float{0.232221}, float{-3.6} });
 
-    morph::scale<float> scale1;
+    sm::scale<float> scale1;
     scale1.compute_scaling (0, 1); // Simply maps 0->1 to 0->1!
 
-    morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // 1D maps
     std::vector<morph::ColourMapType> cmap_types;
@@ -90,10 +92,10 @@ int main()
 
     constexpr float pw = 0.03f; // pixel width
     constexpr int N = 20;
-    constexpr morph::vec<float, 2> grid_spacing = { pw, pw };
-    morph::grid grid(N, N, grid_spacing);
+    constexpr sm::vec<float, 2> grid_spacing = { pw, pw };
+    sm::grid grid(N, N, grid_spacing);
     // Dummy data encodes 2D data
-    std::vector<morph::vec<float, 3>> data(grid.n());
+    std::vector<sm::vec<float, 3>> data(grid.n());
     for (int j = 0; j < grid.n(); ++j) {
         data[j] = (grid[j] / (N * pw)).plus_one_dim();
     }

@@ -2,9 +2,9 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/grid.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/grid>
 
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
@@ -15,32 +15,32 @@ int main()
 {
     morph::Visual v(1600, 1000, "Demo of Grid showing an image");
 
-    morph::vec<float, 2> dx = { 0.02f, 0.02f };
-    morph::vec<float, 2> nul = { 0.0f, 0.0f };
+    sm::vec<float, 2> dx = { 0.02f, 0.02f };
+    sm::vec<float, 2> nul = { 0.0f, 0.0f };
     // Top left to bottom right order matches image loaded by loadpng and avoids the need for a
     // vec<bool, 2> flip arg to morph::loadpng.
-    morph::grid g1(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // Triangles, TLBR
-                   morph::gridorder::topleft_to_bottomright);
+    sm::grid g1(256U, 65U, dx, nul, sm::griddomainwrap::horizontal, // Triangles, TLBR
+                sm::gridorder::topleft_to_bottomright);
 
-    morph::grid g2(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // Triangles, BLTR
-                   morph::gridorder::bottomleft_to_topright);
+    sm::grid g2(256U, 65U, dx, nul, sm::griddomainwrap::horizontal, // Triangles, BLTR
+                sm::gridorder::bottomleft_to_topright);
 
-    morph::grid g3(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // RectInterp TLBR
-                   morph::gridorder::topleft_to_bottomright);
+    sm::grid g3(256U, 65U, dx, nul, sm::griddomainwrap::horizontal, // RectInterp TLBR
+                sm::gridorder::topleft_to_bottomright);
 
-    morph::grid g4(256U, 65U, dx, nul, morph::griddomainwrap::horizontal, // RectInterp, BLTR
-                   morph::gridorder::bottomleft_to_topright);
+    sm::grid g4(256U, 65U, dx, nul, sm::griddomainwrap::horizontal, // RectInterp, BLTR
+                sm::gridorder::bottomleft_to_topright);
 
     // Load an image
     std::string fn = "../examples/bike256_65.png";
-    morph::vvec<float> image_data_tlbr;
-    morph::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data_tlbr, morph::vec<bool, 2>{false,false});
-    morph::vvec<float> image_data_bltr;
+    sm::vvec<float> image_data_tlbr;
+    sm::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data_tlbr, sm::vec<bool, 2>{false,false});
+    sm::vvec<float> image_data_bltr;
     dims = morph::loadpng (fn, image_data_bltr);
     std::cout << "Image dims: " << dims << std::endl;
 
     // Now visualise with a GridVisual
-    auto gv1 = std::make_unique<morph::GridVisual<float>>(&g1, morph::vec<float>({0,0,0}));
+    auto gv1 = std::make_unique<morph::GridVisual<float>>(&g1, sm::vec<float>({0,0,0}));
     v.bindmodel (gv1);
     gv1->gridVisMode = morph::GridVisMode::Triangles;
     gv1->setScalarData (&image_data_tlbr);
@@ -49,7 +49,7 @@ int main()
     gv1->finalize();
     v.addVisualModel (gv1);
 
-    auto gv2 = std::make_unique<morph::GridVisual<float>>(&g2, morph::vec<float>({6,0,0}));
+    auto gv2 = std::make_unique<morph::GridVisual<float>>(&g2, sm::vec<float>({6,0,0}));
     v.bindmodel (gv2);
     gv2->gridVisMode = morph::GridVisMode::Triangles;
     gv2->setScalarData (&image_data_bltr);
@@ -58,7 +58,7 @@ int main()
     gv2->finalize();
     v.addVisualModel (gv2);
 
-    auto gv3 = std::make_unique<morph::GridVisual<float>>(&g3, morph::vec<float>({0,1.6,0}));
+    auto gv3 = std::make_unique<morph::GridVisual<float>>(&g3, sm::vec<float>({0,1.6,0}));
     v.bindmodel (gv3);
     gv3->gridVisMode = morph::GridVisMode::RectInterp;
     gv3->setScalarData (&image_data_tlbr);
@@ -67,7 +67,7 @@ int main()
     gv3->finalize();
     v.addVisualModel (gv3);
 
-    auto gv4 = std::make_unique<morph::GridVisual<float>>(&g4, morph::vec<float>({6,1.6,0}));
+    auto gv4 = std::make_unique<morph::GridVisual<float>>(&g4, sm::vec<float>({6,1.6,0}));
     v.bindmodel (gv4);
     gv4->gridVisMode = morph::GridVisMode::RectInterp;
     gv4->setScalarData (&image_data_bltr);

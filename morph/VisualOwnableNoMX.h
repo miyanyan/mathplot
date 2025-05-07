@@ -197,7 +197,7 @@ namespace morph {
             }
 
             // Calculate model view transformation - transforming from "model space" to "worldspace".
-            morph::mat44<float> sceneview;
+            sm::mat44<float> sceneview;
             if (this->ptype == perspective_type::orthographic || this->ptype == perspective_type::perspective) {
                 // This line translates from model space to world space. Avoid in cyl?
                 sceneview.translate (this->scenetrans); // send backwards into distance

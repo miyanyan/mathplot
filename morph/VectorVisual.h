@@ -4,10 +4,10 @@
  * \file Declares VectorVisual to visualize a vector.
  */
 
-#include <morph/VisualModel.h>
 #include <array>
-#include <morph/vec.h>
+#include <sm/vec>
 #include <morph/colour.h>
+#include <morph/VisualModel.h>
 
 namespace morph {
 
@@ -26,7 +26,7 @@ namespace morph {
     {
         static_assert (ndim > 0 && ndim <= 3, "1, 2 or 3 dimensions please.");
     public:
-        VectorVisual(const vec<float> _offset) {
+        VectorVisual(const sm::vec<float> _offset) {
             // Set up...
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -35,10 +35,10 @@ namespace morph {
         //! Do the computations to initialize the vertices that will represent the Quivers.
         void initializeVertices()
         {
-            vec<float> start, end, origin = {0,0,0};
+            sm::vec<float> start, end, origin = {0,0,0};
 
             // Convert thevec into a 3D vec
-            vec<float> threevec = {0,0,0};
+            sm::vec<float> threevec = {0,0,0};
             if constexpr (ndim == 1) {
                 threevec[0] = static_cast<float>(thevec[0]);
             } else if constexpr (ndim == 2) {
@@ -56,21 +56,21 @@ namespace morph {
                 end = origin;
                 start = threevec * this->scale_factor;
             } else { // OnOrigin
-                vec<float> halfvec = threevec * this->scale_factor * 0.5f;
+                sm::vec<float> halfvec = threevec * this->scale_factor * 0.5f;
                 start = origin - halfvec;
                 end = origin + halfvec ;
             }
 
-            vec<float> colourvec = threevec;
+            sm::vec<float> colourvec = threevec;
             colourvec.renormalize();
             morph::ColourMap<float> cm (morph::ColourMapType::HSV);
             std::array<float, 3> clr = cm.convert (colourvec[0], colourvec[1]);
             if (fixed_colour == true) { clr = single_colour; }
 
             // The right way to draw an arrow.
-            vec<float> arrow_line = end - start;
+            sm::vec<float> arrow_line = end - start;
             float len = arrow_line.length();
-            vec<float> cone_start = arrow_line.shorten (len * arrowhead_prop);
+            sm::vec<float> cone_start = arrow_line.shorten (len * arrowhead_prop);
             cone_start += start;
 
             this->computeTube (start, cone_start, clr, clr, thickness * this->scale_factor, shapesides);
@@ -81,7 +81,7 @@ namespace morph {
         }
 
         // The vector to vis
-        vec<Flt, ndim> thevec;
+        sm::vec<Flt, ndim> thevec;
 
         //! An enumerated type to say whether we draw from, on or to the origin
         VectorGoes vgoes = VectorGoes::OnOrigin;

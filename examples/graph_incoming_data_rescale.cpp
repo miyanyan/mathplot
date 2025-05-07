@@ -1,14 +1,17 @@
 /*
  * Visualize a graph on which points are added with time.
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
-#include <morph/vvec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
+
+#include <sm/vec>
+#include <sm/vvec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/GraphVisual.h>
 
 int main()
 {
@@ -23,10 +26,10 @@ int main()
     v.lightingEffects();
 
     try {
-        morph::vvec<float> absc =  {-1.0, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0};
-        morph::vvec<float> data = 2.1f * absc.pow(3);
-        morph::vvec<float> data2 = 1.5f * absc.pow(5);
-        auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0}));
+        sm::vvec<float> absc =  {-1.0, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0};
+        sm::vvec<float> data = 2.1f * absc.pow(3);
+        sm::vvec<float> data2 = 1.5f * absc.pow(5);
+        auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
         v.bindmodel (gv);
 
         // Optionally change the size of the graph and range of the axes

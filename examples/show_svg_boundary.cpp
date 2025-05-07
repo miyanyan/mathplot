@@ -16,8 +16,8 @@
 #include <fstream>
 #include <cstdlib>
 
-#include <morph/bezcoord.h>
-#include <morph/hexgrid.h>
+#include <sm/bezcoord>
+#include <sm/hexgrid>
 
 #include <morph/ReadCurves.h>
 #include <morph/tools.h>
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
         // Read the curves
         morph::ReadCurves r(argv[1]);
         // Create a HexGrid
-        morph::hexgrid hg(hexdia, gridspan, 0);
+        sm::hexgrid hg(hexdia, gridspan, 0);
         // Apply the curves as a boundary
         std::cout << "Number of hexes before setting boundary: " << hg.num() << std::endl;
         hg.setBoundary (r.getCorticalPath());
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
         // Display with morph::Visual
         morph::Visual v(1600, 1000, "Your SVG defined boundary");
         v.lightingEffects();
-        morph::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
+        sm::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
         v.bindmodel (hgv);
         // Set up data for the HexGridVisual and colour hexes according to their state as being boundary/inside/domain, etc

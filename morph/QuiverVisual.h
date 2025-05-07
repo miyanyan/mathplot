@@ -1,17 +1,19 @@
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/colour.h>
-#include <morph/graphstyles.h>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <algorithm>
 #include <functional>
+
+#include <sm/scale>
+#include <sm/vec>
+#include <sm/vvec>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
+#include <morph/colour.h>
+#include <morph/graphstyles.h>
 
 namespace morph {
 
@@ -20,9 +22,9 @@ namespace morph {
     class QuiverVisual : public VisualDataModel<Flt, glver>
     {
     public:
-        QuiverVisual(std::vector<vec<float>>* _coords,
-                     const vec<float> _offset,
-                     const std::vector<vec<Flt,3>>* _quivers,
+        QuiverVisual(std::vector<sm::vec<float>>* _coords,
+                     const sm::vec<float> _offset,
+                     const std::vector<sm::vec<Flt,3>>* _quivers,
                      ColourMapType _cmt,
                      const float _hue = 0.0f) {
             // Set up...
@@ -52,14 +54,14 @@ namespace morph {
                 return;
             }
 
-            vvec<Flt> dlengths;
+            sm::vvec<Flt> dlengths;
             // Compute the lengths of each vector
             for (unsigned int i = 0; i < nquiv; ++i) {
                 dlengths.push_back ( (*this->vectorData)[i].length() );
             }
 
             // Linearly scale the dlengths to generate colours
-            vvec<Flt> lengthcolours(dlengths);
+            sm::vvec<Flt> lengthcolours(dlengths);
 
             // Make sure we can do an autoscale if the scaling was not already set
             if (!this->colourScale.ready()) { this->colourScale.do_autoscale = true; }
@@ -77,7 +79,7 @@ namespace morph {
                 }
             } else {
                 // We have scalarData, use these for the colours
-                vvec<Flt> sdata (this->scalarData->size());
+                sm::vvec<Flt> sdata (this->scalarData->size());
                 std::copy (this->scalarData->begin(), this->scalarData->end(), sdata.begin());
                 this->colourScale.transform  (sdata, lengthcolours);
             }
@@ -85,12 +87,12 @@ namespace morph {
             // Now scale the lengths for their size on screen. Do this with a linear or log scaling.
 
             // (if log) First replace zeros with NaNs so that log transform will work.
-            if (this->do_quiver_length_scaling == true && this->length_scale.getType() == morph::scaling_function::Logarithmic) {
+            if (this->do_quiver_length_scaling == true && this->length_scale.getType() == sm::scaling_function::Logarithmic) {
                 dlengths.search_replace (Flt{0}, std::numeric_limits<Flt>::quiet_NaN());
             }
 
             // Transform data lengths into "nrmlzedlengths"
-            vvec<float> nrmlzedlengths (dlengths.size());
+            sm::vvec<float> nrmlzedlengths (dlengths.size());
             std::copy (dlengths.begin(), dlengths.end(), nrmlzedlengths.begin());
             if (this->fixed_length != 0.0f) {
                 nrmlzedlengths.set_from (this->fixed_length);
@@ -100,11 +102,11 @@ namespace morph {
 
             // Find the scaling factor to scale real lengths into screen lengths, which are the
             // normalized lengths multiplied by a user-settable quiver_length_gain.
-            vvec<float> lfactor = nrmlzedlengths/dlengths * this->quiver_length_gain;
+            sm::vvec<float> lfactor = nrmlzedlengths/dlengths * this->quiver_length_gain;
 
-            vec<Flt> half = { Flt{0.5}, Flt{0.5}, Flt{0.5} };
-            vec<Flt> vectorData_i, halfquiv;
-            vec<float> start, end, coords_i;
+            sm::vec<Flt> half = { Flt{0.5}, Flt{0.5}, Flt{0.5} };
+            sm::vec<Flt> vectorData_i, halfquiv;
+            sm::vec<float> start, end, coords_i;
             std::array<float, 3> clr;
             for (unsigned int i = 0; i < ncoords; ++i) {
 
@@ -140,8 +142,8 @@ namespace morph {
                 float quiv_thick = this->fixed_quiver_thickness ? this->fixed_quiver_thickness : len*quiver_thickness_gain;
 
                 // The right way to draw an arrow.
-                vec<float> arrow_line = end - start;
-                vec<float> cone_start = arrow_line.shorten (len*quiver_arrowhead_prop);
+                sm::vec<float> arrow_line = end - start;
+                sm::vec<float> cone_start = arrow_line.shorten (len*quiver_arrowhead_prop);
                 cone_start += start;
                 this->computeTube (start, cone_start, clr, clr, quiv_thick, shapesides);
                 float conelen = (end-cone_start).length();
@@ -197,7 +199,7 @@ namespace morph {
         // user using quiver_length_gain. This scaling can be made logarithmic by calling
         // QuiverVisual::setlog() before calling finalize(). The scaling can be ignored by calling
         // QuiverVisual::length_scale.compute_scaling (0, 1); before finalize().
-        morph::scale<Flt, float> length_scale;
+        sm::scale<Flt, float> length_scale;
         // Set this false to avoid applying length_scale to quiver lengths and also and
         // colourScale (in the absence of ScalarData).
         bool do_quiver_length_scaling = true;

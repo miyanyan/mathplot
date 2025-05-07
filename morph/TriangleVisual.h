@@ -1,9 +1,8 @@
 #pragma once
 
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
 #include <array>
+#include <sm/vec>
+#include <morph/VisualModel.h>
 
 namespace morph {
 
@@ -15,15 +14,15 @@ namespace morph {
         TriangleVisual() { this->mv_offset = {0.0, 0.0, 0.0}; }
 
         //! Initialise with offset, three coordinates and a single colour.
-        TriangleVisual(const vec<float, 3> _offset,
-                       const vec<float, 3> _coord1, const vec<float, 3> _coord2, const vec<float, 3> _coord3,
+        TriangleVisual(const sm::vec<float, 3> _offset,
+                       const sm::vec<float, 3> _coord1, const sm::vec<float, 3> _coord2, const sm::vec<float, 3> _coord3,
                        const std::array<float, 3> _col)
         {
             this->init (_offset, _coord1, _coord2, _coord3, _col);
         }
 
-        void init (const vec<float, 3> _offset,
-                   const vec<float, 3> _coord1, const vec<float, 3> _coord2, const vec<float, 3> _coord3,
+        void init (const sm::vec<float, 3> _offset,
+                   const sm::vec<float, 3> _coord1, const sm::vec<float, 3> _coord2, const sm::vec<float, 3> _coord3,
                    const std::array<float, 3> _col)
         {
             // Set up...
@@ -36,13 +35,12 @@ namespace morph {
         }
 
         //! Compute a triangle from 3 arbitrary corners
-        void computeTriangle (vec<float> c1, vec<float> c2, vec<float> c3,
-                              std::array<float, 3> colr)
+        void computeTriangle (sm::vec<float> c1, sm::vec<float> c2, sm::vec<float> c3, std::array<float, 3> colr)
         {
             // v is the face normal
-            vec<float> u1 = c1-c2;
-            vec<float> u2 = c2-c3;
-            vec<float> v = u1.cross(u2);
+            sm::vec<float> u1 = c1-c2;
+            sm::vec<float> u2 = c2-c3;
+            sm::vec<float> v = u1.cross(u2);
             v.renormalize();
             // Push corner vertices
             this->vertex_push (c1, this->vertexPositions);
@@ -71,9 +69,9 @@ namespace morph {
         }
 
         //! The position of the vertices of the triangle
-        vec<float, 3> coord1 = {0.0f, 0.0f, 0.0f};
-        vec<float, 3> coord2 = {0.0f, 0.0f, 0.0f};
-        vec<float, 3> coord3 = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> coord1 = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> coord2 = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> coord3 = {0.0f, 0.0f, 0.0f};
 
         //! The colour of the triangle
         std::array<float, 3> col = {0.0f, 0.0f, 1.0f};

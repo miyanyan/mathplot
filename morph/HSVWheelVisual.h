@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include <sm/mathconst>
+#include <sm/vec>
+
 #include <morph/VisualModel.h>
-#include <morph/mathconst.h>
-#include <morph/vec.h>
 #include <morph/GraphVisual.h>
 
 namespace morph {
@@ -14,11 +15,11 @@ namespace morph {
     template <typename F, int glver = morph::gl::version_4_1>
     class HSVWheelVisual : public VisualModel<glver>
     {
-        using mc = morph::mathconst<F>;
+        using mc = sm::mathconst<F>;
     public:
         //! Constructor
         //! \param _offset The offset within morph::Visual space to place this model
-        HSVWheelVisual (const vec<float> _offset)
+        HSVWheelVisual (const sm::vec<float> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -61,7 +62,7 @@ namespace morph {
         void drawFrame()
         {
             // Draw an approximation of a circle.
-            this->computeFlatCircleLine (vec<float>({0,0,this->z}), this->uz, this->radius + this->framelinewidth/2.0f,
+            this->computeFlatCircleLine (sm::vec<float>{0,0,this->z}, this->uz, this->radius + this->framelinewidth/2.0f,
                                          this->framelinewidth, this->framecolour, this->numsegs);
         }
 
@@ -94,7 +95,7 @@ namespace morph {
                 // Dep. on angle, the additional gap for the text will need to be based on different aspects of the text geometry
                 float geom_gap = std::abs(std::cos(label_angles[i]) * geom.half_width()) + std::abs(std::sin(label_angles[i]) * geom.half_height());
                 float lbl_r = this->radius + this->framelinewidth + this->ticklabelgap + geom_gap;
-                morph::vec<float> lblpos = {
+                sm::vec<float> lblpos = {
                     lbl_r * std::cos (label_angles[i]) - geom.half_width(),
                     lbl_r * std::sin (label_angles[i]) - geom.half_height(),
                     this->z
@@ -107,7 +108,7 @@ namespace morph {
         // Draw the actual HSV stuff
         void fillFrameWithColour()
         {
-            vec<float> centre = {0,0,this->z};
+            sm::vec<float> centre = {0,0,this->z};
 
             for (int ring = this->numrings; ring > 0; ring--) {
 
@@ -119,16 +120,16 @@ namespace morph {
                 for (int j = 0; j < static_cast<int>(this->numsegs); j++) {
 
                     // The colour will change for each j
-                    float colour_angle = (static_cast<float>(j)/this->numsegs) * morph::mathconst<float>::two_pi;
+                    float colour_angle = (static_cast<float>(j)/this->numsegs) * sm::mathconst<float>::two_pi;
                     std::array<float, 3> col_out = this->cm.convert_angular (colour_angle, norm_r_out);
                     std::array<float, 3> col_in = this->cm.convert_angular (colour_angle, norm_r_in);
 
-                    float t = j * morph::mathconst<float>::two_pi/static_cast<float>(this->numsegs);
-                    vec<float> c_in = this->uy * sin(t) * r_in + this->ux * cos(t) * r_in;
+                    float t = j * sm::mathconst<float>::two_pi/static_cast<float>(this->numsegs);
+                    sm::vec<float> c_in = this->uy * sin(t) * r_in + this->ux * cos(t) * r_in;
                     this->vertex_push (centre+c_in, this->vertexPositions);
                     this->vertex_push (this->uz, this->vertexNormals);
                     this->vertex_push (col_in, this->vertexColors);
-                    vec<float> c_out = this->uy * sin(t) * r_out + this->ux * cos(t) * r_out;
+                    sm::vec<float> c_out = this->uy * sin(t) * r_out + this->ux * cos(t) * r_out;
                     this->vertex_push (centre+c_out, this->vertexPositions);
                     this->vertex_push (this->uz, this->vertexNormals);
                     this->vertex_push (col_out, this->vertexColors);

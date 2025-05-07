@@ -5,10 +5,10 @@
  */
 #pragma once
 
-#include <morph/mathconst.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <morph/quaternion.h>
+#include <sm/mathconst>
+#include <sm/scale>
+#include <sm/vec>
+#include <sm/quaternion>
 #include <morph/VisualModel.h>
 #include <morph/graphing.h>
 #include <morph/graphstyles.h> // Share tickstyle, axestyle
@@ -23,7 +23,7 @@ namespace morph {
         //! \param sp shader program id
         //! \param tsp text shader program id
         //! \param _offset The offset within morph::Visual space to place these axes
-        TriaxesVisual (const vec<float> _offset)
+        TriaxesVisual (const sm::vec<float> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -99,22 +99,22 @@ namespace morph {
                                { this->axis_ends[0]+0.5f*axislinewidth, 0, 0 }, // end
                                -this->uy, this->uz,
                                this->axiscolour, this->axiscolour,
-                               morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                               4, morph::mathconst<float>::pi_over_4);
+                               sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                               4, sm::mathconst<float>::pi_over_4);
             // y
             this->computeTube ({ 0, -0.5f*axislinewidth,                   0 },
                                { 0, this->axis_ends[1]+0.5f*axislinewidth, 0 },
                                this->ux, this->uz,
                                this->axiscolour, this->axiscolour,
-                               morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                               4, morph::mathconst<float>::pi_over_4);
+                               sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                               4, sm::mathconst<float>::pi_over_4);
             // z
             this->computeTube ({0, 0, -0.5f*axislinewidth},
                                {0, 0, this->axis_ends[2]+0.5f*axislinewidth},
                                this->ux, this->uy,
                                this->axiscolour, this->axiscolour,
-                               morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                               4, morph::mathconst<float>::pi_over_4);
+                               sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                               4, sm::mathconst<float>::pi_over_4);
 
             // Complete the box side panels if required
             if (this->axisstyle == axisstyle::box || this->axisstyle == axisstyle::panels) {
@@ -123,40 +123,40 @@ namespace morph {
                                    { this->axis_ends[0]+0.5f*axislinewidth, 0, this->axis_ends[2] },
                                    -this->uy, this->uz,
                                    this->axiscolour2, this->axiscolour2,
-                                   morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                                   4, morph::mathconst<float>::pi_over_4);
+                                   sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                                   4, sm::mathconst<float>::pi_over_4);
                 this->computeTube ({ -0.5f*axislinewidth,                   this->axis_ends[1], 0 },
                                    { this->axis_ends[0]+0.5f*axislinewidth, this->axis_ends[1], 0 },
                                    -this->uy, this->uz,
                                    this->axiscolour2, this->axiscolour2,
-                                   morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                                   4, morph::mathconst<float>::pi_over_4);
+                                   sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                                   4, sm::mathconst<float>::pi_over_4);
                 // y
                 this->computeTube ({ 0, -0.5f*axislinewidth,                   this->axis_ends[2] },
                                    { 0, this->axis_ends[1]+0.5f*axislinewidth, this->axis_ends[2] },
                                    this->ux, this->uz,
                                    this->axiscolour2, this->axiscolour2,
-                                   morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                                   4, morph::mathconst<float>::pi_over_4);
+                                   sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                                   4, sm::mathconst<float>::pi_over_4);
                 this->computeTube ({ this->axis_ends[0], -0.5f*axislinewidth,                   0 },
                                    { this->axis_ends[0], this->axis_ends[1]+0.5f*axislinewidth, 0 },
                                    this->ux, this->uz,
                                    this->axiscolour2, this->axiscolour2,
-                                   morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                                   4, morph::mathconst<float>::pi_over_4);
+                                   sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                                   4, sm::mathconst<float>::pi_over_4);
                 // z
                 this->computeTube ({ this->axis_ends[0], 0, -0.5f*axislinewidth },
                                    { this->axis_ends[0], 0, this->axis_ends[2]+0.5f*axislinewidth },
                                    this->ux, this->uy,
                                    this->axiscolour2, this->axiscolour2,
-                                   morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                                   4, morph::mathconst<float>::pi_over_4);
+                                   sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                                   4, sm::mathconst<float>::pi_over_4);
                 this->computeTube ({ 0, this->axis_ends[1], -0.5f*axislinewidth },
                                    { 0, this->axis_ends[1], this->axis_ends[2]+0.5f*axislinewidth },
                                    this->ux, this->uy,
                                    this->axiscolour2, this->axiscolour2,
-                                   morph::mathconst<float>::one_over_root_2*this->axislinewidth,
-                                   4, morph::mathconst<float>::pi_over_4);
+                                   sm::mathconst<float>::one_over_root_2*this->axislinewidth,
+                                   4, sm::mathconst<float>::pi_over_4);
             }
 
             if (this->axisstyle == axisstyle::box) {
@@ -212,7 +212,7 @@ namespace morph {
                 morph::TextGeometry geom = lbl->getTextGeometry (s);
                 this->xtick_height = geom.height() > this->xtick_height ? geom.height() : this->xtick_height;
                 this->xtick_width = geom.width() > this->xtick_width ? geom.width() : this->xtick_width;
-                morph::vec<float> lblpos = {(float)this->xtick_posns[i]-geom.half_width(), y_for_xticks-(this->ticklabelgap+geom.height()), 0};
+                sm::vec<float> lblpos = {(float)this->xtick_posns[i]-geom.half_width(), y_for_xticks-(this->ticklabelgap+geom.height()), 0};
                 lbl->setupText (s, lblpos+this->mv_offset, this->axiscolour);
                 this->texts.push_back (std::move(lbl));
             }
@@ -223,7 +223,7 @@ namespace morph {
                 morph::TextGeometry geom = lbl->getTextGeometry (s);
                 this->ytick_height = geom.height() > this->ytick_height ? geom.height() : this->ytick_height;
                 this->ytick_width = geom.width() > this->ytick_width ? geom.width() : this->ytick_width;
-                morph::vec<float> lblpos = {x_for_yticks-this->ticklabelgap-geom.width(), (float)this->ytick_posns[i]-geom.half_height(), 0};
+                sm::vec<float> lblpos = {x_for_yticks-this->ticklabelgap-geom.width(), (float)this->ytick_posns[i]-geom.half_height(), 0};
                 lbl->setupText (s, lblpos+this->mv_offset, this->axiscolour);
                 this->texts.push_back (std::move(lbl));
             }
@@ -234,7 +234,7 @@ namespace morph {
                 morph::TextGeometry geom = lbl->getTextGeometry (s);
                 this->ztick_height = geom.height() > this->ztick_height ? geom.height() : this->ztick_height;
                 this->ztick_width = geom.width() > this->ztick_width ? geom.width() : this->ztick_width;
-                morph::vec<float> lblpos = {y_for_zticks-this->ticklabelgap-geom.width(), 0, (float)this->ztick_posns[i]};
+                sm::vec<float> lblpos = {y_for_zticks-this->ticklabelgap-geom.width(), 0, (float)this->ztick_posns[i]};
                 lbl->setupText (s, lblpos+this->mv_offset, this->axiscolour);
                 this->texts.push_back (std::move(lbl));
             }
@@ -247,7 +247,7 @@ namespace morph {
             // x axis label (easy)
             auto lbl = this->makeVisualTextModel (tf);
             morph::TextGeometry geom = lbl->getTextGeometry (this->xlabel);
-            morph::vec<float> lblpos;
+            sm::vec<float> lblpos;
             lblpos = {{0.5f * this->axis_ends[0] - geom.half_width(),
                        -(this->axislabelgap+this->ticklabelgap+geom.height()+this->xtick_height), 0}};
             lbl->setupText (this->xlabel, lblpos+this->mv_offset, this->axiscolour);
@@ -270,7 +270,7 @@ namespace morph {
                         0.5f*this->axis_ends[1] - downshift, 0 }};
 
             if (geom.width() > 2*this->fontsize) {
-                morph::quaternion<float> leftrot(this->uz, morph::mathconst<float>::pi_over_2);
+                sm::quaternion<float> leftrot(this->uz, sm::mathconst<float>::pi_over_2);
                 lbl->setupText (this->ylabel, leftrot, lblpos+this->mv_offset, this->axiscolour);
             } else {
                 lbl->setupText (this->ylabel, lblpos+this->mv_offset, this->axiscolour);
@@ -288,17 +288,17 @@ namespace morph {
         }
 
         //! Set the input_min to be the values at the zero points of the graph axes
-        morph::vec<Flt, 3> input_min = {0,0,0};
+        sm::vec<Flt, 3> input_min = {0,0,0};
         //! Set the input_min to be the values at the maxes of the graph axes
-        morph::vec<Flt, 3> input_max = {1,1,1};
+        sm::vec<Flt, 3> input_max = {1,1,1};
 
         // Axes parameters
 
         //! x axis max location in model space. Default behaviour is a 1x1x1 cube
-        morph::vec<Flt, 3> axis_ends = {1,1,1};
+        sm::vec<Flt, 3> axis_ends = {1,1,1};
         //! colour for the axis box/lines. Text also takes this colour.
-        morph::vec<float, 3> axiscolour = {0,0,0};
-        morph::vec<float, 3> axiscolour2 = { 0.7f, 0.7f, 0.7f };
+        sm::vec<float, 3> axiscolour = {0,0,0};
+        sm::vec<float, 3> axiscolour2 = { 0.7f, 0.7f, 0.7f };
         //! Set axis and text colours for a dark or black background
         bool darkbg = false;
         //! The line width of the main axis bars
@@ -314,11 +314,11 @@ namespace morph {
         //! Should ticks be manually set?
         bool manualticks = false;
         //! A scaling for the x axis
-        morph::scale<Flt> x_scale;
+        sm::scale<Flt> x_scale;
         //! A scaling for the y axis
-        morph::scale<Flt> y_scale;
+        sm::scale<Flt> y_scale;
         //! A scaling for the z axis
-        morph::scale<Flt> z_scale;
+        sm::scale<Flt> z_scale;
         //! The xtick values that should be displayed
         std::deque<Flt> xticks;
         //! The positions, along the x axis (in model space) for the xticks

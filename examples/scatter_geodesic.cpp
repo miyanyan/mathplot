@@ -2,20 +2,22 @@
  * Test prog for geodesic polys
  */
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
-#include <morph/QuiverVisual.h>
-#include <morph/TriangleVisual.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/geometry.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
 #include <tuple>
+
+#include <sm/scale>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/geometry>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/ScatterVisual.h>
+#include <morph/QuiverVisual.h>
+#include <morph/TriangleVisual.h>
 
 int main()
 {
@@ -29,23 +31,23 @@ int main()
 
     // First create an empty polyhedron object
     // ...then pass it into a geodesic polyhedron creation function
-    morph::geometry::icosahedral_geodesic<float> geo = morph::geometry::make_icosahedral_geodesic<float> (iterations);
+    sm::geometry::icosahedral_geodesic<float> geo = sm::geometry::make_icosahedral_geodesic<float> (iterations);
 
     // Coordinates of face centres (for debug/viz)
-    morph::vvec<morph::vec<float, 3>> fcentres = geo.poly.get_face_centres();
+    sm::vvec<sm::vec<float, 3>> fcentres = geo.poly.get_face_centres();
 
     // Compute neighbour vectors from neighbour indices
-    morph::vvec<morph::vvec<std::tuple<morph::vec<float, 3>, int>>> vneighb_vertices_with_indices = geo.get_neighbour_hexdir_vectors();
+    sm::vvec<sm::vvec<std::tuple<sm::vec<float, 3>, int>>> vneighb_vertices_with_indices = geo.get_neighbour_hexdir_vectors();
 
     // The tuples can't be passed directly to QuiverVisual
-    morph::vvec<morph::vvec<morph::vec<float, 3>>> vneighb_vertices (vneighb_vertices_with_indices.size());
+    sm::vvec<sm::vvec<sm::vec<float, 3>>> vneighb_vertices (vneighb_vertices_with_indices.size());
     for (unsigned int i = 0; i < vneighb_vertices_with_indices.size(); ++i) {
         vneighb_vertices[i].resize (3);
         // Debug/verify the neighbour *vertex indices* with these std::couts:
         //std::cout << "Vertex " << i << " has RGB neighbour indices: ";
         for (unsigned int j = 0; j < 3; ++j) {
             //std::cout << std::get<int>(vneighb_vertices_with_indices[i][j]) << ",";
-            vneighb_vertices[i][j] = std::get<morph::vec<float, 3>>(vneighb_vertices_with_indices[i][j]);
+            vneighb_vertices[i][j] = std::get<sm::vec<float, 3>>(vneighb_vertices_with_indices[i][j]);
         }
         //std::cout << std::endl;
     }
@@ -60,12 +62,12 @@ int main()
     constexpr bool show_neighbour_vectors = true;
 
     try {
-        morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
-        morph::scale<float> scale;
+        sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+        sm::scale<float> scale;
         scale.setParams (1.0f, 0.0f);
 
-        morph::vvec<float> data(geo.poly.vertices.size(), 0.06f);
-        morph::vvec<float> data2(geo.poly.faces.size(), 0.95f);
+        sm::vvec<float> data(geo.poly.vertices.size(), 0.06f);
+        sm::vvec<float> data2(geo.poly.faces.size(), 0.95f);
 
         if constexpr (show_vertices == true) {
             auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
@@ -117,9 +119,9 @@ int main()
 
         if constexpr (show_neighbour_vectors == true) {
             // For each vertex, one QuiverVisual for the immediate neighbour vertices.
-            morph::vvec<float> clrs;
+            sm::vvec<float> clrs;
             for (unsigned int i = 0; i < vneighb_vertices.size(); ++i) {
-                morph::vvec<morph::vec<float, 3>> coords (vneighb_vertices[i].size(), geo.poly.vertices[i]);
+                sm::vvec<sm::vec<float, 3>> coords (vneighb_vertices[i].size(), geo.poly.vertices[i]);
                 auto vmp = std::make_unique<morph::QuiverVisual<float>>(&coords, offset, &vneighb_vertices[i],
                                                                         morph::ColourMapType::Rainbow);
                 v.bindmodel (vmp);

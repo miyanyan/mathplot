@@ -1,16 +1,18 @@
 /*
  * Visualize a single vector
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/VectorVisual.h>
-#include <morph/vec.h>
-#include <morph/quaternion.h>
-#include <morph/mat44.h>
 #include <iostream>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+#include <sm/quaternion>
+#include <sm/mat44>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/VectorVisual.h>
 
 int main()
 {
@@ -19,7 +21,7 @@ int main()
     v.showCoordArrows (true);
     v.coordArrowsInScene (true);
 
-    morph::vec<float> offset = {1,0,0};
+    sm::vec<float> offset = {1,0,0};
 
     auto vvm = std::make_unique<morph::VectorVisual<float, 3>>(offset);
     v.bindmodel (vvm);
@@ -40,14 +42,14 @@ int main()
     auto ptr2 = v.addVisualModel (vvm);
 
     float angle_per_frame = 0.05f;
-    morph::vec<float> axis = {0,1,0.4};
+    sm::vec<float> axis = {0,1,0.4};
 
     // quaternion way
     // Also demo quaternion rotation.
     // Set up a rotation about the z axis
-    morph::quaternion<float> qr (axis, angle_per_frame);
+    sm::quaternion<float> qr (axis, angle_per_frame);
 
-    morph::mat44<float> tf;
+    sm::mat44<float> tf;
     tf.rotate (axis, angle_per_frame);
 
     while (!v.readyToFinish()) {

@@ -1,38 +1,40 @@
 /*
  * Visualize a scatter of spheres with the duochrome colour map
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
+
+#include <sm/scale>
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/ScatterVisual.h>
 
 int main()
 {
     int rtn = -1;
 
     morph::Visual v(1024, 768, "ScatterVisual with duochrome colourmap");
-    v.zNear = 0.001;
+    v.zNear = 0.001f;
 
     static constexpr int slen = 20;
     static constexpr int half_slen = slen/2;
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-        morph::scale<float> scale;
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::scale<float> scale;
         scale.setParams (1.0, 0.0);
 
-        std::vector<morph::vec<float, 3>> points(slen*slen);
-        std::vector<morph::vec<float, 3>> vecdata(slen*slen);
+        std::vector<sm::vec<float, 3>> points(slen*slen);
+        std::vector<sm::vec<float, 3>> vecdata(slen*slen);
         std::vector<float> data(slen*slen);
         size_t k = 0;
         for (int i = -half_slen; i < half_slen; ++i) {
             for (int j = -half_slen; j < half_slen; ++j) {
-                float x = 0.1*i;
-                float y = 0.1*j;
+                float x = 0.1f * i;
+                float y = 0.1f * j;
                 // z is some function of x, y
                 float z = 0;//x * std::exp(-(x*x) - (y*y));
                 points[k] = {x, y, z};

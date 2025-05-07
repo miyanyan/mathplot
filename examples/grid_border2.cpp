@@ -8,9 +8,9 @@
 #include <cmath>
 #include <chrono>
 
-#include <morph/mathconst.h>
-#include <morph/vec.h>
-#include <morph/grid.h>
+#include <sm/mathconst>
+#include <sm/vec>
+#include <sm/grid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -23,15 +23,15 @@ int main()
 
     // Create a grid to show in the scene
     constexpr unsigned int Nside = 4; // You can change this
-    constexpr morph::vec<float, 2> grid_spacing = {0.5f, 0.5f};
-    morph::grid grid(Nside, Nside, grid_spacing);
+    constexpr sm::vec<float, 2> grid_spacing = {0.5f, 0.5f};
+    sm::grid grid(Nside, Nside, grid_spacing);
     std::cout << "Number of pixels in grid:" << grid.n() << std::endl;
 
     // Make some dummy data (a sine wave) to make an interesting surface
     std::vector<float> data(grid.n(), 0.0);
 
     // Set data
-    constexpr float length = morph::mathconst<float>::pi_over_4;
+    constexpr float length = sm::mathconst<float>::pi_over_4;
     for (unsigned int ri=0; ri<grid.n(); ++ri) {
         auto coord = grid[ri];
         data[ri] = std::sin(length * coord[0]) * std::sin(0.5f * length * coord[1]) ; // Range 0->1
@@ -39,11 +39,11 @@ int main()
 
     float step = 0.6f;
     // Add a GridVisual to display the Grid within the morph::Visual scene
-    morph::vec<float, 3> offset = { -step * grid.width(), -step * grid.width(), 0.0f };
+    sm::vec<float, 3> offset = { -step * grid.width(), -step * grid.width(), 0.0f };
 
     // A label position offset for use below
     auto dx = grid.get_dx();
-    auto lblpos = -dx.plus_one_dim() + morph::vec<float>{dx[0]/2.0f,0,0};
+    auto lblpos = -dx.plus_one_dim() + sm::vec<float>{dx[0]/2.0f,0,0};
 
     // Grid with border
     auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);

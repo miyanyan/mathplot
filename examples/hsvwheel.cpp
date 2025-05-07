@@ -6,6 +6,9 @@
 #include <vector>
 #include <cmath>
 
+#include <sm/mathconst>
+#include <sm/vec>
+
 #include <morph/Visual.h>
 #include <morph/ColourMap.h>
 #include <morph/HSVWheelVisual.h>
@@ -15,7 +18,7 @@ constexpr morph::ColourMapType disctype = morph::ColourMapType::DiscSixWhite; //
 // In this example, I'll create a special visual to show hsv colours.
 struct SquareGridVisual : public morph::VisualModel<>
 {
-    SquareGridVisual(const morph::vec<float> _offset, const float hue_rotn = 0.0f, const bool rev = false)
+    SquareGridVisual(const sm::vec<float> _offset, const float hue_rotn = 0.0f, const bool rev = false)
         : morph::VisualModel<> (_offset)
     {
         // In the constructor set up the colour map
@@ -41,9 +44,9 @@ struct SquareGridVisual : public morph::VisualModel<>
         static constexpr float element_to_element_distance = 1.0f;
         // In a 'flat polygon', The radius is defined as the distance to a vertex, so,
         // for example, to get a square of width 2, set the radius to sqrt(2). Here, I use 0.97f to ensure a thin gap between squares
-        static constexpr float square_centre_to_vertex = 0.97f * (element_to_element_distance / 2.0f) * morph::mathconst<float>::root_2;
+        static constexpr float square_centre_to_vertex = 0.97f * (element_to_element_distance / 2.0f) * sm::mathconst<float>::root_2;
         // Polygons have a vertex pointing 'up' by default, so we have to rotate
-        static constexpr float square_needs_rotation = morph::mathconst<float>::pi_over_4;
+        static constexpr float square_needs_rotation = sm::mathconst<float>::pi_over_4;
         // How many squares along a side of the grid?
         static constexpr int num_elements_on_side = 12;
         // That number - 1:
@@ -54,7 +57,7 @@ struct SquareGridVisual : public morph::VisualModel<>
             for (int y = 0; y < num_elements_on_side; y++) {
 
                 // Create grid element position from x and y.
-                morph::vec<float> element_pos = { static_cast<float>(x), static_cast<float>(y), 0.0f };
+                sm::vec<float> element_pos = { static_cast<float>(x), static_cast<float>(y), 0.0f };
                 element_pos *= element_to_element_distance;
 
                 // We call the 2 argument overload of ColourMap::convert, making sure
@@ -83,7 +86,7 @@ int main()
     v.backgroundBlack();
     v.setSceneTrans (-5.60868263,-5.17123413,-29.2000771); // numbers obtained by pressing 'z' and seeing stdout
 
-    morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // TextFeatures is a nice way to specify font size, colour (and other things) for your addLabel() calls.
     morph::TextFeatures tf (0.5f, morph::colour::white);
@@ -94,14 +97,14 @@ int main()
     v.bindmodel (hsv_vis);
     //
     std::string lbl("hue rotation = 0");
-    hsv_vis->addLabel (lbl, morph::vec<float>({0,-1,0}), tf);
+    hsv_vis->addLabel (lbl, sm::vec<float>({0,-1,0}), tf);
     //
     hsv_vis->finalize();
     auto hsv_visp = v.addVisualModel (hsv_vis);
 
     std::cout << "1st Grid done, now wheel...\n";
     // HSVWHeel for Grid1
-    morph::vec<float, 3> woffset = offset;
+    sm::vec<float, 3> woffset = offset;
     woffset[0] += 5.5f;
     woffset[1] -= 6.0f;
     auto hsvw_vis = std::make_unique<morph::HSVWheelVisual<float>>(woffset);
@@ -115,14 +118,14 @@ int main()
     v.addVisualModel (hsvw_vis);
 
     offset[0] = -14.0f;
-    hue_rotn = -morph::mathconst<float>::pi_over_2;
+    hue_rotn = -sm::mathconst<float>::pi_over_2;
     auto hsv_vis2 = std::make_unique<SquareGridVisual>(offset, hue_rotn);
     v.bindmodel (hsv_vis2);
     //
     namespace uc = morph::unicode;
     std::string lbl2("hue rotation = ");
-    lbl2 += std::to_string (hue_rotn/morph::mathconst<float>::pi) + uc::toUtf8(uc::pi);
-    hsv_vis2->addLabel (lbl2, morph::vec<float>({0,-1,0}), tf);
+    lbl2 += std::to_string (hue_rotn/sm::mathconst<float>::pi) + uc::toUtf8(uc::pi);
+    hsv_vis2->addLabel (lbl2, sm::vec<float>({0,-1,0}), tf);
     //
     hsv_vis2->finalize();
     auto hsv_vis2p = v.addVisualModel (hsv_vis2);
@@ -150,7 +153,7 @@ int main()
     v.bindmodel (hsv_vis3);
     //
     std::string lbl3("hue rotation = 0; direction reversed");
-    hsv_vis3->addLabel (lbl3, morph::vec<float>({0,-1,0}), tf);
+    hsv_vis3->addLabel (lbl3, sm::vec<float>({0,-1,0}), tf);
     //
     hsv_vis3->finalize();
     auto hsv_vis3p = v.addVisualModel (hsv_vis3);

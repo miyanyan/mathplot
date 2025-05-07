@@ -6,8 +6,9 @@
 #include <vector>
 #include <string>
 #include <format>
-#include <morph/scale.h>
-#include <morph/vec.h>
+#include <sm/mathconst>
+#include <sm/scale>
+#include <sm/vec>
 #include <morph/Visual.h>
 #include <morph/ColourBarVisual.h>
 #include <morph/HSVWheelVisual.h>
@@ -17,12 +18,12 @@ int main()
     std::string title_str = "Hue Saturation Value";
     // Contructor args are width, height, title
     morph::Visual v(1000, 300, title_str);
-    v.setSceneTrans (morph::vec<float,3>{ float{-0.755619}, float{-0.236617}, float{-1.9} });
+    v.setSceneTrans (sm::vec<float,3>{ float{-0.755619}, float{-0.236617}, float{-1.9} });
 
-    morph::scale<float> scale1;
+    sm::scale<float> scale1;
     scale1.compute_scaling (0, 1); // Simply maps 0->1 to 0->1!
 
-    morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // Hue-variable 1D maps
     std::vector<morph::ColourMapType> cmap_types;
@@ -36,7 +37,7 @@ int main()
     morph::ColourMap<float> cm1;
 
     // Display HSV wheel
-    morph::vec<float, 3> woffset = offset;
+    sm::vec<float, 3> woffset = offset;
     woffset[0] -= 0.5f;
     woffset[1] += 0.25f;
     auto hsvw_vis = std::make_unique<morph::HSVWheelVisual<float>>(woffset);
@@ -46,7 +47,7 @@ int main()
     hsvw_vis->tf.fontsize = 0.05f;
     hsvw_vis->labels = {"0", "0.17", "0.33", "0.5", "0.67", "0.83"};
     hsvw_vis->cm.setType (morph::ColourMapType::HSV);
-    hsvw_vis->cm.setHueRotation (-morph::mathconst<float>::pi_over_2);
+    hsvw_vis->cm.setHueRotation (-sm::mathconst<float>::pi_over_2);
     hsvw_vis->finalize();
     v.addVisualModel (hsvw_vis);
 

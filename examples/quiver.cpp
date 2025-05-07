@@ -1,14 +1,16 @@
 /*
  * Visualize an example quiver field
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/QuiverVisual.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/QuiverVisual.h>
 
 int main()
 {
@@ -22,10 +24,10 @@ int main()
     v.lightingEffects();
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
 
-        std::vector<morph::vec<float, 3>> coords(20*20);
-        std::vector<morph::vec<float, 3>> quivs(20*20);
+        std::vector<sm::vec<float, 3>> coords(20*20);
+        std::vector<sm::vec<float, 3>> quivs(20*20);
 
         size_t k = 0;
         for (int i = -10; i < 10; ++i) {
@@ -43,8 +45,8 @@ int main()
         for (int i = -10; i < 10; ++i) {
             for (int j = -10; j < 10; ++j) {
                 if (i > -10 && i < 10 && j > -10 && j < 10) {
-                    morph::vec<float> r = coords[k] - coords[k-20];
-                    morph::vec<float> g = coords[k] - coords[k-1];
+                    sm::vec<float> r = coords[k] - coords[k-20];
+                    sm::vec<float> g = coords[k] - coords[k-1];
                     // Compute normal and modulate by the 'z' value
                     quivs[k] = r.cross(g)*30.0f*coords[k][2];
                 } else {

@@ -41,9 +41,10 @@
 #include <utility>
 #include <tuple>
 #include <stdexcept>
-#include <morph/random.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
+
+#include <sm/random>
+#include <sm/vec>
+#include <sm/vvec>
 
 namespace morph {
 
@@ -74,7 +75,7 @@ namespace morph {
         }
 
         void load_data (const std::string& tag,
-                        std::multimap<unsigned char, std::pair<int, morph::vvec<float>>>& vecFloats)
+                        std::multimap<unsigned char, std::pair<int, sm::vvec<float>>>& vecFloats)
         {
             // Ifstreams for images and labels.
             std::ifstream img_f;
@@ -125,7 +126,7 @@ namespace morph {
             // Should now be able to read through each file, pulling in the data.
             char cbuf[1];
             for (int inum = 0; inum < n_imgs; ++inum) {
-                morph::vvec<float> ar(nr*nc, 0.0f);
+                sm::vvec<float> ar(nr*nc, 0.0f);
                 // Read one label...
                 lbl_f.read (cbuf, 1);
                 unsigned char lbl = static_cast<unsigned char>(cbuf[0]);
@@ -182,10 +183,10 @@ namespace morph {
         }
 
         // Select one of each numeral from training_f and return in a multimap (or fewer, if you set num to say, 1)
-        std::multimap<unsigned char, std::pair<int, morph::vvec<float>> >
+        std::multimap<unsigned char, std::pair<int, sm::vvec<float>> >
         training_oneshot (unsigned int num = 10, unsigned int firstnum = 0)
         {
-            std::multimap<unsigned char, std::pair<int, morph::vvec<float>> > rtn;
+            std::multimap<unsigned char, std::pair<int, sm::vvec<float>> > rtn;
             for (unsigned char numeral = firstnum; numeral < num+firstnum; ++numeral) {
                 unsigned char modnum = numeral%10;
                 auto range = this->training_f.equal_range (modnum);
@@ -194,7 +195,7 @@ namespace morph {
                 for (auto i = range.first; i != range.second; ++i, ++rsz) {}
                 //std::cout << "range contains " << rsz << " elements\n";
                 // Choose random number between 0 and rsz. Select that one.
-                morph::rand_uniform<size_t> rng(0, rsz);
+                sm::rand_uniform<size_t> rng(0, rsz);
                 size_t tgt = rng.get();
                 auto i = range.first;
                 size_t j = 0;
@@ -206,10 +207,10 @@ namespace morph {
         }
 
         // Select num examples of numeral chosen_numeral from training_f and return in a multimap
-        std::multimap<unsigned char, std::pair<int, morph::vvec<float>> >
+        std::multimap<unsigned char, std::pair<int, sm::vvec<float>> >
         debug_oneshot (unsigned int num = 10, unsigned int chosen_numeral = 0)
         {
-            std::multimap<unsigned char, std::pair<int, morph::vvec<float>> > rtn;
+            std::multimap<unsigned char, std::pair<int, sm::vvec<float>> > rtn;
             for (unsigned char numeral = 0; numeral < num; ++numeral) {
                 unsigned char modnum = chosen_numeral%10;
                 auto range = this->training_f.equal_range (modnum);
@@ -217,7 +218,7 @@ namespace morph {
                 size_t rsz = 0;
                 for (auto i = range.first; i != range.second; ++i, ++rsz) {}
                 // Choose random number between 0 and rsz. Select that one.
-                morph::rand_uniform<size_t> rng(0, rsz);
+                sm::rand_uniform<size_t> rng(0, rsz);
                 size_t tgt = rng.get();
                 auto i = range.first;
                 size_t j = 0;
@@ -228,26 +229,26 @@ namespace morph {
         }
 
         // Get the training example with ID _id out of training_f
-        std::tuple<int, unsigned char, morph::vvec<float>> training_example (int _id)
+        std::tuple<int, unsigned char, sm::vvec<float>> training_example (int _id)
         {
             for (auto ex : this->training_f) {
                 if (ex.second.first == _id) {
                     return std::make_tuple (ex.second.first, ex.first, ex.second.second);
                 }
             }
-            morph::vvec<float> empty (mnlen, 0.0f);
+            sm::vvec<float> empty (mnlen, 0.0f);
             return std::make_tuple (_id, 255, empty);
         }
 
         // Get the training example with ID _id out of test_f
-        std::tuple<int, unsigned char, morph::vvec<float>> test_example (int _id)
+        std::tuple<int, unsigned char, sm::vvec<float>> test_example (int _id)
         {
             for (auto ex : this->test_f) {
                 if (ex.second.first == _id) {
                     return std::make_tuple (ex.second.first, ex.first, ex.second.second);
                 }
             }
-            morph::vvec<float> empty (mnlen, 0.0f);
+            sm::vvec<float> empty (mnlen, 0.0f);
             return std::make_tuple (_id, 255, empty);
         }
 
@@ -268,7 +269,7 @@ namespace morph {
         //! Map of MNIST example index number and a pair of numbers that are 'bad
         //! label', 'good label'. If good label is 255, then that means ambiguous. I
         //! don't have an equivalent list for the MNIST training data.
-        std::map<int, morph::vec<unsigned char,2>> badlabels_test = { // This list relates to test data only.
+        std::map<int, sm::vec<unsigned char,2>> badlabels_test = { // This list relates to test data only.
             {947,  {8,9}   },
             {6651, {0,6}   },
             {2597, {5,3}   },
@@ -287,10 +288,10 @@ namespace morph {
         //! as its first element, the ID of the image (sequential order of appearance in
         //! the data file, counting from 0) and as its second element a vvec of the
         //! training image data. This is 60000 examples.
-        std::multimap<unsigned char, std::pair<int, morph::vvec<float>> > training_f;
+        std::multimap<unsigned char, std::pair<int, sm::vvec<float>> > training_f;
 
         //! The test data. 10000 examples. Key/Value same as in training_f.
-        std::multimap<unsigned char, std::pair<int, morph::vvec<float>> > test_f;
+        std::multimap<unsigned char, std::pair<int, sm::vvec<float>> > test_f;
     };
 
 } // namespace morph

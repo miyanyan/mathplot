@@ -1,14 +1,17 @@
 /*
  * Visualize a graph of the logistic map
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
-#include <morph/vvec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
+
+#include <sm/vec>
+#include <sm/vvec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/GraphVisual.h>
 
 int main()
 {
@@ -20,9 +23,9 @@ int main()
     v.lightingEffects();
 
     try {
-        morph::vvec<double> absc;
-        morph::vvec<double> ord;
-        auto gv = std::make_unique<morph::GraphVisual<double>>(morph::vec<float>({0,0,0}));
+        sm::vvec<double> absc;
+        sm::vvec<double> ord;
+        auto gv = std::make_unique<morph::GraphVisual<double>>(sm::vec<float>({0,0,0}));
         v.bindmodel (gv);
 
         double x = 0.5;

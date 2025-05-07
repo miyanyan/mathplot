@@ -6,9 +6,9 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
 
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
@@ -19,24 +19,24 @@ int main()
 {
     morph::Visual v(1600, 1000, "Demo of HexGrid::resampleImage");
 
-    morph::hexgrid hg(0.01f, 3.0f, 0.0f);
+    sm::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (1.2f);
 
     // Load an image with the help of morph::loadpng().
     std::string fn = "../examples/bike256.png";
-    morph::vvec<float> image_data;
-    morph::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
+    sm::vvec<float> image_data;
+    sm::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
 
     // This controls how large the photo will be on the HexGrid
-    morph::vec<float,2> image_scale = {1.8f, 1.8f};
+    sm::vec<float,2> image_scale = {1.8f, 1.8f};
     // You can shift the photo with an offset if necessary
-    morph::vec<float,2> image_offset = {0.0f, 0.0f};
+    sm::vec<float,2> image_offset = {0.0f, 0.0f};
 
     // Here's the HexGrid method that will resample the square pixel grid onto the hex grid
-    morph::vvec<float> hex_image_data = hg.resampleImage (image_data, dims[1], image_scale, image_offset);
+    sm::vvec<float> hex_image_data = hg.resampleImage (image_data, dims[1], image_scale, image_offset);
 
     // Now visualise with a HexGridVisual
-    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, morph::vec<float>({0,0,0}));
+    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, sm::vec<float>({0,0,0}));
     v.bindmodel (hgv);
 
     // Set the image data as the scalar data for the HexGridVisual

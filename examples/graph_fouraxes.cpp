@@ -1,14 +1,17 @@
 /*
  * Visualize a graph
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
-#include <morph/vvec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
+
+#include <sm/vec>
+#include <sm/vvec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/GraphVisual.h>
 
 int main()
 {
@@ -23,17 +26,17 @@ int main()
     v.lightingEffects();
 
     try {
-        morph::vvec<float> absc =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
+        sm::vvec<float> absc =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
 
         float step = 1.4f;
         float row2 = 1.2f;
 
         morph::DatasetStyle ds;
 
-        auto gv = std::make_unique<morph::GraphVisual<float>>(morph::vec<float>({0,0,0}));
+        auto gv = std::make_unique<morph::GraphVisual<float>>(sm::vec<float>({0,0,0}));
         v.bindmodel (gv);
-        morph::vvec<float> data = absc.pow(3);
-        morph::vec<float, 14> ardata;
+        sm::vvec<float> data = absc.pow(3);
+        sm::vec<float, 14> ardata;
         ardata.set_from (static_cast<std::vector<float>>(data));
 
         ds.linecolour =  {1.0, 0.0, 0.0};
@@ -53,9 +56,9 @@ int main()
         gv->finalize();
         v.addVisualModel (gv);
 
-        gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({step,0,0}));
+        gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({step,0,0}));
         v.bindmodel (gv);
-        morph::vvec<float> data2 = absc.pow(2);
+        sm::vvec<float> data2 = absc.pow(2);
         ds.linecolour = {0.0, 0.0, 1.0};
         ds.markerstyle = morph::markerstyle::hexagon;
         ds.markercolour = {0.0, 0.0, 0.0};
@@ -67,9 +70,9 @@ int main()
         gv->finalize();
         v.addVisualModel (gv);
 
-        gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,-row2,0}));
+        gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,-row2,0}));
         v.bindmodel (gv);
-        morph::vvec<float> data3 = absc.pow(4);
+        sm::vvec<float> data3 = absc.pow(4);
         gv->setsize (1,0.8);
         ds.linecolour = {0.0, 1.0, 0.0};
         ds.markerstyle = morph::markerstyle::circle;
@@ -85,13 +88,13 @@ int main()
         gv->finalize();
         v.addVisualModel (gv);
 
-        gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({step,-row2,0}));
+        gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({step,-row2,0}));
         v.bindmodel (gv);
         absc.resize(1000, 0.0f);
         for (int i = 0; i < 1000; ++i) {
             absc[i] = static_cast<float>(i-500) * 0.01f;
         }
-        morph::vvec<float> data4 = absc.pow(5);
+        sm::vvec<float> data4 = absc.pow(5);
         gv->setsize (1,0.8);
         ds.linecolour = {0.0, 0.0, 1.0};
         ds.markerstyle = morph::markerstyle::none;

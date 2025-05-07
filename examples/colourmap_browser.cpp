@@ -10,8 +10,8 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/grid.h>
+#include <sm/vec>
+#include <sm/grid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -42,12 +42,12 @@ protected:
 static constexpr unsigned int Nside_w = 512;
 static constexpr unsigned int Nside_h = 256;
 
-morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type, const morph::grid<>& grid, const std::vector<float>& data)
+morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type, const sm::grid<>& grid, const std::vector<float>& data)
 {
     morph::VisualModel<>* vmp = nullptr;
     morph::ColourMap<float> nextmap (display_map_type);
     if (nextmap.flags.test(morph::ColourMapFlags::cyclic) == true) {
-        morph::vec<float, 3> offset = {0,0,0};
+        sm::vec<float, 3> offset = {0,0,0};
         auto cv = std::make_unique<morph::CyclicColourVisual<float>>(offset);
         v.bindmodel (cv);
         cv->outer_radius = 0.6;
@@ -57,11 +57,11 @@ morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type
         cv->cm = nextmap;
         cv->draw_ticks = false;
         cv->addLabel (cv->cm.getTypeStr() + std::string(" (") + cv->cm.getFlagsStr() + std::string(")"),
-                      morph::vec<float>({-1.3, -0.4, 0}), morph::TextFeatures(0.05f));
+                      sm::vec<float>({-1.3, -0.4, 0}), morph::TextFeatures(0.05f));
         cv->finalize();
         vmp = v.addVisualModel (cv);
     } else {
-        morph::vec<float, 3> offset = { -0.5f * grid.width(), -0.5f * grid.height(), 0.0f };
+        sm::vec<float, 3> offset = { -0.5f * grid.width(), -0.5f * grid.height(), 0.0f };
         auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
         v.bindmodel (gv);
         gv->gridVisMode = morph::GridVisMode::Triangles;
@@ -70,7 +70,7 @@ morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type
         gv->cm = nextmap;
         gv->zScale.null_scaling();
         gv->addLabel (gv->cm.getTypeStr() + std::string(" (") + gv->cm.getFlagsStr() + std::string(")"),
-                      morph::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05f));
+                      sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05f));
         gv->finalize();
         vmp = v.addVisualModel (gv);
     }
@@ -80,13 +80,13 @@ morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type
 int main()
 {
     myvisual v(2100, 1100, "Colourbar perceptual uniformity test");
-    v.setSceneTrans (morph::vec<float,3>{ float{-0.00636619}, float{0.0518834}, float{-3} });
+    v.setSceneTrans (sm::vec<float,3>{ float{-0.00636619}, float{0.0518834}, float{-3} });
 
     // Create a grid for the colourmaps
     constexpr float barw = 2.56f;
     constexpr float barh = 0.5f;
-    constexpr morph::vec<float, 2> grid_spacing = {barw/static_cast<float>(Nside_w), barh/static_cast<float>(Nside_h)};
-    morph::grid grid(Nside_w, Nside_h, grid_spacing);
+    constexpr sm::vec<float, 2> grid_spacing = {barw/static_cast<float>(Nside_w), barh/static_cast<float>(Nside_h)};
+    sm::grid grid(Nside_w, Nside_h, grid_spacing);
 
     // Our data is a ramp with a sine wave embossed on it
     std::vector<float> data(grid.n(), 0.0);

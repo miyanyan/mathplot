@@ -6,8 +6,8 @@
 #include <vector>
 #include <string>
 #include <format>
-#include <morph/scale.h>
-#include <morph/vec.h>
+#include <sm/scale>
+#include <sm/vec>
 #include <morph/Visual.h>
 #include <morph/ColourBarVisual.h>
 
@@ -16,12 +16,12 @@ int main()
     // Contructor args are width, height, title
     std::string title_str = "ColourMaps";
     morph::Visual v(1000, 1200, title_str);
-    v.setSceneTrans (morph::vec<float,3>{ float{-1.11157}, float{0.762484}, float{-5.7} });
+    v.setSceneTrans (sm::vec<float,3>{ float{-1.11157}, float{0.762484}, float{-5.7} });
 
-    morph::scale<float> scale1;
+    sm::scale<float> scale1;
     scale1.compute_scaling (0, 1); // Simply maps 0->1 to 0->1!
 
-    morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // Hue-variable 1D maps
     std::vector<morph::ColourMapType> cmap_types;
@@ -79,12 +79,12 @@ int main()
     cmap_types.push_back (morph::ColourMapType::Monoval);
     cmap_types.push_back (morph::ColourMapType::Monoval);
 
-    std::array<float, 3> purple = morph::vec<int, 3>({0x68, 0x31, 0x92}).as_float()/255.0f;
-    std::array<float, 3> orange = morph::vec<int, 3>({0xdf, 0x5e, 0x26}).as_float()/255.0f;
-    std::array<float, 3> blue = morph::vec<int, 3>({0x2a, 0x37, 0x91}).as_float()/255.0f;
-    std::array<float, 3> green = morph::vec<int, 3>({0x5b, 0x89, 0x3d}).as_float()/255.0f;
-    //std::array<float, 3> purple2 = morph::vec<int, 3>({0xa4, 0x84, 0xbc}).as_float()/255.0f;
-    std::array<float, 3> orange2 = morph::vec<int, 3>({0xee, 0x9f, 0x7d}).as_float()/255.0f;
+    std::array<float, 3> purple = sm::vec<int, 3>({0x68, 0x31, 0x92}).as_float()/255.0f;
+    std::array<float, 3> orange = sm::vec<int, 3>({0xdf, 0x5e, 0x26}).as_float()/255.0f;
+    std::array<float, 3> blue = sm::vec<int, 3>({0x2a, 0x37, 0x91}).as_float()/255.0f;
+    std::array<float, 3> green = sm::vec<int, 3>({0x5b, 0x89, 0x3d}).as_float()/255.0f;
+    //std::array<float, 3> purple2 = sm::vec<int, 3>({0xa4, 0x84, 0xbc}).as_float()/255.0f;
+    std::array<float, 3> orange2 = sm::vec<int, 3>({0xee, 0x9f, 0x7d}).as_float()/255.0f;
 
     std::vector<std::array<float, 3>> clrs;
     clrs.push_back (purple);

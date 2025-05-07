@@ -1,14 +1,14 @@
 /*
  * Visualize a graph
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
-#include <morph/vvec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
+#include <sm/vvec>
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/GraphVisual.h>
 
 int main()
 {
@@ -32,11 +32,11 @@ int main()
     static constexpr bool setup_axes = true;
 
     try {
-        morph::vvec<float> _absc =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
-        morph::vvec<float> data = _absc.pow(3);
+        sm::vvec<float> _absc =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
+        sm::vvec<float> data = _absc.pow(3);
         std::deque<float> absc (_absc.size());
         std::copy (_absc.begin(), _absc.end(), absc.begin());
-        auto gvup = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0}));
+        auto gvup = std::make_unique<morph::GraphVisual<float>> (sm::vec<float, 3>{0.0f});
         v.bindmodel (gvup);
 
         // Here, we change the size of the graph and range of the axes (this is optional

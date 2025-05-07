@@ -1,10 +1,10 @@
 // A line graph showing how line segments work nicely
 // Also demonstrates crossing points
 
+#include <format>
+#include <sm/vvec>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/vvec.h>
-#include <format>
 
 int main()
 {
@@ -12,19 +12,19 @@ int main()
     morph::Visual v(1024, 768, "Made with morph::GraphVisual");
 
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>{ 0.0f, 0.0f, 0.0f });
+    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>{ 0.0f, 0.0f, 0.0f });
 
     // This mandatory line of boilerplate code sets the parent pointer in GraphVisual and binds some functions
     v.bindmodel (gv);
 
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
-    morph::vvec<double> y;
+    sm::vvec<double> y;
 
     // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
     y.linspace (0, 10, 11);
 
     // Hand chosen numbers
-    morph::vvec<double> x = { 5, 8, 2, 9, 1, 2, 4, 5, 8, 3, 1 };
+    sm::vvec<double> x = { 5, 8, 2, 9, 1, 2, 4, 5, 8, 3, 1 };
 
     // Choose a line graph by creating a lines stylepolicy datasetstyle.
     morph::DatasetStyle ds (morph::stylepolicy::lines);
@@ -43,7 +43,7 @@ int main()
 
     // Find, and annotate with vertical lines, the locations where the graph crosses
     // x=3.3. The y values of the crossing points are returned.
-    morph::vvec<double> ycross = gv->add_x_crossing_lines (x, y, 3.3, ds, ds_vert);
+    sm::vvec<double> ycross = gv->add_x_crossing_lines (x, y, 3.3, ds, ds_vert);
 
     size_t n = ycross.size();
     std::stringstream ss;

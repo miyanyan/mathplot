@@ -1,21 +1,24 @@
 // Twinax graph
+#include <sm/vec>
+#include <sm/vvec>
+
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/vvec.h>
 #include <morph/unicode.h>
-namespace uc = morph::unicode;
 
 int main()
 {
+    namespace uc = morph::unicode;
+
     // Set up a morph::Visual 'scene environment'.
     morph::Visual v(1024, 768, "Twinax GraphVisual example");
     // Create a new GraphVisual with offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({0,0,0}));
+    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
     // This is going to be a twin axis graph
     gv->axisstyle = morph::axisstyle::twinax;
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
-    morph::vvec<double> x;
+    sm::vvec<double> x;
     // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
     x.linspace (-0.5, 0.8, 14);
 

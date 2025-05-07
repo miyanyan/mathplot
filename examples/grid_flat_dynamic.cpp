@@ -8,10 +8,11 @@
 #include <cmath>
 #include <chrono>
 
-#include <morph/vec.h>
+#include <sm/vec>
+#include <sm/grid>
+
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
-#include <morph/grid.h>
 #include <morph/GridVisual.h>
 
 int main()
@@ -25,8 +26,8 @@ int main()
 
     // Create a grid to show in the scene
     constexpr unsigned int Nside = 400; // You can change this
-    constexpr morph::vec<float, 2> grid_spacing = {0.01f, 0.01f};
-    morph::grid grid(Nside, Nside, grid_spacing);
+    constexpr sm::vec<float, 2> grid_spacing = {0.01f, 0.01f};
+    sm::grid grid(Nside, Nside, grid_spacing);
     std::cout << "Number of pixels in grid:" << grid.n() << std::endl;
 
     // Make some dummy data (a sine wave) to make an interesting surface
@@ -34,7 +35,7 @@ int main()
 
     float step = 0.6f;
     // Add a GridVisual to display the Grid within the morph::Visual scene
-    morph::vec<float, 3> offset = { -step * grid.width(), -step * grid.width(), 0.0f };
+    sm::vec<float, 3> offset = { -step * grid.width(), -step * grid.width(), 0.0f };
 
     auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
@@ -45,7 +46,7 @@ int main()
     gv->zScale.null_scaling();
     gv->colourScale.do_autoscale = false;
     gv->colourScale.compute_scaling (-1, 1);
-    gv->addLabel (std::string("GridVisMode::Triangles, cm: ") + gv->cm.getTypeStr(), morph::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03f));
+    gv->addLabel (std::string("GridVisMode::Triangles, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03f));
     gv->finalize();
     auto gvp = v.addVisualModel (gv);
 

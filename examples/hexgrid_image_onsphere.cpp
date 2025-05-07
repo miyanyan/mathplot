@@ -10,9 +10,9 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
 
 #include <morph/loadpng.h>
 #include <morph/Visual.h>
@@ -29,7 +29,7 @@ enum class spherical_projection
 
 int main()
 {
-    using mc = morph::mathconst<float>;
+    using mc = sm::mathconst<float>;
     constexpr spherical_projection proj = spherical_projection::mercator;
 
     morph::Visual v(1600, 1000, "Spherically transformed HexGrid");
@@ -39,7 +39,7 @@ int main()
 
     constexpr float hex_d = 0.02;
     constexpr float hex_span = mc::two_pi * r_sph;
-    morph::hexgrid hg(hex_d, 2.0f * hex_span, 0.0f);
+    sm::hexgrid hg(hex_d, 2.0f * hex_span, 0.0f);
     if constexpr (proj == spherical_projection::splodge) {
         hg.setCircularBoundary (0.95f * r_sph);
     } else {
@@ -50,27 +50,27 @@ int main()
 
     // Load an image with morph::loadpng()
     std::string fn = "../examples/bike256.png";
-    morph::vvec<float> image_data;
-    morph::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
+    sm::vvec<float> image_data;
+    sm::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
 
     // This controls how large the photo will be on the HexGrid
-    morph::vec<float,2> image_scale = {3.2f, 3.2f};
+    sm::vec<float,2> image_scale = {3.2f, 3.2f};
     if constexpr (proj == spherical_projection::splodge) {
         image_scale = {2.8f, 2.8f};
     }
 
     // You can shift the photo with an offset if necessary
-    morph::vec<float,2> image_offset = {0.0f, 0.0f};
+    sm::vec<float,2> image_offset = {0.0f, 0.0f};
 
     // Here's the HexGrid method that will resample the square pixel grid onto the hex grid
-    morph::vvec<float> hex_image_data = hg.resampleImage (image_data, dims[0], image_scale, image_offset);
+    sm::vvec<float> hex_image_data = hg.resampleImage (image_data, dims[0], image_scale, image_offset);
 
     // hg has d_x and d_y. Can make up a new container of 3D locations for each hex.
-    morph::vvec<morph::vec<float, 3>> sphere_coords(hg.num());
+    sm::vvec<sm::vec<float, 3>> sphere_coords(hg.num());
     for (unsigned int i = 0u; i < hg.num(); ++i) {
         // This is the inverse Mercator projection.
         // See https://stackoverflow.com/questions/12732590/how-map-2d-grid-points-x-y-onto-sphere-as-3d-points-x-y-z
-        morph::vec<float, 2> xy = { hg.d_x[i], hg.d_y[i] };
+        sm::vec<float, 2> xy = { hg.d_x[i], hg.d_y[i] };
         float longitude = 0.0f; // or lambda
         float latitude = 0.0f;  // or phi
         if constexpr (proj == spherical_projection::equirectangular) {
@@ -123,7 +123,7 @@ int main()
     }
 
     // Now visualise with a HexGridVisual
-    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, morph::vec<float>{1.5,0,0});
+    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, sm::vec<float>{1.5,0,0});
     v.bindmodel (hgv);
     // Set the image data as the scalar data for the HexGridVisual
     hgv->setScalarData (&hex_image_data);
@@ -131,19 +131,19 @@ int main()
     hgv->setDataCoords (&sphere_coords);
     // The inverse greyscale map is appropriate for a monochrome image
     hgv->cm.setType (morph::ColourMapType::Inferno);
-    hgv->addLabel (label, morph::vec<float>{ 0, -1.1f * r_sph, 0 }, morph::TextFeatures(0.05f));
+    hgv->addLabel (label, sm::vec<float>{ 0, -1.1f * r_sph, 0 }, morph::TextFeatures(0.05f));
     hgv->finalize();
     v.addVisualModel (hgv);
 
     // Let's have a flat one alongside for comparison
-    hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, morph::vec<float>{-1.5,0,-1});
+    hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, sm::vec<float>{-1.5,0,-1});
     v.bindmodel (hgv);
     hgv->setScalarData (&hex_image_data);
     // The only real difference is that this has no hgv->setDataCoords(&sphere_coords) call.
     hgv->cm.setType (morph::ColourMapType::Inferno);
     hgv->zScale.setParams (0, 1); // sets a z offset of 1 across the hexgrid
     hgv->addLabel (std::string("2D hexgrid"),
-                   morph::vec<float>{1.2*r_sph, -1.2*r_sph, 1},
+                   sm::vec<float>{1.2*r_sph, -1.2*r_sph, 1},
                    morph::TextFeatures(0.05f));
     hgv->finalize();
     v.addVisualModel (hgv);
