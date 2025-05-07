@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <cstring>
-#include <sj/vec>
+#include <sm/vec>
 #include <morph/tools.h>
 
 namespace morph {
@@ -47,9 +47,9 @@ namespace morph {
             //! ID handle of the glyph texture
             unsigned int textureID;
             //! Size of glyph
-            sj::vec<int,2>  size;
+            sm::vec<int,2>  size;
             //! Offset from baseline to left/top of glyph
-            sj::vec<int,2>  bearing;
+            sm::vec<int,2>  bearing;
             //! Offset to advance to next glyph
             unsigned int advance;
         };

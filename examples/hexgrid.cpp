@@ -6,8 +6,8 @@
 #include <vector>
 #include <cmath>
 
-#include <sj/vec>
-#include <sj/hexgrid>
+#include <sm/vec>
+#include <sm/hexgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -16,7 +16,7 @@
 int main()
 {
     // Contructor args are width, height, title
-    sj::Visual<sj::gl::version_4_1> v(1600, 1000, "sj::HexGridVisual");
+    sm::Visual<sm::gl::version_4_1> v(1600, 1000, "sm::HexGridVisual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // set the x/y offset. Try pressing 'z' in the app window to see what the current sceneTrans is
@@ -30,11 +30,11 @@ int main()
     // You can switch on the "lighting shader" which puts diffuse light into the scene
     //v.lightingEffects();
     // Add some text labels to the scene
-    v.addLabel ("This is a\nsj::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
+    v.addLabel ("This is a\nsm::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a HexGrid to show in the scene. Hexes outside the circular boundary will
     // all be discarded.
-    sj::hexgrid hg(0.01f, 3.0f, 0.0f);
+    sm::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (0.6f);
     std::cout << "Number of pixels in grid:" << hg.num() << std::endl;
 
@@ -45,13 +45,13 @@ int main()
         data[ri] = 0.05f + 0.05f*std::sin(20.0f*hg.d_x[ri]) * std::sin(10.0f*hg.d_y[ri]) ; // Range 0->1
     }
 
-    // Add a HexGridVisual to display the HexGrid within the sj::Visual scene
-    sj::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
-    auto hgv = std::make_unique<sj::HexGridVisual<float,sj::gl::version_4_1>>(&hg, offset);
+    // Add a HexGridVisual to display the HexGrid within the sm::Visual scene
+    sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+    auto hgv = std::make_unique<sm::HexGridVisual<float,sm::gl::version_4_1>>(&hg, offset);
     v.bindmodel (hgv);
-    hgv->cm.setType (sj::ColourMapType::Ice);
+    hgv->cm.setType (sm::ColourMapType::Ice);
     hgv->setScalarData (&data);
-    hgv->hexVisMode = sj::HexVisMode::HexInterp; // Or sj::HexVisMode::Triangles for a smoother surface plot
+    hgv->hexVisMode = sm::HexVisMode::HexInterp; // Or sm::HexVisMode::Triangles for a smoother surface plot
     hgv->finalize();
 
     if (v.checkContext() == true) {

@@ -5,10 +5,10 @@
 #include <fstream>
 #include <cmath>
 
-#include <morph/bezcoord.h>
-#include <morph/bezcurvepath.h>
+#include <sm/bezcoord>
+#include <sm/bezcurvepath>
 
-#include "morph/ReadCurves.h"
+#include <morph/ReadCurves.h>
 
 int main()
 {
@@ -16,7 +16,7 @@ int main()
 
     try {
         morph::ReadCurves r("../../tests/trial.svg");
-        morph::bezcurvepath<float> bcp = r.getCorticalPath();
+        sm::bezcurvepath<float> bcp = r.getCorticalPath();
         bcp.computePoints (0.01f);
         std::vector<morph::bezcoord<float>> pts = bcp.getPoints();
         std::cout << "Got " << pts.size() << " points with getPoints()" << std::endl;

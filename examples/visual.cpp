@@ -6,8 +6,8 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/hexgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -23,7 +23,7 @@ int main()
     // Various methods to set the 'scene translation'. Try pressing 'z' in the app window to see what the current sceneTrans is
     v.setSceneTransXY (0.0f, 0.0f);
     v.setSceneTransZ (-6.0f);
-    v.setSceneTrans (morph::vec<float, 3>{0.0f, 0.0f, -6.0f});
+    v.setSceneTrans (sm::vec<float, 3>{0.0f, 0.0f, -6.0f});
     // Make this larger to "scroll in and out of the image" faster
     v.scenetrans_stepsize = 0.5;
     // The coordinate arrows can be hidden
@@ -42,7 +42,7 @@ int main()
     v.addLabel ("This is a\nmorph::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a hexgrid to show in the scene
-    morph::hexgrid hg(0.01, 3, 0);
+    sm::hexgrid hg(0.01, 3, 0);
     hg.setCircularBoundary (0.3);
     std::cout << "Number of hexes in grid:" << hg.num() << std::endl;
 
@@ -53,7 +53,7 @@ int main()
     }
 
     // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
-    morph::vec<float, 3> offset = { 0.0, -0.05, 0.0 };
+    sm::vec<float, 3> offset = { 0.0, -0.05, 0.0 };
     auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);

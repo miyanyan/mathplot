@@ -4,8 +4,8 @@
 #include <vector>
 #include <array>
 
-#include <morph/cartgrid.h>
-#include <morph/vec.h>
+#include <sm/cartgrid>
+#include <sm/vec>
 
 #include <morph/tools.h>
 #include <morph/VisualDataModel.h>
@@ -50,10 +50,10 @@ namespace morph {
     {
     public:
         //! Single constructor for simplicity
-        CartGridVisual(const cartgrid* _cg, const vec<float> _offset)
+        CartGridVisual(const sm::cartgrid* _cg, const sm::vec<float> _offset)
         {
             // Set up...
-            morph::vec<float> pixel_offset = { _cg->getd()/2.0f, _cg->getv()/2.0f, 0.0f };
+            sm::vec<float> pixel_offset = { _cg->getd()/2.0f, _cg->getv()/2.0f, 0.0f };
             this->mv_offset = _offset + pixel_offset;
             this->viewmatrix.translate (this->mv_offset);
             // Defaults for z and colourScale
@@ -92,7 +92,7 @@ namespace morph {
 
             if (this->showborder == true) {
                 // Draw around the outside.
-                morph::vec<float, 4> cg_extents = this->cg->get_extents(); // {xmin, xmax, ymin, ymax}
+                sm::vec<float, 4> cg_extents = this->cg->get_extents(); // {xmin, xmax, ymin, ymax}
                 float bthick    = this->border_thickness_fixed ? this->border_thickness_fixed : this->cg->getd() * this->border_thickness;
                 float bz = this->cg->getd() / 10.0f;
                 float half_bthick = bthick/2.0f;
@@ -100,10 +100,10 @@ namespace morph {
                 float right = cg_extents[1] + half_bthick + (this->cg->getd()/2.0f) + this->centering_offset[0];
                 float bot   = cg_extents[2] - half_bthick - (this->cg->getv()/2.0f) + this->centering_offset[1];
                 float top   = cg_extents[3] + half_bthick + (this->cg->getv()/2.0f) + this->centering_offset[1];
-                morph::vec<float> lb = {{left, bot, bz}}; // z?
-                morph::vec<float> lt = {{left, top, bz}};
-                morph::vec<float> rt = {{right, top, bz}};
-                morph::vec<float> rb = {{right, bot, bz}};
+                sm::vec<float> lb = {{left, bot, bz}}; // z?
+                sm::vec<float> lt = {{left, top, bz}};
+                sm::vec<float> rt = {{right, top, bz}};
+                sm::vec<float> rb = {{right, bot, bz}};
                 this->computeTube (lb, lt, this->border_colour, this->border_colour, bthick, 12);
                 this->computeTube (lt, rt, this->border_colour, this->border_colour, bthick, 12);
                 this->computeTube (rt, rb, this->border_colour, this->border_colour, bthick, 12);
@@ -231,7 +231,7 @@ namespace morph {
 
             float datum = 0.0f;
 
-            morph::vec<float> vtx_0, vtx_1, vtx_2;
+            sm::vec<float> vtx_0, vtx_1, vtx_2;
             for (unsigned int ri = 0; ri < nrect; ++ri) {
 
                 // Use the linear scaled copy of the data, dcopy.
@@ -323,9 +323,9 @@ namespace morph {
                 // HexGridVisual will be coloured the same as the front. To get lighting
                 // effects to look really good, the back of the surface could need the
                 // opposite normal.
-                morph::vec<float> plane1 = vtx_1 - vtx_0;
-                morph::vec<float> plane2 = vtx_2 - vtx_0;
-                morph::vec<float> vnorm = plane2.cross (plane1);
+                sm::vec<float> plane1 = vtx_1 - vtx_0;
+                sm::vec<float> plane2 = vtx_2 - vtx_0;
+                sm::vec<float> vnorm = plane2.cross (plane1);
                 vnorm.renormalize();
                 this->vertex_push (vnorm, this->vertexNormals);
                 this->vertex_push (vnorm, this->vertexNormals);
@@ -396,9 +396,9 @@ namespace morph {
                     // HexGridVisual will be coloured the same as the front. To get lighting
                     // effects to look really good, the back of the surface could need the
                     // opposite normal.
-                    morph::vec<float> plane1 = vtx_1 - vtx_0;
-                    morph::vec<float> plane2 = vtx_2 - vtx_0;
-                    morph::vec<float> vnorm = plane2.cross (plane1);
+                    sm::vec<float> plane1 = vtx_1 - vtx_0;
+                    sm::vec<float> plane2 = vtx_2 - vtx_0;
+                    sm::vec<float> vnorm = plane2.cross (plane1);
                     vnorm.renormalize();
                     this->vertex_push (vnorm, this->vertexNormals);
                     this->vertex_push (vnorm, this->vertexNormals);
@@ -489,7 +489,7 @@ namespace morph {
         }
 
         //! The cartgrid to visualize
-        const cartgrid* cg;
+        const sm::cartgrid* cg;
 
         //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
         std::vector<float> dcopy;
@@ -502,7 +502,7 @@ namespace morph {
         // this->mv_offset. This is computed so that you *add* centering_offset to each
         // computed x/y/z position for a rectangle, and this means that the rectangle
         // will be centered around mv_offset.
-        morph::vec<float, 3> centering_offset = { 0.0f, 0.0f, 0.0f };
+        sm::vec<float, 3> centering_offset = { 0.0f, 0.0f, 0.0f };
     };
 
 } // namespace morph

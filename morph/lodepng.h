@@ -6130,7 +6130,7 @@ static unsigned unfilterScanline(unsigned char* recon, const unsigned char* scan
   the filter works byte per byte (bytewidth = 1)
   precon is the previous unfiltered scanline, recon the result, scanline the current one
   the incoming scanlines do NOT include the filtertype byte, that one is given in the parameter filterType instead
-  recon and scanline MAY be the same memory address! precon must be disjoint.
+  recon and scanline MAY be the same memory address! precon must be dismoint.
   */
 
   size_t i;

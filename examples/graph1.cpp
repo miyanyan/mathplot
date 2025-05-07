@@ -1,18 +1,18 @@
 // Visualize a graph. Minimal example showing how a default graph appears
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <sj/vvec>
+#include <sm/vvec>
 
 int main()
 {
     // Set up a morph::Visual 'scene environment'.
     morph::Visual v(1024, 768, "Made with morph::GraphVisual");
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sj::vec<float>({0,0,0}));
+    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     // This mandatory line of boilerplate code sets the parent pointer in GraphVisual and binds some functions
     v.bindmodel (gv);
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
-    sj::vvec<double> x;
+    sm::vvec<double> x;
     // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
     x.linspace (-0.5, 0.8, 14);
     // Set a graph up of y = x^3

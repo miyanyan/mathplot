@@ -4,10 +4,10 @@
 #pragma once
 
 #include <vector>
-#include <morph/vec.h>
+#include <sm/vec>
+#include <sm/scale>
 #include <morph/VisualModel.h>
 #include <morph/ColourMap.h>
-#include <morph/scale.h>
 
 namespace morph {
 
@@ -17,12 +17,8 @@ namespace morph {
     class VisualDataModel : public VisualModel<glver>
     {
     public:
-        VisualDataModel()
-            : morph::VisualModel<glver>::VisualModel() {}
-
-        VisualDataModel (const vec<float> _offset)
-            : morph::VisualModel<glver>::VisualModel (_offset) {}
-
+        VisualDataModel() : morph::VisualModel<glver>::VisualModel() {}
+        VisualDataModel (const sm::vec<float> _offset) : morph::VisualModel<glver>::VisualModel (_offset) {}
         //! Deconstructor should *not* deallocate data - client code should do that
         ~VisualDataModel() {}
 
@@ -47,25 +43,25 @@ namespace morph {
         }
         void clearAutoscaleVector() { if (this->vectorScale.do_autoscale == true) { this->vectorScale.reset(); } }
 
-        void setZScale (const scale<T, float>& zscale) { this->zScale = zscale; }
-        void setCScale (const scale<T, float>& cscale) { this->colourScale = cscale; }
+        void setZScale (const sm::scale<T, float>& zscale) { this->zScale = zscale; }
+        void setCScale (const sm::scale<T, float>& cscale) { this->colourScale = cscale; }
         void setScalarData (const std::vector<T>* _data) { this->scalarData = _data; }
-        void setVectorData (const std::vector<vec<T>>* _vectors) { this->vectorData = _vectors; }
-        void setDataCoords (std::vector<vec<float>>* _coords) { this->dataCoords = _coords; }
+        void setVectorData (const std::vector<sm::vec<T>>* _vectors) { this->vectorData = _vectors; }
+        void setDataCoords (std::vector<sm::vec<float>>* _coords) { this->dataCoords = _coords; }
 
-        void updateZScale (const scale<T, float>& zscale)
+        void updateZScale (const sm::scale<T, float>& zscale)
         {
             this->zScale = zscale;
             this->reinit();
         }
 
-        void updateCScale (const scale<T, float>& cscale)
+        void updateCScale (const sm::scale<T, float>& cscale)
         {
             this->colourScale = cscale;
             this->reinit();
         }
 
-        void setVectorScale (const scale<vec<T>>& vscale)
+        void setVectorScale (const sm::scale<sm::vec<T>>& vscale)
         {
             this->vectorScale = vscale;
             this->reinit();
@@ -85,7 +81,7 @@ namespace morph {
         }
 
         //! Update the scalar data with an associated z-scaling
-        void updateData (const std::vector<T>* _data, const scale<T, float>& zscale)
+        void updateData (const std::vector<T>* _data, const sm::scale<T, float>& zscale)
         {
             this->scalarData = _data;
             this->zScale = zscale;
@@ -93,7 +89,7 @@ namespace morph {
         }
 
         //! Update the scalar data, along with both the z-scaling and the colour-scaling
-        void updateData (const std::vector<T>* _data, const scale<T, float>& zscale, const scale<T, float>& cscale)
+        void updateData (const std::vector<T>* _data, const sm::scale<T, float>& zscale, const sm::scale<T, float>& cscale)
         {
             this->scalarData = _data;
             this->zScale = zscale;
@@ -102,8 +98,8 @@ namespace morph {
         }
 
         //! Update coordinate data and scalar data along with z-scaling for scalar data
-        virtual void updateData (std::vector<vec<float>>* _coords, const std::vector<T>* _data,
-                                 const scale<T, float>& zscale)
+        virtual void updateData (std::vector<sm::vec<float>>* _coords, const std::vector<T>* _data,
+                                 const sm::scale<T, float>& zscale)
         {
             this->dataCoords = _coords;
             this->scalarData = _data;
@@ -112,8 +108,8 @@ namespace morph {
         }
 
         //! Update coordinate data and scalar data along with z- and colour-scaling for scalar data
-        virtual void updateData (std::vector<vec<float>>* _coords, const std::vector<T>* _data,
-                                 const scale<T, float>& zscale, const scale<T, float>& cscale)
+        virtual void updateData (std::vector<sm::vec<float>>* _coords, const std::vector<T>* _data,
+                                 const sm::scale<T, float>& zscale, const sm::scale<T, float>& cscale)
         {
             this->dataCoords = _coords;
             this->scalarData = _data;
@@ -123,21 +119,21 @@ namespace morph {
         }
 
         //! Update just the coordinate data
-        virtual void updateCoords (std::vector<vec<float>>* _coords)
+        virtual void updateCoords (std::vector<sm::vec<float>>* _coords)
         {
             this->dataCoords = _coords;
             this->reinit();
         }
 
         //! Update the vector data (for plotting quiver plots)
-        void updateData (const std::vector<vec<T>>* _vectors)
+        void updateData (const std::vector<sm::vec<T>>* _vectors)
         {
             this->vectorData = _vectors;
             this->reinit();
         }
 
         //! Update both coordinate and vector data
-        void updateData (std::vector<vec<float>>* _coords, const std::vector<vec<T>>* _vectors)
+        void updateData (std::vector<sm::vec<float>>* _coords, const std::vector<sm::vec<T>>* _vectors)
         {
             this->dataCoords = _coords;
             this->vectorData = _vectors;
@@ -150,21 +146,21 @@ namespace morph {
 
         //! A Scaling function for the colour map. Perhaps a scale class contains a
         //! colour map? If not, then this scale might well be autoscaled. Applied to scalarData.
-        scale<T, float> colourScale;
+        sm::scale<T, float> colourScale;
         //! Scale for second colour (when used with vectorData). This is used if the ColourMap cm is
         //! ColourMapType::DuoChrome of ColourMapType::HSV.
-        scale<T, float> colourScale2;
+        sm::scale<T, float> colourScale2;
         //! scale for third colour (when used with vectorData). Use if ColourMap cm is
         //! ColourMapType::TriChrome.
-        scale<T, float> colourScale3;
+        sm::scale<T, float> colourScale3;
 
         //! A scale to scale (or autoscale) scalarData. This might be used to set z
         //! locations of data coordinates based on scalarData. The scaling may
-        scale<T, float> zScale;
+        sm::scale<T, float> zScale;
 
         //! A scaling function for the vectorData. This will scale the lengths of the
         //! vectorData.
-        scale<vec<T>> vectorScale;
+        sm::scale<sm::vec<T>> vectorScale;
 
         //! The data to visualize. T may simply be float or double, or, if the
         //! visualization is of directional information, such as in a quiver plot,
@@ -172,12 +168,12 @@ namespace morph {
 
         //! A container for vector data to visualize. Can also be used for colour of the
         //! hexes.
-        const std::vector<vec<T>>* vectorData = nullptr;
+        const std::vector<sm::vec<T>>* vectorData = nullptr;
 
         //! The coordinates at which to visualize data, if appropriate (e.g. scatter
         //! graph, quiver plot). Note fixed type of float, which is suitable for
         //! OpenGL coordinates. Not const as child code may resize or update content.
-        std::vector<vec<float>>* dataCoords = nullptr;
+        std::vector<sm::vec<float>>* dataCoords = nullptr;
     };
 
 } // namespace morph

@@ -35,7 +35,7 @@ namespace morph {
     struct VisualModelImpl : public morph::VisualModelBase<glver>
     {
         VisualModelImpl() : morph::VisualModelBase<glver>::VisualModelBase() {}
-        VisualModelImpl (const sj::vec<float>& _mv_offset) : morph::VisualModelBase<glver>::VisualModelBase(_mv_offset) {}
+        VisualModelImpl (const sm::vec<float>& _mv_offset) : morph::VisualModelBase<glver>::VisualModelBase(_mv_offset) {}
 
         //! destroy gl buffers in the deconstructor
         virtual ~VisualModelImpl()
@@ -220,7 +220,7 @@ namespace morph {
          * face with tfeatures.
          */
         morph::TextGeometry addLabel (const std::string& _text,
-                                      const sj::vec<float, 3>& _toffset,
+                                      const sm::vec<float, 3>& _toffset,
                                       const morph::TextFeatures& tfeatures = morph::TextFeatures())
         {
             if (this->get_shaderprogs(this->parentVis).tprog == 0) {
@@ -233,7 +233,7 @@ namespace morph {
 
             if (tfeatures.centre_horz == true) {
                 morph::TextGeometry tg = tmup->getTextGeometry(_text);
-                sj::vec<float, 3> centred_locn = _toffset;
+                sm::vec<float, 3> centred_locn = _toffset;
                 centred_locn[0] = -tg.half_width();
                 tmup->setupText (_text, centred_locn+this->mv_offset, tfeatures.colour);
             } else {
@@ -254,7 +254,7 @@ namespace morph {
          * VisualTextModel as necessary, after the label has been added.
          */
         morph::TextGeometry addLabel (const std::string& _text,
-                                      const sj::vec<float, 3>& _toffset,
+                                      const sm::vec<float, 3>& _toffset,
                                       morph::VisualTextModel<glver>*& tm,
                                       const morph::TextFeatures& tfeatures = morph::TextFeatures())
         {
@@ -268,7 +268,7 @@ namespace morph {
 
             if (tfeatures.centre_horz == true) {
                 morph::TextGeometry tg = tmup->getTextGeometry(_text);
-                sj::vec<float, 3> centred_locn = _toffset;
+                sm::vec<float, 3> centred_locn = _toffset;
                 centred_locn[0] = -tg.half_width();
                 tmup->setupText (_text, centred_locn+this->mv_offset, tfeatures.colour);
             } else {
@@ -284,19 +284,19 @@ namespace morph {
             return this->texts.back()->getTextGeometry();
         }
 
-        void setSceneMatrixTexts (const sj::mat44<float>& sv) final
+        void setSceneMatrixTexts (const sm::mat44<float>& sv) final
         {
             auto ti = this->texts.begin();
             while (ti != this->texts.end()) { (*ti)->setSceneMatrix (sv); ti++; }
         }
 
-        void setSceneTranslationTexts (const sj::vec<float>& v0) final
+        void setSceneTranslationTexts (const sm::vec<float>& v0) final
         {
             auto ti = this->texts.begin();
             while (ti != this->texts.end()) { (*ti)->setSceneTranslation (v0); ti++; }
         }
 
-        void setViewRotationTexts (const sj::quaternion<float>& r)
+        void setViewRotationTexts (const sm::quaternion<float>& r)
         {
             // When rotating a model that contains texts, we need to rotate the scene
             // for the texts and also inverse-rotate the view of the texts.
@@ -314,7 +314,7 @@ namespace morph {
             }
         }
 
-        void addViewRotationTexts (const sj::quaternion<float>& r)
+        void addViewRotationTexts (const sm::quaternion<float>& r)
         {
             auto ti = this->texts.begin();
             while (ti != this->texts.end()) { (*ti)->addViewRotation (r); ti++; }

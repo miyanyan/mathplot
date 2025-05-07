@@ -9,7 +9,7 @@
 #pragma once
 
 #include <array>
-#include <sj/vec>
+#include <sm/vec>
 #include <morph/gl/version.h>
 #include <morph/VisualModel.h>
 #include <morph/colour.h>
@@ -23,10 +23,10 @@ namespace morph {
     {
     public:
         CoordArrows() : morph::VisualModel<glver>() {}
-        CoordArrows (const sj::vec<float, 3>& offset) : morph::VisualModel<glver>(offset) {}
+        CoordArrows (const sm::vec<float, 3>& offset) : morph::VisualModel<glver>(offset) {}
 
         //! Must make the boilerplate bindmodel call before calling init() (for text handling)
-        void init (const sj::vec<float, 3> _lengths, const float _thickness, const float _em)
+        void init (const sm::vec<float, 3> _lengths, const float _thickness, const float _em)
         {
             this->lengths = _lengths;
             this->thickness = _thickness;
@@ -62,7 +62,7 @@ namespace morph {
                 morph::TextFeatures tfca(this->em, 48, false, morph::colour::black, morph::VisualFont::DVSansItalic);
 
                 // These texts are black by default
-                sj::vec<float> toffset = this->mv_offset;
+                sm::vec<float> toffset = this->mv_offset;
                 toffset[0] += this->lengths[0] + this->em;
                 auto vtm1 = this->makeVisualTextModel (tfca);
                 vtm1->setupText (this->x_label, toffset);
@@ -95,8 +95,8 @@ namespace morph {
 
             // Draw four spheres to make up the coord frame, with centre at 0,0,0
             // (mv_offset is applied in translation matrices)
-            sj::vec<float, 3> reloffset = {0,0,0};
-            sj::vec<float, 3> zerocoord = {0,0,0};
+            sm::vec<float, 3> reloffset = {0,0,0};
+            sm::vec<float, 3> zerocoord = {0,0,0};
             this->computeSphere (zerocoord, centresphere_col, this->thickness*this->lengths[0]/20.0);
 
             // x
@@ -120,7 +120,7 @@ namespace morph {
         }
 
         //! The lengths of the x, y and z arrows.
-        sj::vec<float, 3> lengths = { 1.0f, 1.0f, 1.0f };
+        sm::vec<float, 3> lengths = { 1.0f, 1.0f, 1.0f };
         //! A thickness scaling factor, to apply to the arrows.
         float thickness = 1.0f;
         //! m size for text labels

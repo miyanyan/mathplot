@@ -21,8 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <sm/bezcurvepath>
 #include <rapidxml/rapidxml.hpp>
-#include <morph/bezcurvepath.h>
 #include <morph/tools.h>
 
 namespace morph
@@ -168,15 +168,15 @@ namespace morph
         /*!
          * Get the cortical path as a list of bezcurves
          */
-        bezcurvepath<float> getCorticalPath() const { return this->corticalPath; }
+        sm::bezcurvepath<float> getCorticalPath() const { return this->corticalPath; }
 
         /*!
          * Get the path of an enclosed structure by name, as a list of bezcurves.
          */
-        bezcurvepath<float> getEnclosedRegion (const std::string& structName) const
+        sm::bezcurvepath<float> getEnclosedRegion (const std::string& structName) const
         {
-            morph::bezcurvepath<float> nullrtn;
-            typename std::list<morph::bezcurvepath<float>>::const_iterator i = this->enclosedRegions.begin();
+            sm::bezcurvepath<float> nullrtn;
+            typename std::list<sm::bezcurvepath<float>>::const_iterator i = this->enclosedRegions.begin();
             while (i != this->enclosedRegions.end()) {
                 if (i->name == structName) {
                     return *i;
@@ -190,7 +190,7 @@ namespace morph
          * Get all the paths of enclosed structures. This is a list of pairs, in which the name and
          * the structure path are the two parts of the pair.
          */
-        std::list<bezcurvepath<float>> getEnclosedRegions() const { return this->enclosedRegions; }
+        std::list<sm::bezcurvepath<float>> getEnclosedRegions() const { return this->enclosedRegions; }
 
         /*!
          * Save the paths to named files, with the step size being approximately step in Cartesian
@@ -199,7 +199,7 @@ namespace morph
         void save (float step = 1.0f) const
         {
             this->corticalPath.save (step);
-            typename std::list<morph::bezcurvepath<float>>::const_iterator i = this->enclosedRegions.begin();
+            typename std::list<sm::bezcurvepath<float>>::const_iterator i = this->enclosedRegions.begin();
             while (i != this->enclosedRegions.end()) {
                 i->save (step);
                 ++i;
@@ -222,7 +222,7 @@ namespace morph
          * scheme up so that I could incorporate a set of coordinates marking out structures in the
          * cortex (specifically, barrels).
          */
-        std::map<std::string, morph::vec<float, 2>> circles;
+        std::map<std::string, sm::vec<float, 2>> circles;
 
     private:
 
@@ -377,7 +377,7 @@ namespace morph
                     cy = std::atof (_attr->value());
                 }
                 if (gotx && goty) {
-                    this->circles[circ_id] = morph::vec<float,2>({cx, cy});
+                    this->circles[circ_id] = sm::vec<float,2>({cx, cy});
                 }
 
             } // else failed to get circ_id
@@ -430,7 +430,7 @@ namespace morph
 
             // std::cout << "Path commands for layer " << layerName << ": " << d << std::endl;
 
-            morph::bezcurvepath<float> curves = this->parseD (d);
+            sm::bezcurvepath<float> curves = this->parseD (d);
             curves.name = layerName;
             if (layerName == "cortex") {
                 this->gotCortex = true;
@@ -560,25 +560,25 @@ namespace morph
          * positive down. This parsing does not change that coordinate system, and so the bezcoords
          * in the path may need to have their y coordinates reversed.
          */
-        morph::bezcurvepath<float> parseD (const std::string& d)
+        sm::bezcurvepath<float> parseD (const std::string& d)
         {
-            morph::bezcurvepath<float> curves;
+            sm::bezcurvepath<float> curves;
 
             // As we parse through the path, we have to keep track of the
             // current coordinate position, as curves are specified from the
             // position at the end of the previous curve.
-            morph::vec<float, 2> currentCoordinate = {0.0f, 0.0f};
+            sm::vec<float, 2> currentCoordinate = {0.0f, 0.0f};
 
             // The first coordinate of the path. Can be required with a Z
             // command.
-            morph::vec<float, 2> firstCoordinate = {0.0f, 0.0f};
+            sm::vec<float, 2> firstCoordinate = {0.0f, 0.0f};
 
             // The last Bezier control points, c2, especially may be required
             // in a shortcut Bezier command (s or S), hence declaring these
             // outside the scope of the while loop.
-            morph::vec<float, 2> c1; // Control point 1
-            morph::vec<float, 2> c2; // Control point 2
-            morph::vec<float, 2> f;  // Final point of curve
+            sm::vec<float, 2> c1; // Control point 1
+            sm::vec<float, 2> c2; // Control point 2
+            sm::vec<float, 2> f;  // Final point of curve
 
             // A list of SVG command characters
             const char* svgCmds = "mMcCsSqQtTzZlLhHvV";
@@ -621,7 +621,7 @@ namespace morph
                             } else {
                                 f = { v[i], v[i+1] };
                             }
-                            morph::bezcurve<float> c(currentCoordinate, f);
+                            sm::bezcurve<float> c(currentCoordinate, f);
                             curves.addCurve (c);
                             currentCoordinate = f;
                         }
@@ -647,7 +647,7 @@ namespace morph
                             } else {
                                 f = { v[i], currentCoordinate[1] };
                             }
-                            morph::bezcurve<float> c(currentCoordinate, f);
+                            sm::bezcurve<float> c(currentCoordinate, f);
                             curves.addCurve (c);
                             currentCoordinate = f;
                         }
@@ -671,13 +671,13 @@ namespace morph
                             if (cmd == 'v') { // delta coordinates
                                 if (v[i] != 0.0f) {
                                     f = { currentCoordinate[0], currentCoordinate[1] + v[i] };
-                                    morph::bezcurve<float> c(currentCoordinate, f);
+                                    sm::bezcurve<float> c(currentCoordinate, f);
                                     curves.addCurve (c);
                                     currentCoordinate = f;
                                 }
                             } else {
                                 f = { currentCoordinate[0], v[i] };
-                                morph::bezcurve<float> c(currentCoordinate, f);
+                                sm::bezcurve<float> c(currentCoordinate, f);
                                 curves.addCurve (c);
                                 currentCoordinate = f;
                             }
@@ -717,7 +717,7 @@ namespace morph
                                 } else {
                                     f = { v[i], v[i+1] };
                                 }
-                                morph::bezcurve<float> c(currentCoordinate, f);
+                                sm::bezcurve<float> c(currentCoordinate, f);
                                 curves.addCurve (c);
                                 currentCoordinate = f;
                             }
@@ -749,7 +749,7 @@ namespace morph
                             c2 = { v[2],v[3] };
                             f = { v[4],v[5] };
                         }
-                        morph::bezcurve<float> c(currentCoordinate, f, c1, c2);
+                        sm::bezcurve<float> c(currentCoordinate, f, c1, c2);
                         curves.addCurve (c);
                         currentCoordinate = f;
                     }
@@ -778,7 +778,7 @@ namespace morph
                             c2 = { v[0], v[1] };
                             f =  { v[2], v[3] };
                         }
-                        morph::bezcurve<float> c(currentCoordinate, f, c1, c2);
+                        sm::bezcurve<float> c(currentCoordinate, f, c1, c2);
                         curves.addCurve (c);
                         currentCoordinate = f;
                     }
@@ -801,7 +801,7 @@ namespace morph
                 case 'z': // straight line from current position to first point of path.
                 {
                     if (currentCoordinate != firstCoordinate) {
-                        bezcurve<float> c(currentCoordinate, firstCoordinate);
+                        sm::bezcurve<float> c(currentCoordinate, firstCoordinate);
                         curves.addCurve (c);
                         currentCoordinate = firstCoordinate;
                     }
@@ -868,13 +868,13 @@ namespace morph
 
             // Now do something with x1,y1,x2,y2: Create a bezcurve object then add this
             // to this->linePath
-            morph::vec<float, 2> p1;
+            sm::vec<float, 2> p1;
             p1[0] = static_cast<float>(std::atof (x1.c_str()));
             p1[1] = static_cast<float>(std::atof (y1.c_str()));
-            morph::vec<float, 2> p2;
+            sm::vec<float, 2> p2;
             p2[0] = static_cast<float>(std::atof (x2.c_str()));
             p2[1] = static_cast<float>(std::atof (y2.c_str()));
-            morph::bezcurve<float> linecurve (p1, p2);
+            sm::bezcurve<float> linecurve (p1, p2);
             this->linePath.reset();
             this->linePath.initialCoordinate = p1;
             this->linePath.addCurve (linecurve);
@@ -892,7 +892,7 @@ namespace morph
                 throw std::runtime_error ("Failed to obtain scaling from the scale bar.");
             }
             this->corticalPath.setScale (this->lineToMillimetres[1]);
-            typename std::list<morph::bezcurvepath<float>>::iterator ei = this->enclosedRegions.begin();
+            typename std::list<sm::bezcurvepath<float>>::iterator ei = this->enclosedRegions.begin();
             while (ei != this->enclosedRegions.end()) {
                 ei->setScale (this->lineToMillimetres[1]);
                 ++ei;
@@ -906,7 +906,7 @@ namespace morph
         /*!
          * The neocortical path.
          */
-        bezcurvepath<float> corticalPath;
+        sm::bezcurvepath<float> corticalPath;
 
         /*!
          * Init to false, set true if we find the "cortex" layer in the svg file.
@@ -916,18 +916,18 @@ namespace morph
         /*!
          * A list of paths marking out structures within the neocortex.
          */
-        std::list<bezcurvepath<float>> enclosedRegions;
+        std::list<sm::bezcurvepath<float>> enclosedRegions;
 
         /*!
          * To hold the scale bar line.
          */
-        bezcurvepath<float> linePath;
+        sm::bezcurvepath<float> linePath;
 
         /*!
          * lineToMillimetres[0] is the length of the line in the units of the SVG
          * file. lineToMillimeteres.second is the length in mm that the line represents.
          */
-        morph::vec<float, 2> lineToMillimetres;
+        sm::vec<float, 2> lineToMillimetres;
 
         /*!
          * Set to true once a line was found to set lineToMillimetres.
