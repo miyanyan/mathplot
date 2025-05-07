@@ -1,9 +1,9 @@
 #pragma once
 
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
 #include <array>
+#include <sm/mathconst>
+#include <sm/vec>
+#include <morph/VisualModel.h>
 
 namespace morph {
 
@@ -15,7 +15,7 @@ namespace morph {
         IcosaVisual() { this->mv_offset = {0.0, 0.0, 0.0}; }
 
         //! Initialise with offset, start and end coordinates, radius and a single colour.
-        IcosaVisual(const vec<float, 3> _offset,
+        IcosaVisual(const sm::vec<float, 3> _offset,
                     const float _radius,
                     const std::array<float, 3> _col)
         {
@@ -24,7 +24,7 @@ namespace morph {
 
         ~IcosaVisual () {}
 
-        void init (const vec<float, 3> _offset,
+        void init (const sm::vec<float, 3> _offset,
                    const float _radius,
                    const std::array<float, 3> _col)
         {
@@ -44,7 +44,7 @@ namespace morph {
             this->vertexColors.clear();
             this->indices.clear();
 
-            this->computeIcosahedron (morph::vec<float, 3>({0,0,0}), this->colours, this->radius);
+            this->computeIcosahedron (sm::vec<float, 3>({0,0,0}), this->colours, this->radius);
         }
 
         //! The radius of the icosahedrona

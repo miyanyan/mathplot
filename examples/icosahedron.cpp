@@ -1,16 +1,18 @@
 /*
  * Visualize an Icosahedron
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/IcosaVisual.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/IcosaVisual.h>
 
 int main()
 {
@@ -22,8 +24,8 @@ int main()
     v.lightingEffects(true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-        morph::vec<float, 3> colour1 = { 1.0, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> colour1 = { 1.0, 0.0, 0.0 };
 
         auto iv = std::make_unique<morph::IcosaVisual<>> (offset, 0.9f, colour1);
         v.bindmodel (iv);

@@ -1,21 +1,23 @@
 /*
  * Visualize a Sphere
  */
-#include <morph/Visual.h>
-#include <morph/VisualModel.h>
-#include <morph/vec.h>
-#include <morph/colour.h>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <sstream>
+
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/VisualModel.h>
+#include <morph/colour.h>
 
 // Quick visual that simply draws spheres
 template <int glver = morph::gl::version_4_1>
 class PrimitiveVisual : public morph::VisualModel<glver>
 {
 public:
-    PrimitiveVisual(const morph::vec<float> _offset)
+    PrimitiveVisual(const sm::vec<float> _offset)
     {
         this->mv_offset = _offset;
         this->viewmatrix.translate (this->mv_offset);
@@ -25,11 +27,11 @@ public:
     {
         // This primitive computes a fan and rings to make a sphere
         float l = 1.1f;
-        this->computeSphere (morph::vec<float>{-l,0,0}, morph::colour::royalblue, 1.0f, 12, 12);
+        this->computeSphere (sm::vec<float>{-l,0,0}, morph::colour::royalblue, 1.0f, 12, 12);
         // These compute the sphere from a geodesic icosahedron. First with 2 iterations of the triangulation algorithm
-        this->computeSphereGeo (morph::vec<float>{l,0,0}, morph::colour::maroon, 1.0f, 2);
+        this->computeSphereGeo (sm::vec<float>{l,0,0}, morph::colour::maroon, 1.0f, 2);
         // This one with 3 iterations (meaning more triangles and a smoother sphere) and compile time geodesic computation
-        this->template computeSphereGeoFast<float, 3> (morph::vec<float>{0,l * std::tan(60*morph::mathconst<float>::deg2rad),0}, morph::colour::cyan3, 1.0f);
+        this->template computeSphereGeoFast<float, 3> (sm::vec<float>{0,l * std::tan(60 * sm::mathconst<float>::deg2rad),0}, morph::colour::cyan3, 1.0f);
     }
 };
 
@@ -41,7 +43,7 @@ int main()
     v.lightingEffects (true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
 
         auto pvm = std::make_unique<PrimitiveVisual<>> (offset);
         v.bindmodel (pvm);
