@@ -8,8 +8,8 @@
 #include <chrono>
 #include <sstream>
 
-#include <morph/vec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/hexgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -28,7 +28,7 @@ int main()
     // Create a hexgrid to show in the scene
     constexpr float hex_to_hex = 0.02f;
 
-    morph::hexgrid hg(hex_to_hex, 15.0f, 0.0f);
+    sm::hexgrid hg(hex_to_hex, 15.0f, 0.0f);
     hg.setEllipticalBoundary (4.0f, 4.0f);
     std::cout << "Number of hexes in grid:" << hg.num() << std::endl;
     std::stringstream sss;
@@ -46,7 +46,7 @@ int main()
     }
 
     // Add a HexGridVisual to display the HexGrid within the morph::Visual scene
-    morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
 #include <array>
+#include <sm/vec>
+#include <morph/VisualModel.h>
 
 namespace morph {
 
@@ -14,16 +13,16 @@ namespace morph {
     public:
         PolygonVisual() { this->mv_offset = {0.0, 0.0, 0.0}; }
 
-        PolygonVisual(const vec<float, 3> _offset,
-                      const vec<float, 3> _position, const vec<float, 3> _vertex,
+        PolygonVisual(const sm::vec<float, 3> _offset,
+                      const sm::vec<float, 3> _position, const sm::vec<float, 3> _vertex,
                       const float _radius, const float _thickness,
                       const std::array<float, 3> _col, const int _n)
         {
             this->init (_offset, _position, _vertex, _radius, _thickness, _col, _n);
         }
 
-        void init (const vec<float, 3> _offset,
-                   const vec<float, 3> _position, const vec<float, 3> _vertex,
+        void init (const sm::vec<float, 3> _offset,
+                   const sm::vec<float, 3> _position, const sm::vec<float, 3> _vertex,
                    const float _radius, const float _thickness,
                    const std::array<float, 3> _col, const int _n)
         {
@@ -49,7 +48,7 @@ namespace morph {
             this->idx = 0;
 
             // Always draw a full 3D polygon
-            morph::vec<float> pend = this->position;
+            sm::vec<float> pend = this->position;
             pend[2] += this->thickness;
             // Figure out ux, uy from position and vertex. Let ux be like dirn to vertex
             this->_ux = this->vertex - this->position;
@@ -60,9 +59,9 @@ namespace morph {
         }
 
         //! The position of the start of the rod, given with respect to the parent's offset
-        vec<float, 3> position = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> position = {0.0f, 0.0f, 0.0f};
         //! Direction to the first vertex.
-        vec<float, 3> vertex = {1.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> vertex = {1.0f, 0.0f, 0.0f};
         //! The radius of the polygonal puck's enclosing circle
         float radius = 1.0f;
         //! The thickness of the polygonal puck
@@ -71,8 +70,8 @@ namespace morph {
         int n = 4;
 
         // Some axes
-        morph::vec<float> _ux = {1,0,0};
-        morph::vec<float> _uy = {0,1,0};
+        sm::vec<float> _ux = {1,0,0};
+        sm::vec<float> _uy = {0,1,0};
 
         //! The colour of the thing.
         std::array<float, 3> col = {1.0f, 0.0f, 0.0f};

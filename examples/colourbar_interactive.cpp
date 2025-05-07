@@ -6,9 +6,10 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
+#include <sm/range>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -21,7 +22,7 @@ struct myvisual final : public morph::Visual<>
     myvisual (int width, int height, const std::string& title) : morph::Visual<> (width, height, title)
     {
         // Set up hexgrid
-        this->hg = std::make_unique<morph::hexgrid>(0.01f, 3.0f, 0.0f);
+        this->hg = std::make_unique<sm::hexgrid>(0.01f, 3.0f, 0.0f);
         this->hg->setCircularBoundary (0.6f);
         std::cout << "Number of pixels in grid:" << this->hg->num() << std::endl;
         // Initialize the function
@@ -37,10 +38,10 @@ protected:
     float function_zero = 0.0f;
 
     // Data container for a function
-    morph::vvec<float> data;
+    sm::vvec<float> data;
 
     // A hexgrid to show in the scene.
-    std::unique_ptr<morph::hexgrid> hg;
+    std::unique_ptr<sm::hexgrid> hg;
 
     // A colourmap for the wobbly function
     static constexpr morph::ColourMapType colour_map_type = morph::ColourMapType::Inferno;
@@ -70,7 +71,7 @@ protected:
         if (this->cbvp_horz != nullptr) { this->removeVisualModel (cbvp_horz); }
 
         // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
-        morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+        sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>>(this->hg.get(), offset);
         this->bindmodel (hgv);
         hgv->cm.setType (this->colour_map_type); // This is how we set the colour map type in HexGridVisual
@@ -85,7 +86,7 @@ protected:
         this->bindmodel (cbv);
         cbv->orientation = morph::colourbar_orientation::vertical;
         cbv->tickside = morph::colourbar_tickside::right_or_below;
-        cbv->number_of_ticks_range = morph::range<float>{4, 6};
+        cbv->number_of_ticks_range = sm::range<float>{4, 6};
         // Copy colourmap and scale to colourbar visual
         cbv->cm = this->hgvp->cm;
         cbv->scale = this->hgvp->colourScale;
@@ -100,10 +101,10 @@ protected:
         cbv->orientation = morph::colourbar_orientation::horizontal;
         cbv->tickside = morph::colourbar_tickside::left_or_above;
         cbv->cm = this->hgvp->cm;
-        cbv->number_of_ticks_range = morph::range<float>{2, 3};
+        cbv->number_of_ticks_range = sm::range<float>{2, 3};
         cbv->scale = this->hgvp->colourScale;
         std::string lbl = "ColourMapType: " + morph::ColourMap<float>::colourMapTypeToStr (this->colour_map_type);
-        cbv->addLabel (lbl, morph::vec<float>{0.0f, -0.08f, 0.0f}, morph::TextFeatures(0.05f));
+        cbv->addLabel (lbl, sm::vec<float>{0.0f, -0.08f, 0.0f}, morph::TextFeatures(0.05f));
         cbv->finalize();
         this->cbvp_horz = this->addVisualModel (cbv);
     }
@@ -148,7 +149,7 @@ int main()
 {
     myvisual v(1200, 1000, "Colour bars");
     // Position the scene within the window
-    v.setSceneTrans (morph::vec<float,3>({-0.140266f, 0.237435f, -3.5f}));
+    v.setSceneTrans (sm::vec<float,3>({-0.140266f, 0.237435f, -3.5f}));
     v.keepOpen();
     return 0;
 }

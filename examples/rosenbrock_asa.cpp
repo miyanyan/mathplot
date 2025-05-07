@@ -2,20 +2,22 @@
  * Test Simulated Annealing algorithm on the Rosenbrock banana function.
  */
 
+#include <iostream>
+#include <chrono>
+
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
+
 #include <morph/Anneal.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
 
 #include <morph/Visual.h>
 #include <morph/TriFrameVisual.h>
 #include <morph/HexGridVisual.h>
 #include <morph/PolygonVisual.h>
-#include <iostream>
-#include <chrono>
 
 // Here's the Rosenbrock banana function
-FLT banana (morph::vvec<FLT> xy) {
+FLT banana (sm::vvec<FLT> xy) {
     FLT a = 1.0;
     FLT b = 100.0;
     FLT x = xy[0];
@@ -31,9 +33,9 @@ int main()
     std::cout << "test point on banana function = " << test << " (should be 0).\n";
 
     // Initial point and ranges
-    morph::vvec<FLT> p = { 0.5, -0.5};
+    sm::vvec<FLT> p = { 0.5, -0.5};
     std::cout << "Start point on banana function = " << banana(p) << ".\n";
-    morph::vvec<morph::vec<FLT,2>> p_rng = {{ {-1.1, 1.1}, {-1.1, 1.1} }};
+    sm::vvec<sm::vec<FLT,2>> p_rng = {{ {-1.1, 1.1}, {-1.1, 1.1} }};
 
 #ifdef VISUALISE
     // Set up a visual environment
@@ -44,14 +46,14 @@ int main()
     v.showCoordArrows (true);
     v.lightingEffects (true);
 
-    morph::vec<float> offset = {0,0,0};
-    morph::hexgrid hg (0.01, 10, 0);
+    sm::vec<float> offset = {0,0,0};
+    sm::hexgrid hg (0.01, 10, 0);
     hg.setCircularBoundary (2.5);
     std::vector<FLT> banana_vals(hg.num(), 0.0f);
     for (size_t i = 0; i < hg.num(); ++i) {
         banana_vals[i] = banana ({hg.d_x[i], hg.d_y[i]});
     }
-    morph::range<FLT> mm = morph::range<FLT>::get_from (banana_vals);
+    sm::range<FLT> mm = sm::range<FLT>::get_from (banana_vals);
     std::cout << "Banana surface range: " << mm << std::endl;
     auto hgv = std::make_unique<morph::HexGridVisual<FLT>>(&hg, offset);
     v.bindmodel (hgv);
@@ -64,23 +66,23 @@ int main()
     hgv->finalize();
     v.addVisualModel (hgv);
 
-    morph::vec<float, 3> polypos = { static_cast<float>(p[0]), static_cast<float>(p[1]), 0.0f };
+    sm::vec<float, 3> polypos = { static_cast<float>(p[0]), static_cast<float>(p[1]), 0.0f };
 
     // One object for the 'candidate' position
     std::array<float, 3> col = { 0, 1, 0 };
-    auto candup = std::make_unique<morph::PolygonVisual<>>(offset, polypos, morph::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
+    auto candup = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
     v.bindmodel (candup);
     candup->finalize();
 
     // A second object for the 'best' position
     col = { 1, 0, 0 };
-    auto bestup = std::make_unique<morph::PolygonVisual<>>(offset, polypos, morph::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
+    auto bestup = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
     v.bindmodel (bestup);
     bestup->finalize();
 
     // A third object for the currently accepted position
     col = { 1, 0, 0.7f };
-    auto currup = std::make_unique<morph::PolygonVisual<>> (offset, polypos, morph::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
+    auto currup = std::make_unique<morph::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
     v.bindmodel (currup);
     currup->finalize();
 

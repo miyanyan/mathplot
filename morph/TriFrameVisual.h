@@ -1,13 +1,15 @@
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/vec.h>
-#include <morph/ColourMap.h>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <cmath>
+
+#include <sm/vec>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
+#include <morph/ColourMap.h>
 
 namespace morph {
 
@@ -26,7 +28,7 @@ namespace morph {
     class TriFrameVisual : public VisualDataModel<Flt, glver>
     {
     public:
-        TriFrameVisual(const vec<float, 3> _offset)
+        TriFrameVisual(const sm::vec<float, 3> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -57,9 +59,9 @@ namespace morph {
             // Draw tubes
             std::array<float, 3> clr = {0.3f,0.3f,0.3f};
             for (unsigned int i = 0U; i < ncoords; ++i) {
-                morph::vec<float> v1 = (*this->dataCoords)[i];
+                sm::vec<float> v1 = (*this->dataCoords)[i];
                 unsigned int e = (i < (ncoords-1) ? i+1 : 0);
-                morph::vec<float> v2 = (*this->dataCoords)[e];
+                sm::vec<float> v2 = (*this->dataCoords)[e];
                 this->computeTube (this->mv_offset+v1, this->mv_offset+v2, clr, clr, this->radius, this->tseg);
             }
         }

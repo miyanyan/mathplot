@@ -8,16 +8,19 @@
  */
 #pragma once
 
-#include <nlohmann/json.hpp>
-#include <morph/tools.h>
-#include <morph/vvec.h>
-#include <morph/vec.h>
 #include <list>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <iostream>
 #include <stdexcept>
+
+#include <nlohmann/json.hpp>
+
+#include <sm/vvec>
+#include <sm/vec>
+
+#include <morph/tools.h>
 #ifndef _MSC_VER
 # include <morph/Process.h>
 #endif
@@ -369,25 +372,25 @@ namespace morph {
             }
             return rtn;
         }
-        // Get an array of numbers as a morph::vvec.
+        // Get an array of numbers as a sm::vvec.
         template <typename T>
-        morph::vvec<T> getvvec (const std::string& arrayname) const
+        sm::vvec<T> getvvec (const std::string& arrayname) const
         {
             nlohmann::json ar;
             if (this->root.contains(arrayname)) { ar = this->root[arrayname]; }
-            morph::vvec<T> rtn (ar.size(), T{0});
-            typename morph::vvec<T>::size_type i = 0U;
+            sm::vvec<T> rtn (ar.size(), T{0});
+            typename sm::vvec<T>::size_type i = 0U;
             for (auto el : ar) { rtn[i++] = static_cast<T>(el); }
             return rtn;
         }
 
-        // Get an array of numbers as a morph::vec.
+        // Get an array of numbers as a sm::vec.
         template <typename T, std::size_t N>
-        morph::vec<T, N> getvec (const std::string& arrayname) const
+        sm::vec<T, N> getvec (const std::string& arrayname) const
         {
             nlohmann::json ar;
             if (this->root.contains(arrayname)) { ar = this->root[arrayname]; }
-            morph::vec<T, N> rtn = {T{0}};
+            sm::vec<T, N> rtn = {T{0}};
             auto el = ar.begin();
             for (std::size_t i = 0; i < N && i < ar.size(); ++i) {
                 rtn[i] = static_cast<T>(*el);

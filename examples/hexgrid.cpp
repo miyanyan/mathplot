@@ -16,7 +16,7 @@
 int main()
 {
     // Contructor args are width, height, title
-    sm::Visual<sm::gl::version_4_1> v(1600, 1000, "sm::HexGridVisual");
+    morph::Visual<morph::gl::version_4_1> v(1600, 1000, "sm::HexGridVisual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // set the x/y offset. Try pressing 'z' in the app window to see what the current sceneTrans is
@@ -30,7 +30,7 @@ int main()
     // You can switch on the "lighting shader" which puts diffuse light into the scene
     //v.lightingEffects();
     // Add some text labels to the scene
-    v.addLabel ("This is a\nsm::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
+    v.addLabel ("This is a\nmorph::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a HexGrid to show in the scene. Hexes outside the circular boundary will
     // all be discarded.
@@ -47,11 +47,11 @@ int main()
 
     // Add a HexGridVisual to display the HexGrid within the sm::Visual scene
     sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
-    auto hgv = std::make_unique<sm::HexGridVisual<float,sm::gl::version_4_1>>(&hg, offset);
+    auto hgv = std::make_unique<morph::HexGridVisual<float, morph::gl::version_4_1>>(&hg, offset);
     v.bindmodel (hgv);
-    hgv->cm.setType (sm::ColourMapType::Ice);
+    hgv->cm.setType (morph::ColourMapType::Ice);
     hgv->setScalarData (&data);
-    hgv->hexVisMode = sm::HexVisMode::HexInterp; // Or sm::HexVisMode::Triangles for a smoother surface plot
+    hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or sm::HexVisMode::Triangles for a smoother surface plot
     hgv->finalize();
 
     if (v.checkContext() == true) {

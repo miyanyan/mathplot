@@ -7,8 +7,8 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/hexgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -21,8 +21,7 @@ namespace uc =  morph::unicode;
 class MyVisual : public morph::Visual<>
 {
 public:
-    MyVisual (int width, int height, const std::string& title)
-        : morph::Visual<> (width, height, title)
+    MyVisual (int width, int height, const std::string& title) : morph::Visual<> (width, height, title)
     {
         this->backgroundWhite();
         this->coordArrows->clear();
@@ -53,7 +52,7 @@ int main()
 
     // Create a hexgrid to show in the scene. Hexes outside the circular boundary will
     // all be discarded.
-    morph::hexgrid hg(0.01f, 3.0f, 0.0f);
+    sm::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (0.6f);
     std::cout << "Number of pixels in grid:" << hg.num() << std::endl;
 
@@ -65,7 +64,7 @@ int main()
     }
 
     // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
-    morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);

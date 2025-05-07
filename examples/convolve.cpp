@@ -6,10 +6,10 @@
 #include <string>
 #include <cmath>
 
-#include <morph/random.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <morph/hexgrid.h>
+#include <sm/random>
+#include <sm/scale>
+#include <sm/vec>
+#include <sm/hexgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -26,13 +26,13 @@ int main()
     v.setSceneTransZ (-3.0f);
 
     // Create an elliptical hexgrid for the input/output domains
-    morph::hexgrid hg(0.01, 3, 0);
+    sm::hexgrid hg(0.01, 3, 0);
     hg.setEllipticalBoundary (0.45, 0.3);
 
     // Populate a vector of floats with data
     std::vector<float> data (hg.num(), 0.0f);
     //morph::rand_normal<float> rng (0.1f, 0.05f);
-    morph::rand_uniform<float> rng;
+    sm::rand_uniform<float> rng;
     float nonconvolvedSum = 0.0f;
     for (float& d : data) {
         d = rng.get();
@@ -41,7 +41,7 @@ int main()
 
     // Create a circular HexGrid to contain the Gaussian convolution kernel
     float sigma = 0.025f;
-    morph::hexgrid kernel(0.01, 20.0f*sigma, 0);
+    sm::hexgrid kernel(0.01, 20.0f*sigma, 0);
     kernel.setCircularBoundary (6.0f*sigma);
     std::vector<float> kerneldata (kernel.num(), 0.0f);
     // Once-only parts of the calculation of the Gaussian.
@@ -72,7 +72,7 @@ int main()
     std::cout << "Unconvolved sum: " << nonconvolvedSum << ", convolved sum: " << convolvedSum << "\n";
 
     // Visualize the 3 maps
-    morph::vec<float, 3> offset = { -0.5, 0.0, 0.0 };
+    sm::vec<float, 3> offset = { -0.5, 0.0, 0.0 };
     auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);
@@ -107,7 +107,7 @@ int main()
     // Demonstrate how to divide existing scale by 10:
     float newGrad = hgvp->zScale.getParams(0)/10.0;
     // Set this in a new zscale object:
-    morph::scale<float> zscale;
+    sm::scale<float> zscale;
     zscale.setParams (newGrad, 0);
     // Use the un-owned pointer rgvp:
     rgvp->updateZScale (zscale);

@@ -6,8 +6,8 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/cartgrid.h>
+#include <sm/vec>
+#include <sm/cartgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -31,7 +31,7 @@ int main()
     v.addLabel ("This is a\nmorph::CartGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a HexGrid to show in the scene
-    morph::cartgrid cg(0.01, 0.01, 1, 1);
+    sm::cartgrid cg(0.01, 0.01, 1, 1);
     std::cout << "Number of pixels in grid:" << cg.num() << std::endl;
 
     // *NB* This call (or any other 'set boundary' call) is essential, as it sets up the
@@ -47,7 +47,7 @@ int main()
     }
 
     // Add a CartGridVisual to display the CartGrid within the morph::Visual scene
-    morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto cgv = std::make_unique<morph::CartGridVisual<float>>(&cg, offset);
     v.bindmodel (cgv);
     cgv->cartVisMode = morph::CartVisMode::RectInterp;

@@ -6,9 +6,9 @@
 #include <vector>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
 
 #include <morph/Visual.h>
 #include <morph/VisualDataModel.h>
@@ -30,21 +30,21 @@ int main()
     std::string title_str = "ColourBar (" + morph::ColourMap<float>::colourMapTypeToStr (colour_map_type) + ")";
     morph::Visual v(1200, 1000, title_str);
     // Position with some scene trans setup code (try Ctrl-z in the program and see stdout):
-    v.setSceneTrans (morph::vec<float,3>({-0.140266f, 0.237435f, -3.5f}));
+    v.setSceneTrans (sm::vec<float,3>({-0.140266f, 0.237435f, -3.5f}));
 
     // A hexgrid to show in the scene.
-    morph::hexgrid hg(0.01f, 3.0f, 0.0f);
+    sm::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (0.6f);
     std::cout << "Number of pixels in grid:" << hg.num() << std::endl;
 
     // Make some data for the surface
-    morph::vvec<float> data(hg.num(), 0.0f);
+    sm::vvec<float> data(hg.num(), 0.0f);
     for (unsigned int ri=0; ri<hg.num(); ++ri) {
         data[ri] = 0.00001f + 0.05f + 0.05f*std::sin(20.0f*hg.d_x[ri]) * std::sin(10.0f*hg.d_y[ri]) ; // Range 0->1
     }
 
     // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
-    morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->cm.setType (colour_map_type); // This is how we set the colour map type in HexGridVisual
@@ -75,7 +75,7 @@ int main()
     cbv->cm = hgvp->cm;
     cbv->scale = hgvp->colourScale;
     std::string lbl = "ColourMapType: " + morph::ColourMap<float>::colourMapTypeToStr (colour_map_type);
-    cbv->addLabel (lbl, morph::vec<float>{ 0.0f, -0.08f, 0.0f }, morph::TextFeatures(0.05f));
+    cbv->addLabel (lbl, sm::vec<float>{ 0.0f, -0.08f, 0.0f }, morph::TextFeatures(0.05f));
     cbv->finalize();
     v.addVisualModel (cbv);
 

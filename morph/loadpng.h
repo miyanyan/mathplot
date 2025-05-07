@@ -13,8 +13,9 @@
 #include <string>
 #include <cstddef>
 #include <stdexcept>
-#include <morph/vec.h>
-#include <morph/vvec.h>
+
+#include <sm/vec>
+#include <sm/vvec>
 
 namespace morph {
 
@@ -34,8 +35,8 @@ namespace morph {
      * image_data will be filled in a bottom-left to top-right order.
      */
     template <typename T>
-    static morph::vec<unsigned int, 2> loadpng (const std::string& filename, morph::vvec<T>& image_data,
-                                                const morph::vec<bool,2> flip = {false, true})
+    static sm::vec<unsigned int, 2> loadpng (const std::string& filename, sm::vvec<T>& image_data,
+                                             const sm::vec<bool,2> flip = {false, true})
     {
         std::vector<unsigned char> png;
         unsigned int w = 0;
@@ -48,7 +49,7 @@ namespace morph {
             throw std::runtime_error (err);
         }
         // For return:
-        morph::vec<unsigned int, 2> dims = {w, h};
+        sm::vec<unsigned int, 2> dims = {w, h};
 
         // Now convert out into a value placed in image_data
         // If T is float or double, then get mean RGB, convert to range 0 to 1
@@ -115,9 +116,9 @@ namespace morph {
      * to errors)
      */
     template <typename T, std::size_t N>
-    static morph::vec<unsigned int, 2> loadpng (const std::string& filename,
-                                                morph::vvec<morph::vec<T, N>>& image_data,
-                                                const morph::vec<bool,2> flip = {false, true})
+    static sm::vec<unsigned int, 2> loadpng (const std::string& filename,
+                                             sm::vvec<sm::vec<T, N>>& image_data,
+                                             const sm::vec<bool,2> flip = {false, true})
     {
         std::vector<unsigned char> png;
         unsigned int w = 0;
@@ -130,7 +131,7 @@ namespace morph {
             throw std::runtime_error (err);
         }
         // For return:
-        morph::vec<unsigned int, 2> dims = {w, h};
+        sm::vec<unsigned int, 2> dims = {w, h};
 
         // Now convert out into a value placed in image_data
         // If T is float or double, then get mean RGB, convert to range 0 to 1
@@ -198,8 +199,8 @@ namespace morph {
 
     // Load a colour PNG and return a vector of type T with elements ordered as RGBRGBRGB...
     template <typename T>
-    static morph::vec<unsigned int, 2> loadpng_rgb (const std::string& filename, morph::vvec<T>& image_data,
-                                                    const morph::vec<bool,2> flip = {false, true})
+    static sm::vec<unsigned int, 2> loadpng_rgb (const std::string& filename, sm::vvec<T>& image_data,
+                                                 const sm::vec<bool,2> flip = {false, true})
     {
         std::vector<unsigned char> png;
         unsigned int w = 0;
@@ -212,7 +213,7 @@ namespace morph {
             throw std::runtime_error (err);
         }
         // For return:
-        morph::vec<unsigned int, 2> dims = {w, h};
+        sm::vec<unsigned int, 2> dims = {w, h};
 
         // Now convert out into a value placed in image_data
         // If T is float or double, then for each in RGB, convert to range 0 to 1
@@ -263,8 +264,8 @@ namespace morph {
 
     // Load a colour PNG and return a vector of type T with elements ordered as RGBARGBARGBA...
     template <typename T>
-    static morph::vec<unsigned int, 2> loadpng_rgba (const std::string& filename, morph::vvec<T>& image_data,
-                                                     const morph::vec<bool,2> flip = {false, true})
+    static sm::vec<unsigned int, 2> loadpng_rgba (const std::string& filename, sm::vvec<T>& image_data,
+                                                  const sm::vec<bool,2> flip = {false, true})
     {
         std::vector<unsigned char> png;
         unsigned int w = 0;
@@ -277,7 +278,7 @@ namespace morph {
             throw std::runtime_error (err);
         }
         // For return:
-        morph::vec<unsigned int, 2> dims = {w, h};
+        sm::vec<unsigned int, 2> dims = {w, h};
 
         // Now convert out into a value placed in image_data
         // If T is float or double, then get mean RGB, convert to range 0 to 1
@@ -331,8 +332,8 @@ namespace morph {
 
     // Load a colour PNG and return a vector of type T with elements ordered as RGBARGBARGBA...
     template <typename T, unsigned int im_w, unsigned int im_h>
-    static morph::vec<unsigned int, 2> loadpng_rgba (const std::string& filename, morph::vec<T, 4*im_w*im_h>& image_data,
-                                                     const morph::vec<bool,2> flip = {false, true})
+    static sm::vec<unsigned int, 2> loadpng_rgba (const std::string& filename, sm::vec<T, 4*im_w*im_h>& image_data,
+                                                  const sm::vec<bool,2> flip = {false, true})
     {
         std::vector<unsigned char> png;
         unsigned int w = 0;
@@ -345,7 +346,7 @@ namespace morph {
             throw std::runtime_error (err);
         }
         // For return:
-        morph::vec<unsigned int, 2> dims = {w, h};
+        sm::vec<unsigned int, 2> dims = {w, h};
         if (w != im_w || h != im_h) {
             throw std::runtime_error ("morph::loadpng_rgba: Expect png to be the size specified in the template args.");
         }

@@ -4,11 +4,11 @@
 
 #pragma once
 
+#include <sm/range>
+#include <sm/scale>
+#include <sm/vec>
+
 #include <morph/VisualModel.h>
-#include <morph/mathconst.h>
-#include <morph/range.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
 #include <morph/ColourMap.h>
 #include <morph/graphing.h>
 #include <morph/graphstyles.h>
@@ -42,7 +42,7 @@ namespace morph {
     public:
         //! Constructor
         //! \param _offset The offset within morph::Visual space to place these axes
-        ColourBarVisual (const vec<float> _offset)
+        ColourBarVisual (const sm::vec<float> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -102,7 +102,7 @@ namespace morph {
         void drawFrame()
         {
             // Use flat lines for the frame
-            morph::vec<float, 2> extents = { width, length };
+            sm::vec<float, 2> extents = { width, length };
             if (this->orientation == colourbar_orientation::horizontal) { extents = { length, width }; }
 
             this->computeFlatLine ({-this->framelinewidth,            -(this->framelinewidth*0.5f), this->z},
@@ -184,7 +184,7 @@ namespace morph {
                         morph::TextGeometry geom = lbl->getTextGeometry (s);
                         this->ticklabelheight = geom.height() > this->ticklabelheight ? geom.height() : this->ticklabelheight;
                         this->ticklabelwidth = geom.width() > this->ticklabelwidth ? geom.width() : this->ticklabelwidth;
-                        morph::vec<float> lblpos = {
+                        sm::vec<float> lblpos = {
                             static_cast<float>(this->tick_posns[i])-geom.half_width(),
                             this->width + this->ticklabelgap,
                             this->z
@@ -200,7 +200,7 @@ namespace morph {
                         morph::TextGeometry geom = lbl->getTextGeometry (s);
                         this->ticklabelheight = geom.height() > this->ticklabelheight ? geom.height() : this->ticklabelheight;
                         this->ticklabelwidth = geom.width() > this->ticklabelwidth ? geom.width() : this->ticklabelwidth;
-                        morph::vec<float> lblpos = {
+                        sm::vec<float> lblpos = {
                             -this->ticklabelgap - geom.width(),
                             static_cast<float>(this->tick_posns[i])-geom.half_height(),
                             this->z
@@ -219,7 +219,7 @@ namespace morph {
                         morph::TextGeometry geom = lbl->getTextGeometry (s);
                         this->ticklabelheight = geom.height() > this->ticklabelheight ? geom.height() : this->ticklabelheight;
                         this->ticklabelwidth = geom.width() > this->ticklabelwidth ? geom.width() : this->ticklabelwidth;
-                        morph::vec<float> lblpos = {
+                        sm::vec<float> lblpos = {
                             static_cast<float>(this->tick_posns[i])-geom.half_width(),
                             -(this->ticklabelgap + geom.height()),
                             this->z
@@ -235,7 +235,7 @@ namespace morph {
                         morph::TextGeometry geom = lbl->getTextGeometry (s);
                         this->ticklabelheight = geom.height() > this->ticklabelheight ? geom.height() : this->ticklabelheight;
                         this->ticklabelwidth = geom.width() > this->ticklabelwidth ? geom.width() : this->ticklabelwidth;
-                        morph::vec<float> lblpos = {
+                        sm::vec<float> lblpos = {
                             this->width + this->ticklabelgap,
                             static_cast<float>(this->tick_posns[i])-geom.half_height(),
                             this->z
@@ -256,7 +256,7 @@ namespace morph {
 
             auto lbl = this->makeVisualTextModel (this->tf);
             morph::TextGeometry geom = lbl->getTextGeometry (this->label);
-            morph::vec<float> lblpos = {0,0,0};
+            sm::vec<float> lblpos = {0,0,0};
 
             // Conditions to find lbl pos:
             if (this->tickside == colourbar_tickside::left_or_above || this->tickside == colourbar_tickside::left_or_above_ticksboth) {
@@ -300,7 +300,7 @@ namespace morph {
 
         void fillFrameWithColour()
         {
-            morph::vec<float, 2> extents = { width, length };
+            sm::vec<float, 2> extents = { width, length };
             if (this->orientation == colourbar_orientation::horizontal) { extents = { length, width }; }
 
             float segstart = 0.0f;
@@ -308,10 +308,10 @@ namespace morph {
             float seglen = this->length / this->numsegs;
             float colourval = 0.5f/this->numsegs;
             // Used for quad corners
-            vec<float> c1;
-            vec<float> c2;
-            vec<float> c3;
-            vec<float> c4;
+            sm::vec<float> c1;
+            sm::vec<float> c2;
+            sm::vec<float> c3;
+            sm::vec<float> c4;
             if (this->orientation == colourbar_orientation::horizontal) {
                 for (unsigned int seg = 0; seg < this->numsegs; ++seg) {
                     segstart = seg * seglen;
@@ -340,9 +340,9 @@ namespace morph {
         //! The ColourMap to show (copy in)
         morph::ColourMap<F> cm;
         //! A copy of the scaling for the data. This will map data_min -> data_max to 0->1
-        morph::scale<F> scale;
+        sm::scale<F> scale;
         //! A scaling between colourbar value and model position. Scales 0->1 to 0->this->length
-        morph::scale<F> tickscale;
+        sm::scale<F> tickscale;
         //! The width of the ColourBar
         float width = 0.1f;
         //! The length of the ColourBar (the colours vary along this direction)
@@ -358,7 +358,7 @@ namespace morph {
         //! Set axis and text colours for a dark or black background
         bool darkbg = false;
         //! The range of acceptable numbers of ticks
-        morph::range<F> number_of_ticks_range = {F{3}, F{8}};
+        sm::range<F> number_of_ticks_range = {F{3}, F{8}};
         //! The line width of the colourbar frame
         float framelinewidth = 0.006f;
         //! How long should the ticks be?

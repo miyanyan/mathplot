@@ -3,12 +3,17 @@
  * progress of the algorithm.
  */
 
+#include <iostream>
+#include <string>
+#include <memory>
+
+#include <sm/vvec>
+#include <sm/vec>
+#include <sm/hex>
+#include <sm/hexgrid>
+
 #include <morph/Anneal.h>
-#include <morph/vvec.h>
-#include <morph/vec.h>
 #include <morph/Config.h>
-#include <morph/hex.h>
-#include <morph/hexgrid.h>
 #ifdef VISUALISE
 # include <morph/Visual.h>
 # include <morph/VisualDataModel.h>
@@ -16,17 +21,14 @@
 # include <morph/PolygonVisual.h>
 # include <morph/GraphVisual.h>
 #endif
-#include <iostream>
-#include <string>
-#include <memory>
 
 // Choose double or float for the precision used in the Anneal algorithm
 typedef double F;
 
 // A global hexgrid for the locations of the objective function
-std::unique_ptr<morph::hexgrid> hg;
+std::unique_ptr<sm::hexgrid> hg;
 // And a vvec to be the data
-morph::vvec<F> obj_f;
+sm::vvec<F> obj_f;
 
 // Set up an objective function. Creates hg and populates obj_f. Note objective has
 // discrete values.
@@ -37,9 +39,9 @@ void setup_objective_boha();
 
 // Return values of the objective function. Params contains coordinates into the
 // hexgrid. Values from obj_f are returned.
-F objective (const morph::vvec<F>& params);
-F objective_boha (const morph::vvec<F>& params);
-F objective_hg (const morph::vvec<F>& params);
+F objective (const sm::vvec<F>& params);
+F objective_boha (const sm::vvec<F>& params);
+F objective_hg (const sm::vvec<F>& params);
 
 int main (int argc, char** argv)
 {
@@ -50,9 +52,9 @@ int main (int argc, char** argv)
 #endif
 
     // Here, our search space is 2D
-    morph::vvec<F> p = { 0.45, 0.45};
+    sm::vvec<F> p = { 0.45, 0.45};
     // These ranges should fall within the hexagonal domain
-    morph::vvec<morph::vec<F,2>> p_rng = {{ {-0.3, 0.3}, {-0.3, 0.3} }};
+    sm::vvec<sm::vec<F,2>> p_rng = {{ {-0.3, 0.3}, {-0.3, 0.3} }};
 
     // Set up the anneal algorithm object
     morph::Anneal<F> anneal(p, p_rng);
@@ -96,7 +98,7 @@ int main (int argc, char** argv)
     v.setSceneTransZ (-3.0f);
     v.lightingEffects (true);
 
-    morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+    sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
     auto hgv = std::make_unique<morph::HexGridVisual<F>>(hg.get(), offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&obj_f);
@@ -108,29 +110,29 @@ int main (int argc, char** argv)
     hgv->finalize();
     v.addVisualModel (hgv);
 
-    morph::vec<float, 3> polypos = { static_cast<float>(p[0]), static_cast<float>(p[1]), 0.0f };
+    sm::vec<float, 3> polypos = { static_cast<float>(p[0]), static_cast<float>(p[1]), 0.0f };
 
     // One object for the 'candidate' position
     std::array<float, 3> col = { 0, 1, 0 };
-    auto cand_up = std::make_unique<morph::PolygonVisual<>>(offset, polypos, morph::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
+    auto cand_up = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
     v.bindmodel (cand_up);
     cand_up->finalize();
     // A second object for the 'best' position
     col = { 1, 0, 0 };
-    auto best_up = std::make_unique<morph::PolygonVisual<>>(offset, polypos, morph::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
+    auto best_up = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
     v.bindmodel (best_up);
     best_up->finalize();
 
     // A third object for the currently accepted position
     col = { 1, 0, 0.7f };
-    auto curr_up = std::make_unique<morph::PolygonVisual<>> (offset, polypos, morph::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
+    auto curr_up = std::make_unique<morph::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
     v.bindmodel (curr_up);
     curr_up->finalize();
 
     // Fourth object marks the starting place
     col = { .5f, .5f, .5f };
     polypos[2] = objective(p);
-    auto sp = std::make_unique<morph::PolygonVisual<>> (offset, polypos, morph::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
+    auto sp = std::make_unique<morph::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
     v.bindmodel (sp);
     sp->finalize();
 
@@ -140,7 +142,7 @@ int main (int argc, char** argv)
     v.addVisualModel (sp);
 
     // Add a graph to track T_i and T_cost
-    morph::vec<float> spatOff = {1.2f, -0.5f, 0.0f};
+    sm::vec<float> spatOff = {1.2f, -0.5f, 0.0f};
     auto graph1 = std::make_unique<morph::GraphVisual<F>> (spatOff);
     v.bindmodel (graph1);
     graph1->twodimensional = true;
@@ -244,13 +246,13 @@ int main (int argc, char** argv)
 // This sets up a noisy 2D objective function with multiple peaks
 void setup_objective()
 {
-    hg = std::make_unique<morph::hexgrid>(0.01f, 1.5f, 0.0f);
+    hg = std::make_unique<sm::hexgrid>(0.01f, 1.5f, 0.0f);
     hg->setCircularBoundary(1);
     obj_f.resize (hg->num());
 
     // Create 2 Gaussians and sum them as the main features
-    morph::vvec<F> obj_f_a(hg->num(), F{0});
-    morph::vvec<F> obj_f_b(hg->num(), F{0});
+    sm::vvec<F> obj_f_a(hg->num(), F{0});
+    sm::vvec<F> obj_f_b(hg->num(), F{0});
 
     // Now assign an analytical function to the thing - make it a couple of Gaussians
     F sigma = F{0.045};
@@ -258,8 +260,8 @@ void setup_objective()
     F two_sigma_sq = F{2} * sigma * sigma;
     F gauss = F{0};
     F sum = F{0};
-    morph::hex chex = *hg->vhexen[200];
-    morph::hex chex2 = *hg->vhexen[2000];
+    sm::hex chex = *hg->vhexen[200];
+    sm::hex chex2 = *hg->vhexen[2000];
     for (auto& k : hg->hexen) {
         // Gaussian profile based on the hex's distance from centre, which is
         // already computed in each hex as hex::r. Don't want this for these. Want dist from some hex/coords
@@ -284,7 +286,7 @@ void setup_objective()
     for (auto& k : hg->hexen) { obj_f_b[k.vi] *= F{0.01}; }
 
     // Make noise
-    morph::vvec<F> noise(hg->num());
+    sm::vvec<F> noise(hg->num());
     noise.randomize();
     noise *= F{0.2};
 
@@ -296,7 +298,7 @@ void setup_objective()
     sigma = F{0.005};
     one_over_sigma_root_2_pi = F{1} / sigma * F{2.506628275};
     two_sigma_sq = F{2} * sigma * sigma;
-    morph::hexgrid kernel(F{0.01}, F{20}*sigma, 0);
+    sm::hexgrid kernel(F{0.01}, F{20}*sigma, 0);
     kernel.setCircularBoundary (F{6}*sigma);
     std::vector<F> kerneldata (kernel.num(), F{0});
     gauss = F{0};
@@ -309,7 +311,7 @@ void setup_objective()
     for (auto& k : kernel.hexen) { kerneldata[k.vi] /= sum; }
 
     // A vector for the result
-    morph::vvec<F> convolved (hg->num(), F{0});
+    sm::vvec<F> convolved (hg->num(), F{0});
 
     // Call the convolution method from hexgrid:
     hg->convolve (kernel, kerneldata, obj_f, convolved);
@@ -324,16 +326,16 @@ void setup_objective()
 // during the anneal, we'll use the actual function values
 void setup_objective_boha()
 {
-    hg = std::make_unique<morph::hexgrid>(0.01f, 2.5f, 0.0f);
+    hg = std::make_unique<sm::hexgrid>(0.01f, 2.5f, 0.0f);
     hg->setCircularBoundary(1.2f);
     obj_f.resize (hg->num());
-    F a = F{1}, b = F{2}, c=F{0.3}, d=F{0.4}, alpha=morph::mathconst<F>::three_pi, gamma=morph::mathconst<F>::four_pi;
+    F a = F{1}, b = F{2}, c=F{0.3}, d=F{0.4}, alpha=sm::mathconst<F>::three_pi, gamma=sm::mathconst<F>::four_pi;
     for (auto h : hg->hexen) {
         obj_f[h.vi] = a*h.x*h.x + b*h.y*h.y - c * std::cos(alpha*h.x) - d * std::cos (gamma * h.y) + c + d;
     }
 }
 
-F objective (const morph::vvec<F>& params)
+F objective (const sm::vvec<F>& params)
 {
 #ifdef USE_BOHACHEVSKY_FUNCTION
     return objective_boha (params);
@@ -342,20 +344,20 @@ F objective (const morph::vvec<F>& params)
 #endif
 }
 
-F objective_boha (const morph::vvec<F>& params)
+F objective_boha (const sm::vvec<F>& params)
 {
     F x = params[0];
     F y = params[1];
-    F a = F{1}, b = F{2}, c=F{0.3}, d=F{0.4}, alpha=morph::mathconst<F>::three_pi, gamma=morph::mathconst<F>::four_pi;
+    F a = F{1}, b = F{2}, c=F{0.3}, d=F{0.4}, alpha=sm::mathconst<F>::three_pi, gamma=sm::mathconst<F>::four_pi;
     F fn = a*x*x + b*y*y - c * std::cos(alpha*x) - d * std::cos (gamma * y) + c + d;
     return fn;
 }
 
-F objective_hg (const morph::vvec<F>& params)
+F objective_hg (const sm::vvec<F>& params)
 {
     // Find the hex nearest the coordinate defined by params and return its value
-    morph::vvec<float> _params = params.as_float();
-    morph::vec<float, 2> coord = { _params[0], _params[1] };
-    std::list<morph::hex>::iterator hn = hg->findHexNearest (coord);
+    sm::vvec<float> _params = params.as_float();
+    sm::vec<float, 2> coord = { _params[0], _params[1] };
+    std::list<sm::hex>::iterator hn = hg->findHexNearest (coord);
     return obj_f[hn->vi];
 }

@@ -6,14 +6,13 @@
  */
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/graphstyles.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <vector>
 #include <array>
+#include <sm/vec>
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
+#include <morph/graphstyles.h>
 
 namespace morph {
 
@@ -23,7 +22,7 @@ namespace morph {
     class ScatterVisual : public VisualDataModel<Flt, glver>
     {
     public:
-        ScatterVisual(const vec<float> _offset)
+        ScatterVisual(const sm::vec<float> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -31,13 +30,13 @@ namespace morph {
             this->colourScale.do_autoscale = true;
         }
 
-        void marker (const morph::vec<float> coord, const std::array<float, 3>& clr, const Flt size)
+        void marker (const sm::vec<float> coord, const std::array<float, 3>& clr, const Flt size)
         {
             if (this->markers == morph::markerstyle::rod) {
                 // Draw a rod. markerdirn gives length and dirn. Radius from size
-                morph::vec<float> hr = this->markerdirn * 0.5f; // half rod
-                morph::vec<float> rs = coord + hr;
-                morph::vec<float> re = coord - hr;
+                sm::vec<float> hr = this->markerdirn * 0.5f; // half rod
+                sm::vec<float> rs = coord + hr;
+                sm::vec<float> re = coord - hr;
                 this->computeTube (rs, re, clr, clr, size, 12);
             } else {
                 if constexpr (draw_spheres_as_geodesics) {
@@ -51,7 +50,7 @@ namespace morph {
         }
 
         //! Quick hack to add an additional point
-        void add (morph::vec<float> coord, Flt value)
+        void add (sm::vec<float> coord, Flt value)
         {
             std::array<float, 3> clr = this->cm.convert (this->colourScale.transform_one (value));
             this->marker (coord, clr, this->radiusFixed);
@@ -59,7 +58,7 @@ namespace morph {
         }
 
         //! Additional point with variable size
-        void add (morph::vec<float> coord, Flt value, Flt size)
+        void add (sm::vec<float> coord, Flt value, Flt size)
         {
             std::array<float, 3> clr = this->cm.convert (this->colourScale.transform_one (value));
             this->marker (coord, clr, size);
@@ -162,7 +161,7 @@ namespace morph {
         markerstyle markers = morph::markerstyle::sphere;
 
         // Marker direction, if relevant. Used for length of rod markers
-        morph::vec<float, 3> markerdirn = this->uz;
+        sm::vec<float, 3> markerdirn = this->uz;
 
         //! Change this to get larger or smaller spheres.
         Flt radiusFixed = Flt{0.05};
@@ -176,7 +175,7 @@ namespace morph {
         // Do we add index labels?
         bool labelIndices = false;
 
-        morph::vec<float, 3> labelOffset = { 0.04f, 0.0f, 0.0f };
+        sm::vec<float, 3> labelOffset = { 0.04f, 0.0f, 0.0f };
         float labelSize = 0.03f;
     };
 
