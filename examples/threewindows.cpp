@@ -1,16 +1,18 @@
 /*
  * An example showing how to create two morph::Visuals and then a third one.
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/QuiverVisual.h>
-#include <morph/GraphVisual.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
 #include <iostream>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+#include <sm/vvec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/QuiverVisual.h>
+#include <morph/GraphVisual.h>
 
 int main()
 {
@@ -37,16 +39,16 @@ int main()
 
         try {
             // Set up data for the first Visual
-            morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+            sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
 
-            std::vector<morph::vec<float, 3>> coords;
+            std::vector<sm::vec<float, 3>> coords;
             coords.push_back ({0, 0,   0});
             coords.push_back ({1, 1,   0});
             coords.push_back ({2, 0,   0});
             coords.push_back ({1, 0.8, 0});
             coords.push_back ({2, 0.5, 0});
 
-            std::vector<morph::vec<float, 3>> quivs;
+            std::vector<sm::vec<float, 3>> quivs;
             quivs.push_back ({0.3,   0.4,  0});
             quivs.push_back ({0.1,   0.2,  0.1});
             quivs.push_back ({-0.1,  0,    0});
@@ -59,10 +61,10 @@ int main()
             v.addVisualModel (qvp);
 
             // Set up v2 with a graph
-            auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0}));
+            auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
             v2.bindmodel (gv);
-            morph::vvec<float> x =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
-            morph::vvec<float> y = x.pow(3);
+            sm::vvec<float> x =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
+            sm::vvec<float> y = x.pow(3);
             gv->setdata (x, y);
             gv->finalize();
             v2.addVisualModel (gv);

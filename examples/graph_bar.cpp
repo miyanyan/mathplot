@@ -2,19 +2,20 @@
  * Bargraph example
  */
 
-#include <morph/vvec.h>
+#include <iostream>
+#include <sm/vec>
+#include <sm/vvec>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <iostream>
 
 int main()
 {
     // Data
-    morph::vvec<float> absc = {1, 2, 3, 4};
-    morph::vvec<float> ord = {1, 1, 4, 2};
+    sm::vvec<float> absc = {1, 2, 3, 4};
+    sm::vvec<float> ord = {1, 1, 4, 2};
 
     morph::Visual v(1024, 768, "Bar graph");
-    auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0}));
+    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
 
     morph::DatasetStyle ds(morph::stylepolicy::bar); // Draw a bar graph by creating a bar policy DatasetStyle

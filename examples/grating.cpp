@@ -1,16 +1,18 @@
 /*
  * Visualize a Grating
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GratingVisual.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/GratingVisual.h>
 
 struct myvisual final : public morph::Visual<>
 {
@@ -66,7 +68,7 @@ int main (int ac, char** av)
 {
     int rtn = -1;
     myvisual v(1024, 768, "Grating");
-    v.setSceneTrans (morph::vec<float,3>({-0.990124f, -0.452241f, -3.6f}));
+    v.setSceneTrans (sm::vec<float,3>({-0.990124f, -0.452241f, -3.6f}));
 
     if (ac > 1) { v.angle = std::atoi (av[1]); } // First arg is angle
     if (ac > 2) { v.t = std::atoi (av[2]); } // second is time
@@ -74,7 +76,7 @@ int main (int ac, char** av)
     constexpr bool interactive = true;
 
     try {
-        morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+        sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
         auto rvm = std::make_unique<morph::GratingVisual<>> (offset);
         v.bindmodel (rvm);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <sm/vec>
 #include <morph/VisualModel.h>
 
 namespace morph {
@@ -8,7 +10,7 @@ namespace morph {
     template <int glver = morph::gl::version_4_1>
     struct RingVisual : public morph::VisualModel<glver>
     {
-        RingVisual(const morph::vec<float> _offset) : morph::VisualModel<glver>::VisualModel (_offset) {}
+        RingVisual(const sm::vec<float> _offset) : morph::VisualModel<glver>::VisualModel (_offset) {}
 
         void initializeVertices()
         {
@@ -16,7 +18,7 @@ namespace morph {
         }
 
         std::array<float, 3> clr = morph::colour::goldenrod;
-        morph::vec<float, 3> locn = { 0.0f };
+        sm::vec<float, 3> locn = { 0.0f };
         float radius = 1.0f;
         float thickness = 0.2f;
         int segments = 80;

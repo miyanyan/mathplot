@@ -1,7 +1,7 @@
 // Graph the logistic function
+#include <sm/vvec>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/vvec.h>
 #include <morph/unicode.h>
 
 // Make an equation string for the legend
@@ -33,17 +33,17 @@ int main()
     // Set up a morph::Visual 'scene environment'.
     morph::Visual v(1024, 768, "Logistic functions");
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({-0.5f,-0.5f,0.0f}));
+    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({-0.5f,-0.5f,0.0f}));
     v.bindmodel (gv);
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
-    morph::vvec<double> x;
+    sm::vvec<double> x;
     // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
     x.linspace (-100, 30, 200);
     // Logistic functions. Args are parameters to the function: (k, x0)
     // vvec::logistic() returns a new vvec with the logistic function-transformed values:
     gv->setdata (x, x.logistic(0.1, -10), make_legend_str (0.1, -10));
     // For this one, demonstrate use of logistic_inplace():
-    morph::vvec<double> xlogistic = x;
+    sm::vvec<double> xlogistic = x;
     xlogistic.logistic_inplace(0.25, -5);
     gv->setdata (x, xlogistic, make_legend_str (0.25, -5));
     gv->setdata (x, x.logistic(0.5, 0), make_legend_str (0.5, 0));

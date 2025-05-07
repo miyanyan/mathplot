@@ -1,13 +1,15 @@
 /*
  * Visualize a Cone
  */
-#include <morph/Visual.h>
-#include <morph/ConeVisual.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <sstream>
+
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/ConeVisual.h>
 
 int main()
 {
@@ -17,7 +19,7 @@ int main()
     v.lightingEffects(true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
 
         // Draw several cones, demonstrating what 'ringoffset' does
         for (int i = 0; i < 6; ++i) {

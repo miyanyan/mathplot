@@ -3,8 +3,8 @@
  */
 #include <iostream>
 
-#include <morph/vvec.h>
-#include <morph/algo.h>
+#include <sm/vvec>
+#include <sm/algo>
 
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
@@ -12,18 +12,18 @@
 int main()
 {
     // Data
-    morph::vvec<float> absc = { 1, 2, 3, 4, 5 }; // x
-    morph::vvec<float> ord = { 1, 3, 2, 3, 5 }; // y
+    sm::vvec<float> absc = { 1, 2, 3, 4, 5 }; // x
+    sm::vvec<float> ord = { 1, 3, 2, 3, 5 }; // y
 
     // Fit y = mx + c
-    morph::vec<float, 2> mc = morph::algo::linregr (absc, ord);
+    sm::vec<float, 2> mc = sm::algo::linregr (absc, ord);
     std::cout << "Linear regression coefficients: gradient=" << mc[0] << ", offset=" << mc[1] << std::endl;
     // Create fit data points for visualisation:
-    morph::vvec<float> fit = (absc * mc[0]) + mc[1];
+    sm::vvec<float> fit = (absc * mc[0]) + mc[1];
 
     // Visualise data and linear fit
     morph::Visual v(1024, 768, "Linear regression");
-    auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0}));
+    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
 
     // The first dataset shows the data points

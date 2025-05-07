@@ -1,8 +1,8 @@
 #pragma once
 
-#include <morph/vec.h>
+#include <sm/mathconst>
+#include <sm/vec>
 #include <morph/VisualModel.h>
-#include <morph/mathconst.h>
 #include <array>
 
 namespace morph {
@@ -15,16 +15,16 @@ namespace morph {
         RodVisual() { this->mv_offset = {0.0, 0.0, 0.0}; }
 
         //! Initialise with offset, start and end coordinates, radius and a single colour.
-        RodVisual(const vec<float, 3> _offset,
-                  const vec<float, 3> _start_coord, const vec<float, 3> _end_coord, const float _radius,
+        RodVisual(const sm::vec<float, 3> _offset,
+                  const sm::vec<float, 3> _start_coord, const sm::vec<float, 3> _end_coord, const float _radius,
                   const std::array<float, 3> _col)
         {
             this->init (_offset, _start_coord, _end_coord, _radius, _col, _col);
         }
 
         //! Initialise with offset, start and end coordinates, radius and start and end colours.
-        RodVisual(const vec<float, 3> _offset,
-                  const vec<float, 3> _start_coord, const vec<float, 3> _end_coord, const float _radius,
+        RodVisual(const sm::vec<float, 3> _offset,
+                  const sm::vec<float, 3> _start_coord, const sm::vec<float, 3> _end_coord, const float _radius,
                   const std::array<float, 3> _start_col, const std::array<float, 3> _end_col)
         {
             this->init (_offset, _start_coord, _end_coord, _radius, _start_col, _end_col);
@@ -32,8 +32,8 @@ namespace morph {
 
         ~RodVisual () {}
 
-        void init (const vec<float, 3> _offset,
-                   const vec<float, 3> _start_coord, const vec<float, 3> _end_coord, const float _radius,
+        void init (const sm::vec<float, 3> _offset,
+                   const sm::vec<float, 3> _start_coord, const sm::vec<float, 3> _end_coord, const float _radius,
                    const std::array<float, 3> _start_col, const std::array<float, 3> _end_col)
         {
             // Set up...
@@ -64,14 +64,14 @@ namespace morph {
                 // Can alternatively use the 'oriented' tube
                 this->computeTube (this->start_coord, this->end_coord,
                                    {0,1,0}, {0,0,1},
-                                   this->start_col, this->end_col, this->radius, 6, morph::mathconst<float>::pi_over_6);
+                                   this->start_col, this->end_col, this->radius, 6, sm::mathconst<float>::pi_over_6);
             }
         }
 
         //! The position of the start of the rod, given with respect to the parent's offset
-        vec<float, 3> start_coord = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> start_coord = {0.0f, 0.0f, 0.0f};
         //! The position of the end of the rod, given with respect to the parent's offset
-        vec<float, 3> end_coord = {1.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> end_coord = {1.0f, 0.0f, 0.0f};
         //! The radius of the rod
         float radius = 1.0f;
 

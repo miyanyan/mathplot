@@ -1,19 +1,20 @@
 // This is a graph which updates on each step. To test for a bug, but also to show how
 // a graph can be completely redrawn each time, if required.
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/mathconst>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/vvec.h>
-#include <morph/mathconst.h>
 
 int main()
 {
     morph::Visual v(1024, 768, "Continuous redrawing of GraphVisual");
 
-    auto gv = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({0,0,0}));
+    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
 
-    morph::vvec<double> x;
-    x.linspace (-morph::mathconst<double>::pi, morph::mathconst<double>::pi, 100);
+    sm::vvec<double> x;
+    x.linspace (-sm::mathconst<double>::pi, sm::mathconst<double>::pi, 100);
 
     double dx = 0.0;
 

@@ -5,16 +5,18 @@
  * It works in practice, but it is safer to use the multicontext-safe GLAD headers with
  * morph::Visual.
  */
-#include <morph/VisualNoMX.h>
-#include <morph/ColourMap.h>
-#include <morph/QuiverVisual.h>
-#include <morph/GraphVisual.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
 #include <iostream>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+#include <sm/vvec>
+
+#include <morph/VisualNoMX.h>
+#include <morph/ColourMap.h>
+#include <morph/QuiverVisual.h>
+#include <morph/GraphVisual.h>
 
 int main()
 {
@@ -39,11 +41,11 @@ int main()
 
     try {
         // Set up data for the first Visual
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
 
-        std::vector<morph::vec<float, 3>> coords(20*20);
-        std::vector<morph::vec<float, 3>> quivs(20*20);
-        morph::vvec<float> qlens(20*20, 0.0f);
+        std::vector<sm::vec<float, 3>> coords(20*20);
+        std::vector<sm::vec<float, 3>> quivs(20*20);
+        sm::vvec<float> qlens(20*20, 0.0f);
 
         size_t k = 0;
         for (int i = -10; i < 10; ++i) {
@@ -61,8 +63,8 @@ int main()
         for (int i = -10; i < 10; ++i) {
             for (int j = -10; j < 10; ++j) {
                 if (i > -10 && i < 10 && j > -10 && j < 10) {
-                    morph::vec<float> r = coords[k] - coords[k-20];
-                    morph::vec<float> g = coords[k] - coords[k-1];
+                    sm::vec<float> r = coords[k] - coords[k-20];
+                    sm::vec<float> g = coords[k] - coords[k-1];
                     // Compute normal and modulate by the distance from the centre
                     quivs[k] = r.cross(g);
                     if (coords[k].length() != 0.0f) { quivs[k] *= 1.0f / (1.2f + coords[k].length()); }
@@ -83,10 +85,10 @@ int main()
         v.addVisualModel (qvp);
 
         // Set up v2 with a graph, switching to the Visual v2's context first:
-        auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0}));
+        auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
         v2.bindmodel (gv);
-        morph::vvec<float> x =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
-        morph::vvec<float> y = x.pow(3);
+        sm::vvec<float> x =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
+        sm::vvec<float> y = x.pow(3);
         gv->setdata (x, y);
         gv->finalize();
         v2.addVisualModel (gv);

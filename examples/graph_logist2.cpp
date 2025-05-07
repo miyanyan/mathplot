@@ -1,8 +1,8 @@
 // Graph the logistic function
+#include <sstream>
+#include <sm/vvec>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/vvec.h>
-#include <sstream>
 #include <morph/Config.h>
 
 int main()
@@ -11,10 +11,10 @@ int main()
     namespace uc = morph::unicode;
     // Set up a morph::Visual 'scene environment'.
     morph::Visual v(1024, 768, "Logistic functions");
-    v.addLabel ("Change logistic function parameters in ../examples/graph_logist2.json (live updates)", morph::vec<float>({0,0,0}));
-    v.setSceneTrans (morph::vec<float,3>({-0.732852f, 0.0348977f, -5.0f}));
+    v.addLabel ("Change logistic function parameters in ../examples/graph_logist2.json (live updates)", sm::vec<float>({0,0,0}));
+    v.setSceneTrans (sm::vec<float,3>({-0.732852f, 0.0348977f, -5.0f}));
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({-0.5f,-0.5f,0.0f}));
+    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>{-0.5f,-0.5f,0.0f});
     v.bindmodel (gv);
     // Params are read from a JSON file
     double x0=0, k=0, g1x0=0, g1x1=0;
@@ -26,7 +26,7 @@ int main()
         g1x1 = conf.get<double> ("g1x1", 10.0);
     }
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
-    morph::vvec<double> x;
+    sm::vvec<double> x;
     // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
     x.linspace (g1x0, g1x1, 100);
     // Logistic functions. Args are parameters to the function are (xoffset, alpha)
@@ -41,9 +41,9 @@ int main()
     // unique_ptr (and returning a regular pointer)
     morph::GraphVisual<double>* gvptr = v.addVisualModel (gv);
 
-    auto gv2 = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({1.0f,-0.5f,0.0f}));
+    auto gv2 = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>{1.0f,-0.5f,0.0f});
     v.bindmodel (gv2);
-    morph::vvec<double> x2;
+    sm::vvec<double> x2;
     x2.linspace (0, 1, 100);
     gv2->setlimits (0,1,0,1);
     gv2->setdata (x2, x2.logistic(k, x0), lftag.str());
@@ -74,7 +74,7 @@ int main()
             // Show the general eqn by adding a label below the first graph
             std::stringstream eqngen;
             eqngen << "f(x) = 1 / [1 + exp (-k(x - x"<< uc::toUtf8(uc::subs0) << ")]";
-            gvptr->addLabel (eqngen.str(), morph::vec<float>({0.1f, -0.3f, 0.0f}), morph::TextFeatures(0.05f));
+            gvptr->addLabel (eqngen.str(), sm::vec<float>({0.1f, -0.3f, 0.0f}), morph::TextFeatures(0.05f));
 
             gv2ptr->clearTexts();
             // Update legend
@@ -95,7 +95,7 @@ int main()
             // Show the specific equation on the second graph
             std::stringstream eqn;
             eqn << "f(x) = 1 / [1 + exp (-"<< ktxt.str() << brtxt.str() << "x" << ostxt.str() << ")]";
-            gv2ptr->addLabel (eqn.str(), morph::vec<float>({0.1f, -0.3f, 0.0f}), morph::TextFeatures(0.05f));
+            gv2ptr->addLabel (eqn.str(), sm::vec<float>{0.1f, -0.3f, 0.0f}, morph::TextFeatures(0.05f));
 
             if (shown_error) {
                 std::cout << "JSON parsed successfully\n";

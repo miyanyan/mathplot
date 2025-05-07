@@ -12,9 +12,9 @@
 #include <bitset>
 #include <map>
 
-#include <morph/mathconst.h>
-#include <morph/vec.h>
-#include <morph/algo.h>
+#include <sm/mathconst>
+#include <sm/vec>
+#include <sm/algo>
 
 #include <morph/colour.h>
 #include <morph/VisualModel.h>
@@ -50,17 +50,17 @@ namespace morph {
     {
     public:
         GratingVisual() { this->mv_offset = {0.0, 0.0, 0.0}; }
-        GratingVisual (const vec<float, 3> _offset) { this->init (_offset); }
+        GratingVisual (const sm::vec<float, 3> _offset) { this->init (_offset); }
         ~GratingVisual () {}
 
-        void init (const vec<float, 3> _offset)
+        void init (const sm::vec<float, 3> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
         }
 
-        void draw_band (const vec<float, 2>& fp1, const vec<float, 2>& fq1,
-                        const vec<float, 2>& fp2, const vec<float, 2>& fq2,
+        void draw_band (const sm::vec<float, 2>& fp1, const sm::vec<float, 2>& fq1,
+                        const sm::vec<float, 2>& fp2, const sm::vec<float, 2>& fq2,
                         const std::array<float, 3>& _col)
         {
             this->vertex_push (fp1.plus_one_dim(), this->vertexPositions);
@@ -81,7 +81,7 @@ namespace morph {
         }
 
         // Swap _p1 and _p2 along with their border ids
-        void swap_pair (vec<float, 2>& _p1, vec<float, 2>& _p2, border_id& _p1_id, border_id& _p2_id)
+        void swap_pair (sm::vec<float, 2>& _p1, sm::vec<float, 2>& _p2, border_id& _p1_id, border_id& _p2_id)
         {
             auto tmp = _p2;
             auto tmp_id = _p2_id;
@@ -99,35 +99,35 @@ namespace morph {
             this->indices.clear();
 
             // The velocity offset for each location of each front
-            vec<float, 2> v_offset = this->v_front * this->t;
+            sm::vec<float, 2> v_offset = this->v_front * this->t;
 
             // unit vector in x dirn
-            constexpr vec<float, 2> u_x = { 1.0f, 0.0f };
+            constexpr sm::vec<float, 2> u_x = { 1.0f, 0.0f };
 
             // The unit vector perpendicular to the front angle
-            vec<float, 2> u_alpha = u_x;
-            u_alpha.set_angle (morph::mathconst<float>::deg2rad * this->alpha);
-            vec<float, 2> u_alpha_perp = u_x;
-            u_alpha_perp.set_angle (morph::mathconst<float>::pi_over_2 + morph::mathconst<float>::deg2rad * this->alpha);
+            sm::vec<float, 2> u_alpha = u_x;
+            u_alpha.set_angle (sm::mathconst<float>::deg2rad * this->alpha);
+            sm::vec<float, 2> u_alpha_perp = u_x;
+            u_alpha_perp.set_angle (sm::mathconst<float>::pi_over_2 + sm::mathconst<float>::deg2rad * this->alpha);
 
             // Corners
-            vec<float, 2> top_left =  vec<float, 2>{ this->mv_offset[0],             this->mv_offset[1] + dims[1] };
-            vec<float, 2> bot_left =  vec<float, 2>{ this->mv_offset[0],             this->mv_offset[1]           }; // or mv_offset
-            vec<float, 2> top_right = vec<float, 2>{ this->mv_offset[0] + dims[0],   this->mv_offset[1] + dims[1] }; // or mv_offset + dims
-            vec<float, 2> bot_right = vec<float, 2>{ this->mv_offset[0] + dims[0],   this->mv_offset[1]           };
+            sm::vec<float, 2> top_left =  sm::vec<float, 2>{ this->mv_offset[0],             this->mv_offset[1] + dims[1] };
+            sm::vec<float, 2> bot_left =  sm::vec<float, 2>{ this->mv_offset[0],             this->mv_offset[1]           }; // or mv_offset
+            sm::vec<float, 2> top_right = sm::vec<float, 2>{ this->mv_offset[0] + dims[0],   this->mv_offset[1] + dims[1] }; // or mv_offset + dims
+            sm::vec<float, 2> bot_right = sm::vec<float, 2>{ this->mv_offset[0] + dims[0],   this->mv_offset[1]           };
 
             // Line segments of the borders. Will need these for computing line crossings. each line segment is 'pq'
-            vec<float, 2> bot_p = bot_left;
-            vec<float, 2> bot_q = bot_right;
+            sm::vec<float, 2> bot_p = bot_left;
+            sm::vec<float, 2> bot_q = bot_right;
             //
-            vec<float, 2> top_p = top_left;
-            vec<float, 2> top_q = top_right;
+            sm::vec<float, 2> top_p = top_left;
+            sm::vec<float, 2> top_q = top_right;
             //
-            vec<float, 2> left_p = bot_left;
-            vec<float, 2> left_q = top_left;
+            sm::vec<float, 2> left_p = bot_left;
+            sm::vec<float, 2> left_q = top_left;
             //
-            vec<float, 2> right_p = bot_right;
-            vec<float, 2> right_q = top_right;
+            sm::vec<float, 2> right_p = bot_right;
+            sm::vec<float, 2> right_q = top_right;
 
             /**
              * Subroutine for finding the band vertices on the boundary given as a lambda
@@ -139,8 +139,8 @@ namespace morph {
              */
             auto find_border_points =
             [bot_p, bot_q, top_p, top_q, left_p, left_q, right_p, right_q]
-            (const vec<float, 2>& _p, const vec<float, 2>& _q,
-             vec<float, 2>& fp, vec<float, 2>& fq,
+            (const sm::vec<float, 2>& _p, const sm::vec<float, 2>& _q,
+             sm::vec<float, 2>& fp, sm::vec<float, 2>& fq,
              border_id& fp_id, border_id& fq_id,
              const std::bitset<2>& _bi,
              const std::bitset<2>& _ti,
@@ -165,16 +165,16 @@ namespace morph {
                 }
 
                 if (_bi.test(0)) { // bottom
-                    fp = morph::algo::crossing_point (_p, _q, bot_p, bot_q);
+                    fp = sm::algo::crossing_point (_p, _q, bot_p, bot_q);
                     fp_id = border_id::bottom;
                     if (_ti.test(0)) {
                         // bottom and top edges
-                        fq = morph::algo::crossing_point (_p, _q, top_p, top_q);
+                        fq = sm::algo::crossing_point (_p, _q, top_p, top_q);
                         fq_id = border_id::top;
 
                     } else if (_li.test(0)) {
                         // bottom and left edges
-                        fq = morph::algo::crossing_point (_p, _q, left_p, left_q);
+                        fq = sm::algo::crossing_point (_p, _q, left_p, left_q);
                         fq_id = border_id::left;
 
                         // What if it ALSO intersects with the right edge? And the bottom/left
@@ -183,14 +183,14 @@ namespace morph {
                             // There's a third intersection. Was B==L?
                             if ((fp-fq).length() < thresh) {
                                 // If so, replace L with T:
-                                fq = morph::algo::crossing_point (_p, _q, top_p, top_q);
+                                fq = sm::algo::crossing_point (_p, _q, top_p, top_q);
                                 fq_id = border_id::top;
                             }
                         } else if (_ri.test(0)) {
                             // There's a third intersection. Was B==L?
                             if ((fp-fq).length() < thresh) {
                                 // If so, replace L with R:
-                                fq = morph::algo::crossing_point (_p, _q, right_p, right_q);
+                                fq = sm::algo::crossing_point (_p, _q, right_p, right_q);
                                 fq_id = border_id::right;
                             }
                         }
@@ -198,14 +198,14 @@ namespace morph {
 
                     } else if (_ri.test(0)) {
                         // bottom and right edges
-                        fq = morph::algo::crossing_point (_p, _q, right_p, right_q);
+                        fq = sm::algo::crossing_point (_p, _q, right_p, right_q);
                         fq_id = border_id::right;
 
                         if (_ti.test(0)) {
                             // There's a third intersection. Was B==R?
                             if ((fp-fq).length() < thresh) {
                                 // If so, replace R with T:
-                                fq = morph::algo::crossing_point (_p, _q, top_p, top_q);
+                                fq = sm::algo::crossing_point (_p, _q, top_p, top_q);
                                 fq_id = border_id::top;
                             }
                         }
@@ -223,12 +223,12 @@ namespace morph {
 
                 } else if (_ti.test(0)) {
 
-                    fp = morph::algo::crossing_point (_p, _q, top_p, top_q);
+                    fp = sm::algo::crossing_point (_p, _q, top_p, top_q);
                     fp_id = border_id::top;
 
                     if (_li.test(0)) {
                         // top and left
-                        fq = morph::algo::crossing_point (_p, _q, left_p, left_q);
+                        fq = sm::algo::crossing_point (_p, _q, left_p, left_q);
                         fq_id = border_id::left;
 
                         // Third intersection tests
@@ -236,35 +236,35 @@ namespace morph {
                             // There's a third intersection. Was T==L?
                             if ((fp-fq).length() < thresh) {
                                 // If so, replace L with B:
-                                fq = morph::algo::crossing_point (_p, _q, bot_p, bot_q);
+                                fq = sm::algo::crossing_point (_p, _q, bot_p, bot_q);
                                 fq_id = border_id::bottom;
                             }
                         } else if (_ri.test(0)) {
                             // There's a third intersection. Was T==L?
                             if ((fp-fq).length() < thresh) {
                                 // If so, replace L with R:
-                                fq = morph::algo::crossing_point (_p, _q, right_p, right_q);
+                                fq = sm::algo::crossing_point (_p, _q, right_p, right_q);
                                 fq_id = border_id::right;
                             }
                         }
 
                     } else if (_ri.test(0)) {
                         // top and right
-                        fq = morph::algo::crossing_point (_p, _q, right_p, right_q);
+                        fq = sm::algo::crossing_point (_p, _q, right_p, right_q);
                         fq_id = border_id::right;
 
                         if (_bi.test(0)) {
                             // There's a third intersection. Was T==R?
                             if ((fp-fq).length() < thresh) {
                                 // If so, replace R with B:
-                                fq = morph::algo::crossing_point (_p, _q, bot_p, bot_q);
+                                fq = sm::algo::crossing_point (_p, _q, bot_p, bot_q);
                                 fq_id = border_id::bottom;
                             }
                         } else if (_li.test(0)) {
                             // There's a third intersection. Was T==R?
                             if ((fp-fq).length() < thresh) {
                                 // If so, replace R with L:
-                                fq = morph::algo::crossing_point (_p, _q, left_p, left_q);
+                                fq = sm::algo::crossing_point (_p, _q, left_p, left_q);
                                 fq_id = border_id::left;
                             }
                         }
@@ -279,12 +279,12 @@ namespace morph {
                         }
                     }
                 } else if (_li.test(0)) {
-                    fp = morph::algo::crossing_point (_p, _q, left_p, left_q);
+                    fp = sm::algo::crossing_point (_p, _q, left_p, left_q);
                     fp_id = border_id::left;
 
                     if (_ri.test(0)) {
                         // left and right
-                        fq = morph::algo::crossing_point (_p, _q, right_p, right_q);
+                        fq = sm::algo::crossing_point (_p, _q, right_p, right_q);
                         fq_id = border_id::right;
                     } else {
                         fq = fp;
@@ -297,7 +297,7 @@ namespace morph {
                     }
                 } else if (_ri.test(0)) {
                     // Maybe ri alone
-                    fp = morph::algo::crossing_point (_p, _q, right_p, right_q);
+                    fp = sm::algo::crossing_point (_p, _q, right_p, right_q);
                     fp_id = border_id::right;
                     fq = fp;
                     // Is fq bottom or top?
@@ -316,14 +316,14 @@ namespace morph {
              * border intersection identifications.
              */
             auto draw_fill_in_shape = [this, top_left, bot_left, bot_right, top_right]
-            (const vec<float, 2>& _p, const vec<float, 2>& _p_step,
-             const vec<float, 2>& fp, const vec<float, 2>& fq,
+            (const sm::vec<float, 2>& _p, const sm::vec<float, 2>& _p_step,
+             const sm::vec<float, 2>& fp, const sm::vec<float, 2>& fq,
              const border_id& fp_id, const border_id& fq_id, const std::array<float, 3>& _col,
              const std::set<border_id>& _border_id_set)
             {
-                constexpr vec<float, 2> corner_unidentified = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
-                vec<float, 2> corner = { 0, 0 };
-                vec<float, 2> corner_2 = corner_unidentified;
+                constexpr sm::vec<float, 2> corner_unidentified = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+                sm::vec<float, 2> corner = { 0, 0 };
+                sm::vec<float, 2> corner_2 = corner_unidentified;
 
                 if ((fp_id == border_id::left && fq_id == border_id::top)
                     || (fq_id == border_id::left && fp_id == border_id::top)) {
@@ -443,11 +443,11 @@ namespace morph {
             }; // end of draw_fill_in_shape()
 
             // How does one band wavelength project onto the x and y axes?
-            float length_of_lambda_in_x = this->lambda / std::cos (morph::mathconst<float>::deg2rad * this->alpha);
-            float length_of_lambda_in_y = this->lambda / std::sin (morph::mathconst<float>::deg2rad * this->alpha);
+            float length_of_lambda_in_x = this->lambda / std::cos (sm::mathconst<float>::deg2rad * this->alpha);
+            float length_of_lambda_in_y = this->lambda / std::sin (sm::mathconst<float>::deg2rad * this->alpha);
 
             // p_0 is our starting location to draw bands
-            vec<float, 2> p_0 = { 0.0f, 0.0f };
+            sm::vec<float, 2> p_0 = { 0.0f, 0.0f };
             if (std::abs(length_of_lambda_in_x) > std::abs(dims[0])) {
                 // In this case we have horizontal bands, so start from a p_0 on the y axis
                 float y_lambdas_f = v_offset[1] / length_of_lambda_in_y;
@@ -464,7 +464,7 @@ namespace morph {
 
             // This vector is the distance to travel from a point within the rectangle to make half
             // of the wavefront that will be guaranteed to intersect with the rectangle border.
-            vec<float, 2> half_wave = 2.0f  * dims.length() * u_alpha_perp;
+            sm::vec<float, 2> half_wave = 2.0f  * dims.length() * u_alpha_perp;
 
             /**
              * Execute a loop twice. I used a lambda to make this a subroutine without needing to
@@ -473,10 +473,10 @@ namespace morph {
             auto loop_lambda = [this, find_border_points, draw_fill_in_shape, p_0, half_wave,
                                 bot_p, bot_q, top_p, top_q, left_p, left_q, right_p, right_q,
                                 bot_left, top_left, bot_right, top_right]
-            (unsigned int i, const vec<float, 2>& p_step)
+            (unsigned int i, const sm::vec<float, 2>& p_step)
             {
-                vec<float, 2> p1 = {0,0}, q1 = {0,0}, p2 = {0,0}, q2 = {0,0};
-                vec<float, 2> fp1 = {0,0}, fp2 = {0,0}, fq1 = {0,0}, fq2 = {0,0};
+                sm::vec<float, 2> p1 = {0,0}, q1 = {0,0}, p2 = {0,0}, q2 = {0,0};
+                sm::vec<float, 2> fp1 = {0,0}, fp2 = {0,0}, fq1 = {0,0}, fq2 = {0,0};
 
                 // Identifiers for the final crossing points.
                 border_id fp1_id = border_id::unknown;
@@ -485,7 +485,7 @@ namespace morph {
                 border_id fq2_id = border_id::unknown;
 
                 bool first_loop = true;
-                for (vec<float, 2> p = p_0; ; p += p_step) {
+                for (sm::vec<float, 2> p = p_0; ; p += p_step) {
 
                     if constexpr (debug_text) { std::cout << "\nBAND " << i << std::endl; }
 
@@ -521,10 +521,10 @@ namespace morph {
                     q1 = p - half_wave;
 
                     // Compute intersections for p1, q1
-                    std::bitset<2> bi = morph::algo::segments_intersect (p1, q1, bot_p, bot_q);
-                    std::bitset<2> ti = morph::algo::segments_intersect (p1, q1, top_p, top_q);
-                    std::bitset<2> li = morph::algo::segments_intersect (p1, q1, left_p, left_q);
-                    std::bitset<2> ri = morph::algo::segments_intersect (p1, q1, right_p, right_q);
+                    std::bitset<2> bi = sm::algo::segments_intersect (p1, q1, bot_p, bot_q);
+                    std::bitset<2> ti = sm::algo::segments_intersect (p1, q1, top_p, top_q);
+                    std::bitset<2> li = sm::algo::segments_intersect (p1, q1, left_p, left_q);
+                    std::bitset<2> ri = sm::algo::segments_intersect (p1, q1, right_p, right_q);
                     if constexpr (debug_text) {
                         std::cout << "p1/q1 intersections  bi: " << bi << "  ti: " << ti << "  li: " << li << "  ri: " << ri << std::endl;
                     }
@@ -571,10 +571,10 @@ namespace morph {
                     }
 
                     // repeat computation of intersections for p2, q2.
-                    bi = morph::algo::segments_intersect (p2, q2, bot_p, bot_q);
-                    ti = morph::algo::segments_intersect (p2, q2, top_p, top_q);
-                    li = morph::algo::segments_intersect (p2, q2, left_p, left_q);
-                    ri = morph::algo::segments_intersect (p2, q2, right_p, right_q);
+                    bi = sm::algo::segments_intersect (p2, q2, bot_p, bot_q);
+                    ti = sm::algo::segments_intersect (p2, q2, top_p, top_q);
+                    li = sm::algo::segments_intersect (p2, q2, left_p, left_q);
+                    ri = sm::algo::segments_intersect (p2, q2, right_p, right_q);
                     if constexpr (debug_text) {
                         std::cout << "p2/q2 intersections  bi: " << bi << "  ti: " << ti << "  li: " << li << "  ri: " << ri << std::endl;
                     }
@@ -639,7 +639,7 @@ namespace morph {
                         if (!first_off && !second_off) {
                             // both bands are ON, will draw a band.
                             // Does fp1-fp2 intersect with fq1-fq2? (if so triangles for the band will draw badly so swap a pair)
-                            std::bitset<2> fpi = morph::algo::segments_intersect (fp1, fp2, fq1, fq2);
+                            std::bitset<2> fpi = sm::algo::segments_intersect (fp1, fp2, fq1, fq2);
                             if (fpi.test(0)) { this->swap_pair (fp2, fq2, fp2_id, fq2_id); }
                             if constexpr (debug_text) { std::cout << "** DRAW " << (i%2==0?"G":"B") << " band\n"; }
                             this->draw_band (fp1, fq1, fp2, fq2, col);
@@ -672,7 +672,7 @@ namespace morph {
                 }
             }; // end of loop lambda
 
-            vec<float, 2> p_step = 0.5f * lambda * u_alpha;
+            sm::vec<float, 2> p_step = 0.5f * lambda * u_alpha;
             // Run the band drawing loop forwards...
             loop_lambda (0, p_step);
             // ...and backwards
@@ -684,9 +684,9 @@ namespace morph {
             if constexpr (debug_geometry) {
                 // Seeing boundary useful for debugging
                 constexpr float bwid = 0.005f;
-                constexpr morph::vec<float, 2> voffs = {0.0f, bwid/2.0f};
-                constexpr morph::vec<float, 2> hoffs = {bwid/2.0f, 0.0f};
-                constexpr morph::vec<float, 2> hoffs2 = {bwid, 0.0f};
+                constexpr sm::vec<float, 2> voffs = {0.0f, bwid/2.0f};
+                constexpr sm::vec<float, 2> hoffs = {bwid/2.0f, 0.0f};
+                constexpr sm::vec<float, 2> hoffs2 = {bwid, 0.0f};
                 this->computeFlatLine ((bot_p-voffs-hoffs2).plus_one_dim(), (bot_q-voffs+hoffs2).plus_one_dim(),
                                        this->uz, morph::colour::black, bwid);
                 this->computeFlatLine ((right_p+hoffs).plus_one_dim(), (right_q+hoffs).plus_one_dim(),
@@ -697,12 +697,12 @@ namespace morph {
                                        this->uz, morph::colour::black, bwid);
 
                 // Also show the v_front vector
-                morph::vec<float> vfstart = { -2.0f * this->v_front.length(), 0, 0};
+                sm::vec<float> vfstart = { -2.0f * this->v_front.length(), 0, 0};
                 this->computeArrow (vfstart, vfstart + this->v_front.plus_one_dim(), morph::colour::black);
 
                 // Draw a unit 1 ruler, too
-                this->computeFlatLine ((left_p + vec<float, 2>{0,-0.1}).plus_one_dim(),
-                                       (left_p + vec<float, 2>{1,-0.1}).plus_one_dim(),
+                this->computeFlatLine ((left_p + sm::vec<float, 2>{0,-0.1}).plus_one_dim(),
+                                       (left_p + sm::vec<float, 2>{1,-0.1}).plus_one_dim(),
                                        this->uz, morph::colour::crimson, 0.01f);
             }
         }
@@ -711,13 +711,13 @@ namespace morph {
         std::array<float, 3> colour1 = morph::colour::white;
         std::array<float, 3> colour2 = morph::colour::black;
         //! The velocity of the fronts.
-        vec<float, 2> v_front = { 0.0f, 0.0f };
+        sm::vec<float, 2> v_front = { 0.0f, 0.0f };
         //! The wavelength of the fronts
         float lambda = 0.1f;
         //! The angle of the fronts, wrt x.
         float alpha = 45.0f;
         //! Width, height (after any rotation?)
-        vec<float, 2> dims = { 2.0f, 1.0f };
+        sm::vec<float, 2> dims = { 2.0f, 1.0f };
         //! Current time
         unsigned long long int t = 0;
         bool do_loop2 = true;
