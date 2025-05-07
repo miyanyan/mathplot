@@ -1,30 +1,31 @@
 // Example of 1D convolutions with vvec
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/mathconst>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <morph/vvec.h>
-#include <morph/mathconst.h>
 
 int main()
 {
-    using mc = morph::mathconst<double>;
-    using wrapdata = morph::vvec<double>::wrapdata;
+    using mc = sm::mathconst<double>;
+    using wrapdata = sm::vvec<double>::wrapdata;
 
-    morph::vvec<double> x;
+    sm::vvec<double> x;
     x.linspace (-mc::pi, mc::pi-(mc::pi/5.0), 60);
-    morph::vvec<double> y = x.sin();
-    morph::vvec<double> r (x.size(), 0.0);
+    sm::vvec<double> y = x.sin();
+    sm::vvec<double> r (x.size(), 0.0);
     r.randomize();
     y += r;
 
     // Manually create a filter:
-    morph::vvec<double> filter = {.2, .4, .6, .8, 1, 0.8, 0.6, 0.4, 0.2};
+    sm::vvec<double> filter = {.2, .4, .6, .8, 1, 0.8, 0.6, 0.4, 0.2};
     filter /= filter.sum();
 
-    morph::vvec<double> y2 = y.convolve<wrapdata::wrap> (filter);
+    sm::vvec<double> y2 = y.convolve<wrapdata::wrap> (filter);
 
     // Graph x and y
-    morph::Visual v(1024, 768, "1D convolutions with morph::vvec");
-    auto gv = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({0,0,0}));
+    morph::Visual v(1024, 768, "1D convolutions with sm::vvec");
+    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
     gv->setdata (x, y, "raw");
     gv->setdata (x, y2, "smth");

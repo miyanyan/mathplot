@@ -51,9 +51,9 @@ extern "C" {
 
 typedef JCV_REAL_TYPE jcv_real;
 
-#include <morph/vec.h>
+#include <sm/vec>
 
-typedef morph::vec<jcv_real, 3>     jcv_point;
+typedef sm::vec<jcv_real, 3>        jcv_point;
 typedef struct jcv_rect_            jcv_rect;
 typedef struct jcv_site_            jcv_site;
 typedef struct jcv_edge_            jcv_edge;

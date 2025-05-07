@@ -1,13 +1,15 @@
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <cstddef>
+
+#include <sm/scale>
+#include <sm/vec>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
 
 namespace morph {
 
@@ -23,10 +25,10 @@ namespace morph {
     class PointRowsVisual : public VisualDataModel<Flt, glver>
     {
     public:
-        PointRowsVisual(std::vector<vec<float,3>>* _pointrows,
-                        const vec<float, 3> _offset,
+        PointRowsVisual(std::vector<sm::vec<float,3>>* _pointrows,
+                        const sm::vec<float, 3> _offset,
                         const std::vector<Flt>* _data,
-                        const scale<Flt>& cscale,
+                        const sm::scale<Flt>& cscale,
                         ColourMapType _cmt,
                         const float _hue = 0.0f)
         {
@@ -97,7 +99,7 @@ namespace morph {
             //std::cout << "r1: " << r1 << ", r1_e: " << r1_e << std::endl;
             //std::cout << "r2: " << r2 << ", r2_e: " << r2_e << std::endl;
             //std::cout << "prlen is " << prlen << std::endl;
-            morph::vec<float> v0, v1, v2;
+            sm::vec<float> v0, v1, v2;
             while (r2 != prlen) { // While through all 'rows' - pairs of pointrows
                 //std::cout << "====================================" << std::endl;
                 //std::cout << "  ROW" << std::endl;
@@ -122,12 +124,12 @@ namespace morph {
                 this->idx++;
 
                 // Let v0 be:
-                morph::vec<float> vnorm = {0.0f, 0.0f, 1.0f};
+                sm::vec<float> vnorm = {0.0f, 0.0f, 1.0f};
                 if (r1+1 < r1_e) {
                     v0 = (*this->dataCoords)[r1+1];
                     // Compute normal
-                    morph::vec<float> plane1 = v1 - v0;
-                    morph::vec<float> plane2 = v2 - v0;
+                    sm::vec<float> plane1 = v1 - v0;
+                    sm::vec<float> plane2 = v2 - v0;
                     vnorm = plane2.cross (plane1);
                     vnorm.renormalize();
                 }
@@ -233,9 +235,9 @@ namespace morph {
                     }
 
                     // Compute normal and push one
-                    morph::vec<float> plane1 = v1 - v0;
-                    morph::vec<float> plane2 = v2 - v0;
-                    morph::vec<float> vnorm = plane2.cross (plane1);
+                    sm::vec<float> plane1 = v1 - v0;
+                    sm::vec<float> plane2 = v2 - v0;
+                    sm::vec<float> vnorm = plane2.cross (plane1);
                     vnorm.renormalize();
                     this->vertex_push (vnorm, this->vertexNormals);
 

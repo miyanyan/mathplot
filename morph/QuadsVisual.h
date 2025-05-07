@@ -1,14 +1,16 @@
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
 #include <memory>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <stdexcept>
+
+#include <sm/scale>
+#include <sm/vec>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
 
 namespace morph {
 
@@ -17,9 +19,9 @@ namespace morph {
     {
     public:
         QuadsVisual(const std::vector<std::array<Flt,12>>* _quads,
-                    const vec<float> _offset,
+                    const sm::vec<float> _offset,
                     const std::vector<Flt>* _data,
-                    const scale<Flt>& _scale,
+                    const sm::scale<Flt>& _scale,
                     ColourMapType _cmt,
                     const float _hue = 0.0f)
         {
@@ -34,7 +36,7 @@ namespace morph {
             this->quads = _quads;
 
             // From quads, build dataCoords:
-            this->dataCoords_mem = std::make_unique<std::vector<vec<float>>>(this->quads->size());
+            this->dataCoords_mem = std::make_unique<std::vector<sm::vec<float>>>(this->quads->size());
             this->dataCoords = this->dataCoords_mem.get();
 
             unsigned int qi = 0;
@@ -56,11 +58,11 @@ namespace morph {
         QuadsVisual(const std::vector<std::array<Flt,12>>* _quads,
                     const std::array<float, 3> _offset,
                     const std::vector<Flt>* _data,
-                    const scale<Flt>& _scale,
+                    const sm::scale<Flt>& _scale,
                     ColourMapType _cmt,
                     const float _hue = 0.0f)
         {
-            vec<float> offset_vec;
+            sm::vec<float> offset_vec;
             offset_vec.set_from(_offset);
             QuadsVisual(_quads, offset_vec, _data, _scale, _cmt, _hue);
         }
@@ -82,7 +84,7 @@ namespace morph {
             this->colourScale.do_autoscale = true;
             this->colourScale.transform ((*this->scalarData), dcopy);
 
-            morph::vec<float> v0, v1, v2, v3;
+            sm::vec<float> v0, v1, v2, v3;
             for (unsigned int qi = 0; qi < nquads; ++qi) {
 
                 std::array<float, 12> quad = (*this->quads)[qi];
@@ -98,9 +100,9 @@ namespace morph {
                 this->vertex_push (v3, this->vertexPositions);
 
                 // Compute normal
-                morph::vec<float> plane1 = v1 - v0;
-                morph::vec<float> plane2 = v2 - v0;
-                morph::vec<float> vnorm = plane2.cross (plane1);
+                sm::vec<float> plane1 = v1 - v0;
+                sm::vec<float> plane2 = v2 - v0;
+                sm::vec<float> vnorm = plane2.cross (plane1);
                 vnorm.renormalize();
 
                 // All same colours
@@ -117,7 +119,7 @@ namespace morph {
 
                 if (this->computeBackQuads == true) {
                     // Compute a 'depth' in the direction of the normal
-                    morph::vec<float> depth = vnorm;
+                    sm::vec<float> depth = vnorm;
                     depth *= plane1.length();
                     depth *= 0.01f;
 
@@ -179,7 +181,7 @@ namespace morph {
         bool computeBackQuads = false;
 
         //! We own the memory that will be displayed as dataCoords.
-        std::unique_ptr<std::vector<vec<float>>> dataCoords_mem;
+        std::unique_ptr<std::vector<sm::vec<float>>> dataCoords_mem;
     };
 
 } // namespace morph

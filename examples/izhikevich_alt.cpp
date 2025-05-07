@@ -3,8 +3,9 @@
  * in Izhikevich, Dynamical Systems in Neuroscience p 273, Eqs. 8.5 and 8.6.
  */
 
-#include <morph/vvec.h>
-#include <morph/grid.h>
+#include <sm/vvec>
+#include <sm/range>
+#include <sm/grid>
 
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
@@ -52,7 +53,7 @@ struct izhi
     }
 
     // Compute nullclines. For Vn, the given input membrane voltages, return u and v nullclines in u_nc and v_nc
-    void nullclines (const morph::vvec<float>& Vn, morph::vvec<float>& u_nc,  morph::vvec<float>& v_nc)
+    void nullclines (const sm::vvec<float>& Vn, sm::vvec<float>& u_nc, sm::vvec<float>& v_nc)
     {
         u_nc.resize (Vn.size(), 0.0f);
         v_nc.resize (Vn.size(), 0.0f);
@@ -63,8 +64,7 @@ struct izhi
     }
 
     // Compute the vectorfield of du and dv vs. u and v
-    void vectorfield (const morph::vvec<float>& _u, const morph::vvec<float>& _v,
-                      morph::vvec<morph::vec<float, 2>>& vecfield)
+    void vectorfield (const sm::vvec<float>& _u, const sm::vvec<float>& _v, sm::vvec<sm::vec<float, 2>>& vecfield)
     {
         if (_u.size() != _v.size()) { return; }
         vecfield.resize (_u.size() * _v.size(), {0,0});
@@ -88,8 +88,8 @@ int main (int argc, char** argv)
      */
 
     // Create class and vars
-    morph::vvec<float> u(N, 0.0f);
-    morph::vvec<float> v(N, 0.0f);
+    sm::vvec<float> u(N, 0.0f);
+    sm::vvec<float> v(N, 0.0f);
     izhi iz;
 
     // Set izhi params from config
@@ -137,17 +137,17 @@ int main (int argc, char** argv)
         u[i] = iz.u;
     }
     // Find range of the state variables u and v for plotting
-    morph::range<float> v_range = v.range();
+    sm::range<float> v_range = v.range();
     if (v_range.max > iz.vpeak) { v_range.max = iz.vpeak; }
-    morph::range<float> u_range = u.range();
+    sm::range<float> u_range = u.range();
 
     /*
      * Compute nullclines
      */
 
-    morph::vvec<float> u_nc;
-    morph::vvec<float> v_nc;
-    morph::vvec<float> vrng;
+    sm::vvec<float> u_nc;
+    sm::vvec<float> v_nc;
+    sm::vvec<float> vrng;
     vrng.linspace (-70.0f, iz.vpeak, N);
     iz.nullclines (vrng, u_nc, v_nc);
 
@@ -156,30 +156,30 @@ int main (int argc, char** argv)
      */
 
     static constexpr size_t qN = 50;
-    morph::vvec<float> qurng; // y axis
-    morph::vvec<float> qvrng; // x axis
+    sm::vvec<float> qurng; // y axis
+    sm::vvec<float> qvrng; // x axis
     qvrng.linspace (v_range.min, v_range.max, qN);
     qurng.linspace (u_range.min, u_range.max, qN);
-    morph::vvec<morph::vec<float, 2>> du_dv_vecfield;
+    sm::vvec<sm::vec<float, 2>> du_dv_vecfield;
     iz.vectorfield (qurng, qvrng, du_dv_vecfield);
     // Now plot with a grid and a GraphVisual? Or initially with a QuiverVisual
-    morph::vec<float, 2> gridspacing = {
+    sm::vec<float, 2> gridspacing = {
         (v_range.span()) / (qN-1),
         (u_range.span()) / (qN-1)
     };
-    morph::vec<float, 2> gridzero = { v_range.min, u_range.min };
-    morph::grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
+    sm::vec<float, 2> gridzero = { v_range.min, u_range.min };
+    sm::grid<unsigned int, float> grid (qN, qN, gridspacing, gridzero);
 
     /*
      * Visualize results
      */
 
     morph::Visual vis(1280, 768, title);
-    vis.setSceneTrans (morph::vec<float,3>({-0.877793f, -0.281277f, -3.9f}));
+    vis.setSceneTrans (sm::vec<float,3>({-0.877793f, -0.281277f, -3.9f}));
     vis.lightingEffects();
 
     // Time
-    morph::vvec<float> t(N, 0.0f);
+    sm::vvec<float> t(N, 0.0f);
     t.linspace (0.0f, N-1, N);
 
     // Set default dataset graphing styles
@@ -190,7 +190,7 @@ int main (int argc, char** argv)
     ds.markerstyle = morph::markerstyle::uphexagon;
 
     // Graph membrane voltage vs. time
-    auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({-0.5,-0.5,0}));
+    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({-0.5,-0.5,0}));
     vis.bindmodel (gv);
     gv->twodimensional = twodee;
     gv->setsize (1,0.8);
@@ -202,7 +202,7 @@ int main (int argc, char** argv)
     vis.addVisualModel (gv);
 
     // Graph u(t)
-    auto gu = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({-0.5,0.6,0}));
+    auto gu = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({-0.5,0.6,0}));
     vis.bindmodel (gu);
     gu->twodimensional = twodee;
     gu->setsize (1,0.5);
@@ -216,7 +216,7 @@ int main (int argc, char** argv)
 
     // Graph nullclines, u vs v and vector field
     ds.showlines = false;
-    auto gp = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0.9,-0.5,0}));
+    auto gp = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0.9,-0.5,0}));
     vis.bindmodel (gp);
     gp->twodimensional = twodee;
     gp->setsize (1.6,1.6);

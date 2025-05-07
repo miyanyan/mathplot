@@ -1,15 +1,17 @@
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
 #include <memory>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <set>
 #include <stdexcept>
+
+#include <sm/scale>
+#include <sm/vec>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
 
 namespace morph {
 
@@ -18,9 +20,9 @@ namespace morph {
     {
     public:
         QuadsMeshVisual(const std::vector<std::array<Flt,12>>* _quads,
-                        const vec<float> _offset,
+                        const sm::vec<float> _offset,
                         const std::vector<Flt>* _data,
-                        const scale<Flt>& _scale,
+                        const sm::scale<Flt>& _scale,
                         ColourMapType _cmt,
                         const float _hue = 0.0f,
                         const float _sat = 1.0f,
@@ -38,7 +40,7 @@ namespace morph {
             this->quads = _quads;
 
             // From quads, build dataCoords:
-            this->dataCoords_mem = std::make_unique<std::vector<vec<float>>>(this->quads->size());
+            this->dataCoords_mem = std::make_unique<std::vector<sm::vec<float>>>(this->quads->size());
             this->dataCoords = this->dataCoords_mem.get();
 
             unsigned int qi = 0;
@@ -61,11 +63,11 @@ namespace morph {
         QuadsMeshVisual(const std::vector<std::array<Flt,12>>* _quads,
                         const std::array<float, 3> _offset,
                         const std::vector<Flt>* _data,
-                        const scale<Flt>& _scale,
+                        const sm::scale<Flt>& _scale,
                         ColourMapType _cmt,
                         const float _hue = 0.0f)
         {
-            vec<float> offset_vec;
+            sm::vec<float> offset_vec;
             offset_vec.set_from(_offset);
             QuadsMeshVisual<Flt>(_quads, offset_vec, _data, _scale, _cmt, _hue);
         }
@@ -90,30 +92,30 @@ namespace morph {
             // I'm examining a set of vecs, which means I have to specify the compare
             // operation. See:
             // https://abrg-models.github.io/morphologica/ref/coremaths/vec/#comparison-operators
-            auto _cmp = [](morph::vec<float,6> a, morph::vec<float,6> b){return a.lexical_lessthan(b);};
-            std::set<vec<float, 6>,  decltype(_cmp)> lastQuadLines(_cmp);
+            auto _cmp = [](sm::vec<float,6> a, sm::vec<float,6> b){return a.lexical_lessthan(b);};
+            std::set<sm::vec<float, 6>,  decltype(_cmp)> lastQuadLines(_cmp);
 
             for (unsigned int qi = 0; qi < nquads; ++qi) {
                 // Extract coordinates from this->quads
-                vec<float> q0 = {(*this->quads)[qi][0], (*this->quads)[qi][1], (*this->quads)[qi][2]};
-                vec<float> q1 = {(*this->quads)[qi][3], (*this->quads)[qi][4], (*this->quads)[qi][5]};
-                vec<float> q2 = {(*this->quads)[qi][6], (*this->quads)[qi][7], (*this->quads)[qi][8]};
-                vec<float> q3 = {(*this->quads)[qi][9], (*this->quads)[qi][10], (*this->quads)[qi][11]};
+                sm::vec<float> q0 = {(*this->quads)[qi][0], (*this->quads)[qi][1], (*this->quads)[qi][2]};
+                sm::vec<float> q1 = {(*this->quads)[qi][3], (*this->quads)[qi][4], (*this->quads)[qi][5]};
+                sm::vec<float> q2 = {(*this->quads)[qi][6], (*this->quads)[qi][7], (*this->quads)[qi][8]};
+                sm::vec<float> q3 = {(*this->quads)[qi][9], (*this->quads)[qi][10], (*this->quads)[qi][11]};
                 // Draw a frame from the 4 coordinates
                 std::array<float, 3> clr = this->cm.convert(dcopy[qi]);
 
                 // Check that previous quad didn't include any of these pairs of points
-                vec<float, 6> line0 = { q1[0], q1[1], q1[2], q0[0], q0[1], q0[2] };
-                vec<float, 6> rline0 = { q0[0], q0[1], q0[2], q1[0], q1[1], q1[2] };
+                sm::vec<float, 6> line0 = { q1[0], q1[1], q1[2], q0[0], q0[1], q0[2] };
+                sm::vec<float, 6> rline0 = { q0[0], q0[1], q0[2], q1[0], q1[1], q1[2] };
 
-                vec<float, 6> line1 = { q2[0], q2[1], q2[2], q1[0], q1[1], q1[2] };
-                vec<float, 6> rline1 = { q1[0], q1[1], q1[2], q2[0], q2[1], q2[2] };
+                sm::vec<float, 6> line1 = { q2[0], q2[1], q2[2], q1[0], q1[1], q1[2] };
+                sm::vec<float, 6> rline1 = { q1[0], q1[1], q1[2], q2[0], q2[1], q2[2] };
 
-                vec<float, 6> line2 = { q3[0], q3[1], q3[2], q2[0], q2[1], q2[2] };
-                vec<float, 6> rline2 = { q2[0], q2[1], q2[2], q3[0], q3[1], q3[2] };
+                sm::vec<float, 6> line2 = { q3[0], q3[1], q3[2], q2[0], q2[1], q2[2] };
+                sm::vec<float, 6> rline2 = { q2[0], q2[1], q2[2], q3[0], q3[1], q3[2] };
 
-                vec<float, 6> line3 = { q0[0], q0[1], q0[2], q3[0], q3[1], q3[2] };
-                vec<float, 6> rline3 = { q3[0], q3[1], q3[2], q0[0], q0[1], q0[2] };
+                sm::vec<float, 6> line3 = { q0[0], q0[1], q0[2], q3[0], q3[1], q3[2] };
+                sm::vec<float, 6> rline3 = { q3[0], q3[1], q3[2], q0[0], q0[1], q0[2] };
 
                 if (!lastQuadLines.empty()) {
                     std::cout << "Test and draw...\n";
@@ -164,7 +166,7 @@ namespace morph {
         const std::vector<std::array<Flt,12>>* quads;
 
         //! We own the memory that will be displayed as dataCoords.
-        std::unique_ptr<std::vector<vec<float>>> dataCoords_mem;
+        std::unique_ptr<std::vector<sm::vec<float>>> dataCoords_mem;
 
         //! Tube radius
         float radius = 0.05f;

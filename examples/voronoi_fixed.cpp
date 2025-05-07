@@ -1,12 +1,12 @@
 /*
  * Make a very small Voronoi surface. Used to debug VoronoiVisual
  */
+#include <iostream>
+#include <limits>
+#include <sm/vec>
 #include <morph/Visual.h>
 #include <morph/VoronoiVisual.h>
 #include <morph/VectorVisual.h>
-#include <morph/vec.h>
-#include <iostream>
-#include <limits>
 
 // Use key presses to change border_width and zoom factor, so extend morph::Visual in the usual way
 struct myvisual final : public morph::Visual<>
@@ -40,7 +40,7 @@ int main()
 
     myvisual v(1024, 768, "VoronoiVisual");
 
-    std::vector<morph::vec<float>> points = {
+    std::vector<sm::vec<float>> points = {
         {0,0,1},
         {1,0,1},
         {0,1,1},
@@ -49,7 +49,7 @@ int main()
     };
     std::vector<float> data = {1,2,3,4,5};
 
-    morph::vec<float, 3> offset = { 0.0f };
+    sm::vec<float, 3> offset = { 0.0f };
     auto vorv = std::make_unique<morph::VoronoiVisual<float>> (offset);
     v.bindmodel (vorv);
     vorv->show_voronoi2d = true;

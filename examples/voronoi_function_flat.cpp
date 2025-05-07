@@ -6,11 +6,11 @@
  * Author Seb James
  * Date 2024
  */
+#include <iostream>
+#include <sm/vec>
+#include <sm/random>
 #include <morph/Visual.h>
 #include <morph/VoronoiVisual.h>
-#include <morph/vec.h>
-#include <morph/random.h>
-#include <iostream>
 
 static constexpr int n_points = 1000;
 
@@ -20,10 +20,10 @@ int main()
 
     morph::Visual v(1024, 768, "VoronoiVisual");
 
-    morph::rand_uniform<float> rngxy(-2.0f, 2.0f, 1000);
+    sm::rand_uniform<float> rngxy(-2.0f, 2.0f, 1000);
 
     // make n_points random coordinates
-    std::vector<morph::vec<float>> points(n_points);
+    std::vector<sm::vec<float>> points(n_points);
     std::vector<float> data(n_points);
     std::vector<float> r(n_points);
 
@@ -37,7 +37,7 @@ int main()
 
     morph::ColourMapType cmap_t = morph::ColourMapType::Plasma;
 
-    morph::vec<float, 3> offset = { 0.0f };
+    sm::vec<float, 3> offset = { 0.0f };
     auto vorv = std::make_unique<morph::VoronoiVisual<float>> (offset);
     v.bindmodel (vorv);
     vorv->show_voronoi2d = true; // true to show the 2D voronoi edges

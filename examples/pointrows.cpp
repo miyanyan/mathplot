@@ -1,6 +1,14 @@
 /*
  * Visualize a test surface
  */
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <array>
+
+#include <sm/scale>
+#include <sm/vec>
+
 #include <morph/Visual.h>
 #include <morph/ColourMap.h>
 #ifdef MESH
@@ -8,12 +16,6 @@
 #else
 #include <morph/PointRowsVisual.h>
 #endif
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <array>
 
 int main()
 {
@@ -28,11 +30,11 @@ int main()
     v.lightingEffects (true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-        morph::scale<float> scale;
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::scale<float> scale;
         scale.setParams (1.0, 0.0);
 
-        std::vector<morph::vec<float, 3>> points;
+        std::vector<sm::vec<float, 3>> points;
         std::vector<float> data; // copy points[:][2] into data
         points.push_back ({ 0, 0,   0.1 }); data.push_back(points.back()[2]);
         points.push_back ({ 0, 2,   0.7 }); data.push_back(points.back()[2]);

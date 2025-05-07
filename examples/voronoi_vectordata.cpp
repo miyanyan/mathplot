@@ -4,11 +4,11 @@
  * Author Seb James
  * Date 2024
  */
+#include <iostream>
+#include <sm/vec>
+#include <sm/random>
 #include <morph/Visual.h>
 #include <morph/VoronoiVisual.h>
-#include <morph/vec.h>
-#include <morph/random.h>
-#include <iostream>
 
 static constexpr int n_points = 1000;
 
@@ -18,12 +18,12 @@ int main()
 
     morph::Visual v(1024, 768, "VoronoiVisual vectorData");
 
-    morph::rand_uniform<float> rngxy(-2.0f, 2.0f, 1000);
-    morph::rand_uniform<float> rngz(0.8f, 1.0f, 1000);
+    sm::rand_uniform<float> rngxy(-2.0f, 2.0f, 1000);
+    sm::rand_uniform<float> rngz(0.8f, 1.0f, 1000);
 
     // make n_points random coordinates
-    std::vector<morph::vec<float>> points(n_points);
-    std::vector<morph::vec<float>> data(n_points);
+    std::vector<sm::vec<float>> points(n_points);
+    std::vector<sm::vec<float>> data(n_points);
 
     for (unsigned int i = 0; i < n_points; ++i) {
         points[i] = { rngxy.get(), rngxy.get(), rngz.get() };
@@ -33,7 +33,7 @@ int main()
         data[i][2] = (-0.8f + points[i][2]) * 5.0f;
     }
 
-    morph::vec<float, 3> offset = { 0.0f };
+    sm::vec<float, 3> offset = { 0.0f };
     auto vorv = std::make_unique<morph::VoronoiVisual<float>> (offset);
     v.bindmodel (vorv);
     vorv->show_voronoi2d = true; // true to show the 2D voronoi edges

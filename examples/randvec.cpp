@@ -4,13 +4,13 @@
  * near 1.
  */
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/random.h>
-#include <morph/histo.h>
+#include <iostream>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/random>
+#include <sm/histo>
 #include <morph/Visual.h>
 #include <morph/GraphVisual.h>
-#include <iostream>
 
 int main()
 {
@@ -18,9 +18,9 @@ int main()
     static constexpr size_t n = 2;
 
     // Create N normalized vectors at random.
-    morph::vvec<morph::vec<float, n>> vVecs(N);
-    morph::rand_uniform<float> rn_u(-1.0f, 1.0f);
-    morph::rand_normal<float> rn_n(1.0f, 0.06f);
+    sm::vvec<sm::vec<float, n>> vVecs(N);
+    sm::rand_uniform<float> rn_u(-1.0f, 1.0f);
+    sm::rand_normal<float> rn_n(1.0f, 0.06f);
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < n; ++j) {
             vVecs[i][j] = rn_u.get();
@@ -32,17 +32,17 @@ int main()
     }
 
     // Get scalar products between pairs
-    morph::vvec<float> sp (N/n);
+    sm::vvec<float> sp (N/n);
     for (size_t i = 0; i < N/n; ++i) { sp[i] = vVecs[i].dot (vVecs[i+N/n]); } // No good for n!=2
 
     // Make a histogram of the scalar product pairs
-    morph::histo h(sp, 100);
+    sm::histo h(sp, 100);
 
     // Set up a morph::Visual for a graph
     morph::Visual v(1024, 768, "Histogram");
 
     // Create a new GraphVisual with offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<float>> (morph::vec<float>({0,0,0}));
+    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
     gv->setdata (h); // to become gv->add_bargraph (h [,morph::colour::darkorchid1] [,morph::colour::orchid2])
     gv->xlabel = "Scalar product";

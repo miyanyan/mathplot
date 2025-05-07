@@ -1,10 +1,10 @@
 #pragma once
 
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
-#include <morph/mat22.h>
 #include <array>
+#include <sm/vec>
+#include <sm/mathconst>
+#include <sm/mat22>
+#include <morph/VisualModel.h>
 
 namespace morph {
 
@@ -16,15 +16,15 @@ namespace morph {
         RectangleVisual() { this->mv_offset = { 0.0f, 0.0f, 0.0f }; }
 
         //! Initialise with offset, three coordinates and a single colour.
-        RectangleVisual(const vec<float, 3> _offset,
-                        const vec<float, 2> _dims, const float _angle,
+        RectangleVisual(const sm::vec<float, 3> _offset,
+                        const sm::vec<float, 2> _dims, const float _angle,
                         const std::array<float, 3> _col)
         {
             this->init (_offset, _dims, _angle, _col);
         }
 
-        void init (const vec<float, 3> _offset,
-                   const vec<float, 2> _dims, const float _angle,
+        void init (const sm::vec<float, 3> _offset,
+                   const sm::vec<float, 2> _dims, const float _angle,
                    const std::array<float, 3> _col)
         {
             this->mv_offset = _offset;
@@ -37,10 +37,10 @@ namespace morph {
         void computeRectangle()
         {
             // Corners of the rectangle - make sure they're clockwise in order
-            vec<float, 2> c1 = dims;
-            vec<float, 2> c2 = { dims[0], -dims[1] };
-            vec<float, 2> c3 = -dims;
-            vec<float, 2> c4 = { -dims[0], dims[1] };
+            sm::vec<float, 2> c1 = dims;
+            sm::vec<float, 2> c2 = { dims[0], -dims[1] };
+            sm::vec<float, 2> c3 = -dims;
+            sm::vec<float, 2> c4 = { -dims[0], dims[1] };
 
             c1 /= 2.0f;
             c2 /= 2.0f;
@@ -48,8 +48,8 @@ namespace morph {
             c4 /= 2.0f;
 
             // Apply rotational transformation
-            mat22<float> rotn;
-            rotn.rotate (this->angle * mathconst<float>::deg2rad);
+            sm::mat22<float> rotn;
+            rotn.rotate (this->angle * sm::mathconst<float>::deg2rad);
             c1 = rotn * c1;
             c2 = rotn * c2;
             c3 = rotn * c3;
@@ -71,7 +71,7 @@ namespace morph {
         }
 
         //! The dimensions (width x height) of the rectangle, which is always centred on 0,0,0
-        vec<float, 2> dims = { 1.0f, 1.0f };
+        sm::vec<float, 2> dims = { 1.0f, 1.0f };
         float angle = 0.0f; // Angle of rectangle in degrees
 
         //! The colour of the rectangle

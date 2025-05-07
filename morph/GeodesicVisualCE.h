@@ -1,10 +1,9 @@
 #pragma once
 
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
-#include <morph/ColourMap.h>
 #include <array>
+#include <sm/vec>
+#include <morph/VisualModel.h>
+#include <morph/ColourMap.h>
 
 namespace morph {
 
@@ -24,14 +23,14 @@ namespace morph {
         GeodesicVisualCE() { this->init ({0.0, 0.0, 0.0}, 1.0f); }
 
         //! Initialise with offset, start and end coordinates, radius and a single colour.
-        GeodesicVisualCE(const vec<float, 3> _offset, const float _radius)
+        GeodesicVisualCE(const sm::vec<float, 3> _offset, const float _radius)
         {
             this->init (_offset, _radius);
         }
 
         ~GeodesicVisualCE () {}
 
-        void init (const vec<float, 3> _offset, const float _radius)
+        void init (const sm::vec<float, 3> _offset, const float _radius)
         {
             // Set up...
             this->mv_offset = _offset;
@@ -47,7 +46,7 @@ namespace morph {
             this->vertexColors.clear();
             this->indices.clear();
 
-            constexpr morph::vec<float, 3> zvec  = {0,0,0};
+            constexpr sm::vec<float, 3> zvec  = {0.0f};
             if (iterations > 5) {
                 // Note odd necessity to stick in the 'template' keyword after this->
                 this->template computeSphereGeoFast<double, iterations> (zvec, this->colour, this->radius);

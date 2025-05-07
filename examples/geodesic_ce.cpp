@@ -2,16 +2,18 @@
  * Visualize an Icosahedron using the Geodesic Visual that co-ops the unordered
  * constexpr geodesic function.
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GeodesicVisualCE.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/GeodesicVisualCE.h>
 
 int main()
 {
@@ -22,8 +24,8 @@ int main()
     v.lightingEffects (true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-        morph::vec<float, 3> step = { 2.2, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> step = { 2.2, 0.0, 0.0 };
 
         auto gv1 = std::make_unique<morph::GeodesicVisualCE<float, 0>> (offset + step * 0, 0.9f);
         v.bindmodel (gv1);

@@ -1,16 +1,18 @@
 /*
  * Visualize an Icosahedron
  */
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GeodesicVisual.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <array>
 #include <stdexcept>
 #include <string>
+
+#include <sm/vec>
+
+#include <morph/Visual.h>
+#include <morph/ColourMap.h>
+#include <morph/GeodesicVisual.h>
 
 int main()
 {
@@ -20,8 +22,8 @@ int main()
     v.showCoordArrows (true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-        morph::vec<float, 3> step = { 2.2, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> step = { 2.2, 0.0, 0.0 };
 
         int imax = 4;
         for (int i = 0; i < imax; ++i) {

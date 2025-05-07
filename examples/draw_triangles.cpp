@@ -1,9 +1,8 @@
-#include <morph/Visual.h>
-
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
 #include <array>
+#include <sm/vec>
+#include <sm/vvec>
+#include <morph/Visual.h>
+#include <morph/VisualModel.h>
 
 using namespace morph;
 
@@ -13,14 +12,14 @@ template<int glver = morph::gl::version_4_1>
 class trivis : public VisualModel<glver>
 {
 public:
-    trivis (const morph::vec<float> _offset = {0,0,0}) : morph::VisualModel<glver>::VisualModel (_offset) {}
+    trivis (const sm::vec<float> _offset = {0,0,0}) : morph::VisualModel<glver>::VisualModel (_offset) {}
 
     //! Compute a triangle from 3 coordinates
     void computeTriangle()
     {
         // v is the face normal
-        vec<float> u1 = coords[0] - coords[1];
-        vec<float> u2 = coords[1] - coords[2];
+        sm::vec<float> u1 = coords[0] - coords[1];
+        sm::vec<float> u2 = coords[1] - coords[2];
         this->normal = u1.cross(u2);
         this->normal.renormalize();
         // Push corner vertices, colours and normals
@@ -44,13 +43,13 @@ public:
         this->computeTriangle();
 
         // Show indices/coords JUST from the triangble
-        vvec<unsigned int> indvv;
+        sm::vvec<unsigned int> indvv;
         indvv.set_from (this->indices);
-        this->addLabel (std::string("Index draw order: ") + indvv.str(), {0, -0.6, 0}, morph::TextFeatures(0.16));
+        this->addLabel (std::string("Index draw order: ") + indvv.str(), {0.0f, -0.6f, 0.0f}, morph::TextFeatures(0.16f));
 
-        this->addLabel (std::string("Vtx 0 ") + coords[0].str(), coords[0] + vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 1 ") + coords[1].str(), coords[1] + vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 2 ") + coords[2].str(), coords[2] + vec<float>{-0.3, 0.2, 0}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 0 ") + coords[0].str(), coords[0] + sm::vec<float>{-0.3f, -0.2f, 0.0f}, morph::TextFeatures(0.1f));
+        this->addLabel (std::string("Vtx 1 ") + coords[1].str(), coords[1] + sm::vec<float>{-0.3f, -0.2f, 0.0f}, morph::TextFeatures(0.1f));
+        this->addLabel (std::string("Vtx 2 ") + coords[2].str(), coords[2] + sm::vec<float>{-0.3f, 0.2f, 0.0f}, morph::TextFeatures(0.1f));
 
         this->addLabel ("Vertex normals: " + this->normal.str(), {0, -0.9, 0}, morph::TextFeatures(0.16));
 
@@ -62,15 +61,15 @@ public:
     }
 
     //! The positions of the vertices of the triangle
-    std::array<vec<float>, 3> coords = { vec<float>{0, 0, 0},
-        vec<float>{2, 0, 0},
-        vec<float>{0, 2, 0} };
+    std::array<sm::vec<float>, 3> coords = {
+        sm::vec<float>{0.0f, 0.0f, 0.0f},
+        sm::vec<float>{2.0f, 0.0f, 0.0f},
+        sm::vec<float>{0.0f, 2.0f, 0.0f}
+    };
 
-    std::array<std::array<float, 3>, 3> colours = { morph::colour::firebrick,
-        morph::colour::orchid1,
-        morph::colour::navy };
+    std::array<std::array<float, 3>, 3> colours = { morph::colour::firebrick, morph::colour::orchid1, morph::colour::navy };
 
-    vec<float> normal = {0, 0, 0};
+    sm::vec<float, 3> normal = {0.0f};
 };
 
 //! Like trivis, but with one extra vertex and drawing two triangles.
@@ -78,14 +77,14 @@ template<int glver = morph::gl::version_4_1>
 class doubletrivis : public VisualModel<glver>
 {
 public:
-    doubletrivis (const morph::vec<float> _offset = {0,0,0}) : morph::VisualModel<glver>::VisualModel (_offset) {}
+    doubletrivis (const sm::vec<float, 3> _offset = {0.0f}) : morph::VisualModel<glver>::VisualModel (_offset) {}
 
     //! Compute two triangles from 4 corners
     void computeTriangles()
     {
         // v is the face normal
-        vec<float> u1 = coords[0] - coords[1];
-        vec<float> u2 = coords[1] - coords[2];
+        sm::vec<float> u1 = coords[0] - coords[1];
+        sm::vec<float> u2 = coords[1] - coords[2];
         this->normal = u1.cross(u2);
         this->normal.renormalize();
 
@@ -115,16 +114,14 @@ public:
         this->computeTriangles();
 
         // Show indices/coords JUST from the triangble
-        vvec<unsigned int> indvv;
+        sm::vvec<unsigned int> indvv;
         indvv.set_from (this->indices);
         this->addLabel (std::string("Index draw order: ") + indvv.str(), {0, -0.6, 0}, morph::TextFeatures(0.16));
 
-        this->addLabel (std::string("Vtx 0 ") + coords[0].str(), coords[0] + vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 1 ") + coords[1].str(), coords[1] + vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 2 ") + coords[2].str(), coords[2] + vec<float>{-0.3, 0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 3 ") + coords[3].str(), coords[3] + vec<float>{-0.3, 0.2, 0}, morph::TextFeatures(0.1));
-
-        //this->addLabel ("Vertex normals: " + this->normal.str(), vec<float>{1.4, 1.4, 0}, morph::TextFeatures(0.16));
+        this->addLabel (std::string("Vtx 0 ") + coords[0].str(), coords[0] + sm::vec<float>{-0.3f, -0.2f, 0.0f}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 1 ") + coords[1].str(), coords[1] + sm::vec<float>{-0.3f, -0.2f, 0.0f}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 2 ") + coords[2].str(), coords[2] + sm::vec<float>{-0.3f, 0.2f, 0.0f}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 3 ") + coords[3].str(), coords[3] + sm::vec<float>{-0.3f, 0.2f, 0.0f}, morph::TextFeatures(0.1));
 
         // Add illustrative stuff
         for (unsigned int i = 0; i < 4U; ++i) {
@@ -134,17 +131,21 @@ public:
     }
 
     //! The positions of the vertices of the triangle
-    std::array<vec<float>, 4> coords = { vec<float>{0, 0, 0},
-        vec<float>{2, 0, 0},
-        vec<float>{0, 2, 0},
-        vec<float>{2, 2, 0} };
+    std::array<sm::vec<float>, 4> coords = {
+        sm::vec<float>{0, 0, 0},
+        sm::vec<float>{2, 0, 0},
+        sm::vec<float>{0, 2, 0},
+        sm::vec<float>{2, 2, 0}
+    };
 
-    std::array<std::array<float, 3>, 4> colours = { morph::colour::firebrick,
+    std::array<std::array<float, 3>, 4> colours = {
+        morph::colour::firebrick,
         morph::colour::orchid1,
         morph::colour::navy,
-        morph::colour::lightblue2 };
+        morph::colour::lightblue2
+    };
 
-    vec<float> normal = {0, 0, 0};
+    sm::vec<float> normal = {0.0f};
 };
 
 //! This class creates the vertices for two triangles where you can see the colour difference -
@@ -153,14 +154,14 @@ template<int glver = morph::gl::version_4_1>
 class twocolourtri : public VisualModel<glver>
 {
 public:
-    twocolourtri (const morph::vec<float> _offset = {0,0,0}) : morph::VisualModel<glver>::VisualModel (_offset) {}
+    twocolourtri (const sm::vec<float> _offset = {0,0,0}) : morph::VisualModel<glver>::VisualModel (_offset) {}
 
     //! Compute a triangle from 3 arbitrary corners
     void computeTriangles()
     {
         // v is the face normal
-        vec<float> u1 = coords[0] - coords[1];
-        vec<float> u2 = coords[1] - coords[2];
+        sm::vec<float> u1 = coords[0] - coords[1];
+        sm::vec<float> u2 = coords[1] - coords[2];
         this->normals[0] = u1.cross(u2);
         this->normals[0].renormalize();
 
@@ -195,14 +196,14 @@ public:
         this->computeTriangles();
 
         // Show indices/coords JUST from the triangble
-        vvec<unsigned int> indvv;
+        sm::vvec<unsigned int> indvv;
         indvv.set_from (this->indices);
         this->addLabel (std::string("Index draw order: ") + indvv.str(), {0, -0.6, 0}, morph::TextFeatures(0.16));
 
-        this->addLabel (std::string("Vtx 0 ") + coords[0].str(), coords[0] + vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 1 & 3 ") + coords[1].str(), coords[1] + vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 2 & 5") + coords[2].str(), coords[2] + vec<float>{-0.3, 0.2, 0}, morph::TextFeatures(0.1));
-        this->addLabel (std::string("Vtx 4 ") + coords[4].str(), coords[4] + vec<float>{-0.3, 0.2, 0}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 0 ") + coords[0].str(), coords[0] + sm::vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 1 & 3 ") + coords[1].str(), coords[1] + sm::vec<float>{-0.3, -0.2, 0}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 2 & 5") + coords[2].str(), coords[2] + sm::vec<float>{-0.3, 0.2, 0}, morph::TextFeatures(0.1));
+        this->addLabel (std::string("Vtx 4 ") + coords[4].str(), coords[4] + sm::vec<float>{-0.3, 0.2, 0}, morph::TextFeatures(0.1));
 
 
         // Add illustrative stuff
@@ -213,23 +214,27 @@ public:
     }
 
     //! The positions of the vertices of the triangle
-    std::array<vec<float>, 6> coords = { vec<float>{0, 0, -0.2},
-        vec<float>{2, 0, 0},
-        vec<float>{0, 2, 0},
+    std::array<sm::vec<float>, 6> coords = {
+        sm::vec<float>{0, 0, -0.2},
+        sm::vec<float>{2, 0, 0},
+        sm::vec<float>{0, 2, 0},
 
-        vec<float>{2, 0, 0},
-        vec<float>{2, 2, -0.2},
-        vec<float>{0, 2, 0} };
+        sm::vec<float>{2, 0, 0},
+        sm::vec<float>{2, 2, -0.2},
+        sm::vec<float>{0, 2, 0}
+    };
 
-    std::array<std::array<float, 3>, 6> colours = { morph::colour::orchid1,
+    std::array<std::array<float, 3>, 6> colours = {
+        morph::colour::orchid1,
         morph::colour::firebrick,
         morph::colour::firebrick,
 
         morph::colour::navy,
         morph::colour::orchid1,
-        morph::colour::navy };
+        morph::colour::navy
+    };
 
-    std::array<vec<float>, 2> normals = { vec<float>{0, 0, 0}, vec<float>{0, 0, 0} };
+    std::array<sm::vec<float>, 2> normals = { sm::vec<float>{0.0f}, sm::vec<float>{0.0f} };
 };
 
 int main()
@@ -237,17 +242,17 @@ int main()
     morph::Visual v(1024, 768, "Drawing with triangles");
     v.lightingEffects();
 
-    auto tv = std::make_unique<trivis<>>(morph::vec<float>{0,0,0});
+    auto tv = std::make_unique<trivis<>>(sm::vec<float>{0.0f});
     v.bindmodel (tv);
     tv->finalize();
     v.addVisualModel (tv);
 
-    auto dtv = std::make_unique<doubletrivis<>>(morph::vec<float>{3,0,0});
+    auto dtv = std::make_unique<doubletrivis<>>(sm::vec<float>{3.0f,0.0f,0.0f});
     v.bindmodel (dtv);
     dtv->finalize();
     v.addVisualModel (dtv);
 
-    auto tctv = std::make_unique<twocolourtri<>>(morph::vec<float>{6,0,0});
+    auto tctv = std::make_unique<twocolourtri<>>(sm::vec<float>{6.0f,0.0f,0.0f});
     v.bindmodel (tctv);
     tctv->finalize();
     v.addVisualModel (tctv);

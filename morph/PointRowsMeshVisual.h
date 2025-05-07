@@ -1,14 +1,16 @@
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <morph/ColourMap.h>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <cmath>
+
+#include <sm/scale>
+#include <sm/vec>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
+#include <morph/ColourMap.h>
 
 namespace morph {
 
@@ -62,10 +64,10 @@ namespace morph {
     class PointRowsMeshVisual : public VisualDataModel<Flt, glver>
     {
     public:
-        PointRowsMeshVisual(std::vector<vec<float,3>>* _pointrows,
-                            const vec<float, 3> _offset,
+        PointRowsMeshVisual(std::vector<sm::vec<float,3>>* _pointrows,
+                            const sm::vec<float, 3> _offset,
                             const std::vector<Flt>* _data,
-                            const scale<Flt>& cscale,
+                            const sm::scale<Flt>& cscale,
                             ColourMapType _cmt, // mesh
                             const float _hue,
                             const float _sat,

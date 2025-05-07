@@ -1,11 +1,12 @@
 #pragma once
 
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
-#include <morph/scale.h>
-#include <morph/ColourMap.h>
 #include <array>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/scale>
+#include <sm/geometry>
+#include <morph/VisualModel.h>
+#include <morph/ColourMap.h>
 
 namespace morph {
 
@@ -24,14 +25,14 @@ namespace morph {
         GeodesicVisual() { this->init ({0.0, 0.0, 0.0}, 1.0f); }
 
         //! Initialise with offset, start and end coordinates, radius and a single colour.
-        GeodesicVisual(const vec<float, 3> _offset, const float _radius)
+        GeodesicVisual(const sm::vec<float, 3> _offset, const float _radius)
         {
             this->init (_offset, _radius);
         }
 
         ~GeodesicVisual () {}
 
-        void init (const vec<float, 3> _offset, const float _radius)
+        void init (const sm::vec<float, 3> _offset, const float _radius)
         {
             // Set up...
             this->mv_offset = _offset;
@@ -49,7 +50,7 @@ namespace morph {
             this->vertexColors.clear();
             this->indices.clear();
 
-            morph::geometry::icosahedral_geodesic_info gi(this->iterations);
+            sm::geometry::icosahedral_geodesic_info gi(this->iterations);
             this->n_faces = gi.n_faces;
             this->n_verts = gi.n_vertices;
 
@@ -58,31 +59,27 @@ namespace morph {
                 this->data.resize (this->n_faces, T{0});
 
                 if (iterations > 5) {
-                    this->n_verts = this->template computeSphereGeoFaces<double> (morph::vec<float, 3>({0,0,0}),
-                                                                                  this->cm.convert(0.0f), this->radius, this->iterations);
+                    this->n_verts = this->template computeSphereGeoFaces<double> (sm::vec<float, 3>{0.0f}, this->cm.convert(0.0f), this->radius, this->iterations);
                 } else {
-                    this->n_verts = this->computeSphereGeoFaces (morph::vec<float, 3>({0,0,0}),
-                                                                 this->cm.convert(0.0f), this->radius, this->iterations);
+                    this->n_verts = this->computeSphereGeoFaces (sm::vec<float, 3>{0.0f}, this->cm.convert(0.0f), this->radius, this->iterations);
                 }
 
             } else { // colour vertices
 
                 if (iterations > 5) {
                     // Note odd necessity to stick in the 'template' keyword after this->
-                    this->n_verts = this->template computeSphereGeo<double> (morph::vec<float, 3>({0,0,0}),
-                                                                             this->cm.convert(0.0f), this->radius, this->iterations);
+                    this->n_verts = this->template computeSphereGeo<double> (sm::vec<float, 3>{0.0f}, this->cm.convert(0.0f), this->radius, this->iterations);
                 } else {
                     // computeSphereGeo F defaults to float
-                    this->n_verts = this->computeSphereGeo (morph::vec<float, 3>({0,0,0}),
-                                                            this->cm.convert(0.0f), this->radius, this->iterations);
+                    this->n_verts = this->computeSphereGeo (sm::vec<float, 3>{0.0f}, this->cm.convert(0.0f), this->radius, this->iterations);
                 }
                 // Resize our data.
                 this->data.resize (n_verts, T{0});
             }
         }
 
-        morph::vvec<morph::vec<float>> cart_centres;
-        morph::vvec<morph::vec<float>> sph_centres;
+        sm::vvec<sm::vec<float>> cart_centres;
+        sm::vvec<sm::vec<float>> sph_centres;
         void vertexPositionsToFaces()
         {
             if (!this->n_faces) { throw std::runtime_error ("Call this after finalize()"); }
@@ -96,17 +93,17 @@ namespace morph {
                 int _vtx1 = this->indices[i];
                 int _vtx2 = this->indices[i+1];
                 int _vtx3 = this->indices[i+2];
-                morph::vec<float> v1 = {
+                sm::vec<float> v1 = {
                     this->vertexPositions[3 * _vtx1],
                     this->vertexPositions[3 * _vtx1 + 1],
                     this->vertexPositions[3 * _vtx1+ 2]
                 };
-                morph::vec<float> v2 = {
+                sm::vec<float> v2 = {
                     this->vertexPositions[3 * _vtx2],
                     this->vertexPositions[3 * _vtx2 + 1],
                     this->vertexPositions[3 * _vtx2+ 2]
                 };
-                morph::vec<float> v3 = {
+                sm::vec<float> v3 = {
                     this->vertexPositions[3 * _vtx3],
                     this->vertexPositions[3 * _vtx3 + 1],
                     this->vertexPositions[3 * _vtx3+ 2]
@@ -158,7 +155,7 @@ namespace morph {
                 }
 
                 // Scale data
-                morph::vvec<float> scaled_data (this->data);
+                sm::vvec<float> scaled_data (this->data);
                 if (this->colourScale.do_autoscale == true) { this->colourScale.reset(); }
                 this->colourScale.transform (this->data, scaled_data);
                 //std::cout << "data range: " << data.range() << ", scaled_data range " << scaled_data.range() << std::endl;
@@ -181,15 +178,15 @@ namespace morph {
         //! The colour of the object. Can be resized to n_faces to colour each face
         //! independently, or possibly to size of vertices to colour the vertices. Fill
         //! this vvec with data *after* calling initialize.
-        morph::vvec<T> data;
+        sm::vvec<T> data;
         //! Can also colour with direct colour data
-        morph::vvec<std::array<float, 3>> cdata;
+        sm::vvec<std::array<float, 3>> cdata;
         //! Do we colour vertices or faces? Set before finalize()
         bool colourFaces = true;
         //! A colour map for data plotting
         morph::ColourMap<float> cm;
         //! A scaling for data colour
-        morph::scale<T, float> colourScale;
+        sm::scale<T, float> colourScale;
         //! The number of iterations in the geodesic sphere. Set before finalize() to change from the default.
         int iterations = 2;
         //! This may be filled with the number of vertices in the geodesic

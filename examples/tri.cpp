@@ -1,17 +1,17 @@
 /*
  * Visualize a triangle
  */
+#include <iostream>
+#include <sm/vec>
 #include <morph/Visual.h>
 #include <morph/TriangleVisual.h>
-#include <morph/vec.h>
-#include <iostream>
 
 int main()
 {
     int rtn = -1;
 
     morph::Visual v(1024, 768, "Visualization");
-    v.zNear = 0.001;
+    v.zNear = 0.001f;
     v.coordArrowsInScene (true);
     // For a white background:
     v.backgroundWhite();
@@ -19,13 +19,13 @@ int main()
     v.lightingEffects(true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
-        morph::vec<float, 3> c1 = { 0, 0, 0 };
-        morph::vec<float, 3> c2 = { 0.25, 0, 0 };
-        morph::vec<float, 3> c3 = { 0.0, 0.3, 0 };
+        sm::vec<float, 3> c1 = { 0.0f, 0.0f, 0.0f };
+        sm::vec<float, 3> c2 = { 0.25f, 0.0f, 0.0f };
+        sm::vec<float, 3> c3 = { 0.0f, 0.3f, 0.0f };
 
-        morph::vec<float, 3> colour1 = { 1.0, 0.0, 0.0 };
+        sm::vec<float, 3> colour1 = { 1.0f, 0.0f, 0.0f };
 
         auto tv = std::make_unique<morph::TriangleVisual<>> (offset, c1, c2, c3, colour1);
         v.bindmodel (tv);

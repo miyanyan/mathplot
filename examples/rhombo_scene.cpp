@@ -1,7 +1,7 @@
+#include <sm/vec>
 #include <morph/Visual.h>
 #include <morph/RhomboVisual.h>
 #include <morph/ColourMap.h>
-#include <morph/vec.h>
 
 int main()
 {
@@ -13,10 +13,10 @@ int main()
     v.lightingEffects(false);
 
     // Parameters of the model
-    morph::vec<float, 3> offset = { -1,  0,  0 };   // a within-scene offset
-    morph::vec<float, 3> e1 = { 0.25,  0,  0 };
-    morph::vec<float, 3> e2 = { 0.1,  0.25,  0 };
-    morph::vec<float, 3> e3 = { 0,  0.0,  0.25 };
+    sm::vec<float, 3> offset = { -1,  0,  0 };   // a within-scene offset
+    sm::vec<float, 3> e1 = { 0.25,  0,  0 };
+    sm::vec<float, 3> e2 = { 0.1,  0.25,  0 };
+    sm::vec<float, 3> e3 = { 0,  0.0,  0.25 };
     morph::ColourMap<float> cmap(morph::ColourMapType::Rainbow);
 
     offset = { -2, 0, 0.05 };

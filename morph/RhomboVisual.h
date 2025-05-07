@@ -1,9 +1,8 @@
 #pragma once
 
-#include <morph/vec.h>
-#include <morph/VisualModel.h>
-#include <morph/mathconst.h>
 #include <array>
+#include <sm/vec>
+#include <morph/VisualModel.h>
 
 namespace morph {
 
@@ -13,8 +12,8 @@ namespace morph {
     {
     public:
         //! Initialise with offset, three edges and a single colour.
-        RhomboVisual(const vec<float, 3> _offset,
-                     const vec<float, 3> _edge1, const vec<float, 3> _edge2, const vec<float, 3> _edge3,
+        RhomboVisual(const sm::vec<float, 3> _offset,
+                     const sm::vec<float, 3> _edge1, const sm::vec<float, 3> _edge2, const sm::vec<float, 3> _edge3,
                      const std::array<float, 3> _col)
             : VisualModel<glver>(_offset)
             , edge1 (_edge1) , edge2 (_edge2) , edge3 (_edge3), col (_col) {}
@@ -23,15 +22,15 @@ namespace morph {
         void initializeVertices() override
         {
             // Compute the face normals
-            vec<float> _n1 = this->edge1.cross (this->edge2);
+            sm::vec<float> _n1 = this->edge1.cross (this->edge2);
             _n1.renormalize();
-            vec<float> _n2 = this->edge2.cross (this->edge3);
+            sm::vec<float> _n2 = this->edge2.cross (this->edge3);
             _n2.renormalize();
-            vec<float> _n3 = this->edge1.cross (this->edge3);
+            sm::vec<float> _n3 = this->edge1.cross (this->edge3);
             _n3.renormalize();
 
             // First corner of rhombohedron is at model-frame's origin
-            vec<float> o = {0,0,0};
+            sm::vec<float> o = {0,0,0};
 
             // Push positions and normals for 24 vertices to make up the rhombohedron; 4 for each face.
             // Front face
@@ -88,9 +87,9 @@ namespace morph {
         }
 
         //! Three vectors define the Rhombohedron and we use a single colour
-        vec<float, 3> edge1 = {0.0f, 0.0f, 0.0f};
-        vec<float, 3> edge2 = {0.0f, 0.0f, 0.0f};
-        vec<float, 3> edge3 = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> edge1 = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> edge2 = {0.0f, 0.0f, 0.0f};
+        sm::vec<float, 3> edge3 = {0.0f, 0.0f, 0.0f};
         std::array<float, 3> col = {0.0f, 0.0f, 1.0f};
     };
 

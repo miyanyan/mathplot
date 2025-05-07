@@ -11,16 +11,19 @@
  */
 #pragma once
 
-#include <morph/tools.h>
-#include <morph/VisualDataModel.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
 #include <iostream>
 #include <cstring>
 #include <vector>
 #include <array>
 #include <map>
 #include <set>
+
+#include <sm/vec>
+#include <sm/range>
+#include <sm/quaternion>
+
+#include <morph/tools.h>
+#include <morph/VisualDataModel.h>
 
 #define JC_VORONOI_IMPLEMENTATION
 #include <morph/jcvoronoi/jc_voronoi.h>
@@ -32,18 +35,18 @@ namespace morph {
     template <typename F, int n_epsilons = 0, int glver = morph::gl::version_4_1>
     class VoronoiVisual : public VisualDataModel<F, glver>
     {
-        // Need a vec comparison function for a std::set of morph::vec or a std::map with a morph::vec key. See:
+        // Need a vec comparison function for a std::set of sm::vec or a std::map with a sm::vec key. See:
         // https://abrg-models.github.io/morphologica/ref/coremaths/vvec/#using-morphvvec-as-a-key-in-stdmap-or-within-an-stdset
         struct veccmp
         {
-            bool operator()(morph::vec<float> a, morph::vec<float> b) const
+            bool operator()(sm::vec<float> a, sm::vec<float> b) const
             {
                 return a.lexical_lessthan_beyond_epsilon(b, n_epsilons);
             }
         };
 
     public:
-        VoronoiVisual (const vec<float> _offset)
+        VoronoiVisual (const sm::vec<float> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -75,11 +78,11 @@ namespace morph {
 
             this->setupScaling (ncoords); // should be same size as nvdata or data
 
-            morph::quaternion<float> rq;
+            sm::quaternion<float> rq;
             if (this->data_z_direction != this->uz) {
                 // Find the rotation between data_z_direction and uz
                 this->dcoords.resize (ncoords);
-                morph::vec<float> r_axis = this->data_z_direction.cross (this->uz);
+                sm::vec<float> r_axis = this->data_z_direction.cross (this->uz);
                 r_axis.renormalize();
                 float r_angle = this->data_z_direction.angle (this->uz, r_axis);
                 rq.rotate(r_axis, r_angle);
@@ -93,7 +96,7 @@ namespace morph {
 
             // Use morph::range to find the extents of dataCoords. From these create a
             // rectangle to pass to jcv_diagram_generate.
-            morph::range<float> rx, ry;
+            sm::range<float> rx, ry;
             rx.search_init();
             ry.search_init();
             for (unsigned int i = 0; i < ncoords; ++i) {
@@ -127,9 +130,9 @@ namespace morph {
             // of sites. So, need a map of edge location to z_sums
 
             // Mapping edge end-point locations to a container of adjacent cell centres
-            std::map<morph::vec<float, 3>, std::set<morph::vec<float, 3>, veccmp>, veccmp> edge_pos_centres;
+            std::map<sm::vec<float, 3>, std::set<sm::vec<float, 3>, veccmp>, veccmp> edge_pos_centres;
             // Mapping same edge end-point locations to the averate z value of the adjacent cell centres
-            std::map<morph::vec<float, 3>, float, veccmp> edge_end_zsums;
+            std::map<sm::vec<float, 3>, float, veccmp> edge_end_zsums;
 
             for (int i = 0; i < diagram.numsites; ++i) {
 
@@ -225,10 +228,10 @@ namespace morph {
 
             if (this->data_z_direction != this->uz) {
                 // inverse rotate
-                morph::vec<float> t0 = {0.0f};
-                morph::vec<float> t1 = {0.0f};
-                morph::vec<float> t2 = {0.0f};
-                morph::quaternion<float> rqinv = rq.invert();
+                sm::vec<float> t0 = {0.0f};
+                sm::vec<float> t1 = {0.0f};
+                sm::vec<float> t2 = {0.0f};
+                sm::quaternion<float> rqinv = rq.invert();
                 for (int i = 0; i < diagram.numsites; ++i) {
                     const jcv_site* site = &sites[i];
                     const jcv_graphedge* e = site->edges;
@@ -273,9 +276,9 @@ namespace morph {
                 // Now scan through the edges drawing tubes for debug
                 if (this->data_z_direction != this->uz) {
                     // Apply rotations then compute
-                    morph::vec<float> t0 = {0.0f};
-                    morph::vec<float> t1 = {0.0f};
-                    morph::quaternion<float> rqinv = rq.invert();
+                    sm::vec<float> t0 = {0.0f};
+                    sm::vec<float> t1 = {0.0f};
+                    sm::quaternion<float> rqinv = rq.invert();
                     for (int i = 0; i < diagram.numsites; ++i) {
                         const jcv_site* site = &sites[i];
                         const jcv_graphedge* e = site->edges;
@@ -304,16 +307,16 @@ namespace morph {
             if (this->show_voronoi2d) {
                 if (this->data_z_direction != this->uz) {
                     // Apply rotations then compute
-                    morph::vec<float> t0 = {0.0f};
-                    morph::vec<float> t1 = {0.0f};
-                    morph::quaternion<float> rqinv = rq.invert();
+                    sm::vec<float> t0 = {0.0f};
+                    sm::vec<float> t1 = {0.0f};
+                    sm::quaternion<float> rqinv = rq.invert();
 
                     for (int i = 0; i < diagram.numsites; ++i) {
                         const jcv_site* site = &sites[i];
                         const jcv_graphedge* e = site->edges;
                         while (e) {
-                            t0 = rqinv * morph::vec<float>{ e->pos[0].x() * this->zoom, e->pos[0].y() * this->zoom, 0.0f };
-                            t1 = rqinv * morph::vec<float>{ e->pos[1].x() * this->zoom, e->pos[1].y() * this->zoom, 0.0f };
+                            t0 = rqinv * sm::vec<float>{ e->pos[0].x() * this->zoom, e->pos[0].y() * this->zoom, 0.0f };
+                            t1 = rqinv * sm::vec<float>{ e->pos[1].x() * this->zoom, e->pos[1].y() * this->zoom, 0.0f };
                             this->computeTube (t0, t1, morph::colour::black, morph::colour::black, this->voronoi_grid_thickness, 6);
                             e = e->next;
                         }
@@ -438,7 +441,7 @@ namespace morph {
 
         //! What direction should be considered 'z' when converting the data into a voronoi diagram?
         //! The data values will be rotated before the Voronoi pass, then rotated back.
-        morph::vec<float> data_z_direction = this->uz;
+        sm::vec<float> data_z_direction = this->uz;
 
         //! You can add a little extra to the rectangle that is auto-detected from the
         //! datacoordinate ranges. This defaults to epsilon to give the best possible
@@ -447,7 +450,7 @@ namespace morph {
 
         // Do we add index labels?
         bool labelIndices = false;
-        morph::vec<float, 3> labelOffset = { 0.04f, 0.0f, 0.0f };
+        sm::vec<float, 3> labelOffset = { 0.04f, 0.0f, 0.0f };
         float labelSize = 0.03f;
 
     protected:
@@ -524,15 +527,15 @@ namespace morph {
         }
 
         //! Compute a triangle from 3 arbitrary corners
-        void computeTriangle (vec<float> c1, vec<float> c2, vec<float> c3, const std::array<float, 3>& colr)
+        void computeTriangle (sm::vec<float> c1, sm::vec<float> c2, sm::vec<float> c3, const std::array<float, 3>& colr)
         {
             c1 *= this->zoom;
             c2 *= this->zoom;
             c3 *= this->zoom;
             // v is the face normal
-            vec<float> u1 = c1-c2;
-            vec<float> u2 = c2-c3;
-            vec<float> v = u1.cross(u2);
+            sm::vec<float> u1 = c1-c2;
+            sm::vec<float> u2 = c2-c3;
+            sm::vec<float> v = u1.cross(u2);
             v.renormalize();
             // Push corner vertices
             this->vertex_push (c1, this->vertexPositions);
@@ -549,9 +552,9 @@ namespace morph {
         }
 
         //! Have to record the number of triangles in each cell in order to update the colours
-        morph::vvec<unsigned int> triangle_counts;
+        sm::vvec<unsigned int> triangle_counts;
         //! Record the data index for each Voronoi cell index
-        morph::vvec<unsigned int> site_indices;
+        sm::vvec<unsigned int> site_indices;
         unsigned int triangle_count_sum = 0;
 
         //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
@@ -562,9 +565,9 @@ namespace morph {
         std::vector<float> dcolour3;
 
         //! Internally owned version of dataCoords after rotation
-        std::vector<morph::vec<float>> dcoords;
+        std::vector<sm::vec<float>> dcoords;
         //! A pointer either to dcoords or this->dataCoords
-        const std::vector<morph::vec<float>>* dcoords_ptr;
+        const std::vector<sm::vec<float>>* dcoords_ptr;
     };
 
 } // namespace morph

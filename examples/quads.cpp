@@ -1,18 +1,20 @@
 /*
  * Visualize a test surface
  */
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <array>
+
+#include <sm/scale>
+#include <sm/vec>
+
 #include <morph/Visual.h>
 #ifdef MESH
 # include <morph/QuadsMeshVisual.h>
 #else
 # include <morph/QuadsVisual.h>
 #endif
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <array>
 
 int main()
 {
@@ -24,8 +26,8 @@ int main()
     v.lightingEffects (true);
 
     try {
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-        morph::scale<float> scale1;
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::scale<float> scale1;
         scale1.setParams (1.0, 0.0);
 
         std::vector<std::array<float, 12>> surfBoxes;
