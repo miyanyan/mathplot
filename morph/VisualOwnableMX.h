@@ -120,14 +120,14 @@ namespace morph {
 
         //! Take a screenshot of the window. Return vec containing width * height or {-1, -1} on
         //! failure. Set transparent_bg to get a transparent background.
-        morph::vec<int, 2> saveImage (const std::string& img_filename, const bool transparent_bg = false)
+        sj::vec<int, 2> saveImage (const std::string& img_filename, const bool transparent_bg = false)
         {
             this->setContext();
 
             GLint viewport[4]; // current viewport
             this->glfn->GetIntegerv (GL_VIEWPORT, viewport);
 
-            morph::vec<int, 2> dims;
+            sj::vec<int, 2> dims;
             dims[0] = viewport[2];
             dims[1] = viewport[3];
             auto bits = std::make_unique<GLubyte[]>(dims.product() * 4);
@@ -203,7 +203,7 @@ namespace morph {
             }
 
             // Calculate model view transformation - transforming from "model space" to "worldspace".
-            morph::mat44<float> sceneview;
+            sj::mat44<float> sceneview;
             if (this->ptype == perspective_type::orthographic || this->ptype == perspective_type::perspective) {
                 // This line translates from model space to world space. Avoid in cyl?
                 sceneview.translate (this->scenetrans); // send backwards into distance
@@ -258,7 +258,7 @@ namespace morph {
                 this->coordArrows->render();
             }
 
-            morph::mat44<float> scenetransonly;
+            sj::mat44<float> scenetransonly;
             scenetransonly.translate (this->scenetrans);
 
             auto vmi = this->vm.begin();
@@ -273,7 +273,7 @@ namespace morph {
                 ++vmi;
             }
 
-            morph::vec<float, 3> v0 = this->textPosition ({-0.8f, 0.8f});
+            sj::vec<float, 3> v0 = this->textPosition ({-0.8f, 0.8f});
             if (this->options.test (visual_options::showTitle) == true) {
                 // Render the title text
                 this->textModel->setSceneTranslation (v0);
@@ -340,7 +340,7 @@ namespace morph {
         //! Add a label _text to the scene at position _toffset. Font features are
         //! defined by the tfeatures. Return geometry of the text.
         morph::TextGeometry addLabel (const std::string& _text,
-                                      const morph::vec<float, 3>& _toffset,
+                                      const sj::vec<float, 3>& _toffset,
                                       const morph::TextFeatures& tfeatures = morph::TextFeatures(0.01f))
         {
             this->setContext();
@@ -349,7 +349,7 @@ namespace morph {
             this->bindmodel (tmup);
             if (tfeatures.centre_horz == true) {
                 morph::TextGeometry tg = tmup->getTextGeometry(_text);
-                morph::vec<float, 3> centred_locn = _toffset;
+                sj::vec<float, 3> centred_locn = _toffset;
                 centred_locn[0] = -tg.half_width();
                 tmup->setupText (_text, centred_locn, tfeatures.colour);
             } else {
@@ -365,7 +365,7 @@ namespace morph {
         //! defined by the tfeatures. Return geometry of the text. The pointer tm is a
         //! return value that allows client code to change the text after the label has been added.
         morph::TextGeometry addLabel (const std::string& _text,
-                                      const morph::vec<float, 3>& _toffset,
+                                      const sj::vec<float, 3>& _toffset,
                                       morph::VisualTextModel<glver>*& tm,
                                       const morph::TextFeatures& tfeatures = morph::TextFeatures(0.01f))
         {
@@ -375,7 +375,7 @@ namespace morph {
             this->bindmodel (tmup);
             if (tfeatures.centre_horz == true) {
                 morph::TextGeometry tg = tmup->getTextGeometry(_text);
-                morph::vec<float, 3> centred_locn = _toffset;
+                sj::vec<float, 3> centred_locn = _toffset;
                 centred_locn[0] = -tg.half_width();
                 tmup->setupText (_text, centred_locn, tfeatures.colour);
             } else {

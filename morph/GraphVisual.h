@@ -14,21 +14,23 @@
 #include <sstream>
 #include <memory>
 #include <cstdint>
-#include <morph/mathconst.h>
+
+#include <sj/mathconst>
+#include <sj/scale>
+#include <sj/range>
+#include <sj/vec>
+#include <sj/vvec>
+#include <sj/quaternion>
+#include <sj/histo>
+#include <sj/grid>
+
 #include <morph/tools.h>
-#include <morph/scale.h>
-#include <morph/range.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/quaternion.h>
-#include <morph/histo.h>
 #include <morph/colour.h>
 #include <morph/gl/version.h>
 #include <morph/VisualModel.h>
 #include <morph/graphing.h>
 #include <morph/graphstyles.h>
 #include <morph/ColourMap.h>
-#include <morph/grid.h>
 #include <morph/DatasetStyle.h>
 #include <morph/VisualTextModel.h>
 
@@ -42,7 +44,7 @@ namespace morph {
     {
     public:
         //! Constructor which sets just the shader programs and the model view offset
-        GraphVisual(const vec<float> _offset)
+        GraphVisual(const sj::vec<float> _offset)
         {
             this->mv_offset = _offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -99,7 +101,7 @@ namespace morph {
                 // Need to add an additional graphDataCoords to receive data. This can occur after
                 // appending the first data point of a first dataset and then appending the first
                 // data point of a second dataset to an otherwise empty graph.
-                this->graphDataCoords.push_back (std::make_unique<std::vector<morph::vec<float>>>(0u, morph::vec<float>{0,0,0}));
+                this->graphDataCoords.push_back (std::make_unique<std::vector<sj::vec<float>>>(0u, sj::vec<float>{0,0,0}));
                 // As well as creating a new, empty graphDataCoords, we have to add the right datastyle
                 if (this->datastyles[didx].axisside == morph::axisside::left) {
                     this->datastyles.push_back (this->ds_ord1);
@@ -110,11 +112,11 @@ namespace morph {
 
             unsigned int oldsz = this->graphDataCoords[didx]->size();
             (this->graphDataCoords[didx])->resize (oldsz+1);
-            this->graphDataCoords[didx].get()->at(oldsz) = morph::vec<float>{ static_cast<float>(a), static_cast<float>(o), float{0} };
+            this->graphDataCoords[didx].get()->at(oldsz) = sj::vec<float>{ static_cast<float>(a), static_cast<float>(o), float{0} };
             int redraw_plot = 0;
-            morph::range<Flt> xrange = this->datarange_x;
-            morph::range<Flt> yrange = this->datarange_y;
-            morph::range<Flt> y2range = this->datarange_y2;
+            sj::range<Flt> xrange = this->datarange_x;
+            sj::range<Flt> yrange = this->datarange_y;
+            sj::range<Flt> y2range = this->datarange_y2;
             // check x axis
             if (this->auto_rescale_x) { redraw_plot += xrange.update (_abscissa) ? 1 : 0; }
 
@@ -183,12 +185,12 @@ namespace morph {
 
         //! Update the data for the graph, recomputing the vertices when done.
         template <typename Ctnr1, typename Ctnr2>
-        std::enable_if_t<morph::is_copyable_container<Ctnr1>::value
-                         && morph::is_copyable_container<Ctnr2>::value, void>
+        std::enable_if_t<sj::is_copyable_container<Ctnr1>::value
+                         && sj::is_copyable_container<Ctnr2>::value, void>
         update (const Ctnr1& _abscissae, const Ctnr2& _data, const unsigned int data_idx)
         {
             unsigned int dsize = _data.size();
-            morph::range<Flt> datarange;
+            sj::range<Flt> datarange;
 
             if (_abscissae.size() != dsize) {
                 throw std::runtime_error ("GraphVisual::update: size mismatch");
@@ -260,7 +262,7 @@ namespace morph {
             // Now sd and ad can be used to construct dataCoords x/y. They are used to
             // set the position of each datum into dataCoords
             for (unsigned int i = 0; i < dsize; ++i) {
-                this->graphDataCoords[data_idx].get()->at(i) = morph::vec<float>{ static_cast<float>(ad[i]), static_cast<float>(sd[i]), float{0} };
+                this->graphDataCoords[data_idx].get()->at(i) = sj::vec<float>{ static_cast<float>(ad[i]), static_cast<float>(sd[i]), float{0} };
             }
 
             this->clearTexts(); // VisualModel::clearTexts()
@@ -268,7 +270,7 @@ namespace morph {
         }
 
         //! update() overload that accepts vvec of coords
-        void update (const morph::vvec<morph::vec<Flt, 2>>& _coords, const unsigned int data_idx)
+        void update (const sj::vvec<sj::vec<Flt, 2>>& _coords, const unsigned int data_idx)
         {
             std::vector<Flt> absc (_coords.size(), Flt{0});
             std::vector<Flt> ord (_coords.size(), Flt{0});
@@ -329,8 +331,8 @@ namespace morph {
         //! Set a dataset into the graph using default styles, incrementing colour and
         //! marker shape as more datasets are included in the graph.
         template <typename Ctnr1, typename Ctnr2>
-        std::enable_if_t<morph::is_copyable_container<Ctnr1>::value
-                         && morph::is_copyable_container<Ctnr2>::value, void>
+        std::enable_if_t<sj::is_copyable_container<Ctnr1>::value
+                         && sj::is_copyable_container<Ctnr2>::value, void>
         setdata (const Ctnr1& _abscissae, const Ctnr2& _data,
                  const std::string name = "", const morph::axisside axisside = morph::axisside::left)
         {
@@ -342,8 +344,8 @@ namespace morph {
             this->setdata (_abscissae, _data, ds);
         }
 
-        //! setdata overload that accepts vvec of coords (as morph::vec<Flt, 2>)
-        void setdata (const morph::vvec<morph::vec<Flt, 2>>& _coords,
+        //! setdata overload that accepts vvec of coords (as sj::vec<Flt, 2>)
+        void setdata (const sj::vvec<sj::vec<Flt, 2>>& _coords,
                       const std::string name = "", const morph::axisside axisside = morph::axisside::left)
         {
             // Split coords into two vectors then call setdata() overload
@@ -357,7 +359,7 @@ namespace morph {
         }
 
         //! setdata overload that plots quivers on a grid, scaling the grid's coordinates suitably?
-        void setdata (const morph::grid<unsigned int, Flt>& g, const morph::vvec<morph::vec<Flt, 2>>& _quivs,
+        void setdata (const sj::grid<unsigned int, Flt>& g, const sj::vvec<sj::vec<Flt, 2>>& _quivs,
                       const DatasetStyle& ds)
         {
             // _quivs should have same size as g.n()
@@ -401,7 +403,7 @@ namespace morph {
 
             unsigned int dsize = _quivs.size();
             unsigned int didx = this->graphDataCoords.size();
-            this->graphDataCoords.push_back (std::make_unique<std::vector<morph::vec<float>>>(dsize, morph::vec<float>{ 0.0f, 0.0f, 0.0f }));
+            this->graphDataCoords.push_back (std::make_unique<std::vector<sj::vec<float>>>(dsize, sj::vec<float>{ 0.0f, 0.0f, 0.0f }));
             this->datastyles.push_back (ds);
 
             // Compute the ord1_scale and asbcissa_scale for the first added dataset only
@@ -416,8 +418,8 @@ namespace morph {
                 std::vector<Flt> ad (g.n(), Flt{0});
                 std::vector<Flt> sd (g.n(), Flt{0});
                 // Extract x coordinates and y coordinates from grid
-                morph::vvec<Flt> g_v_x (g.n(), Flt{0});
-                morph::vvec<Flt> g_v_y (g.n(), Flt{0});
+                sj::vvec<Flt> g_v_x (g.n(), Flt{0});
+                sj::vvec<Flt> g_v_y (g.n(), Flt{0});
                 for (unsigned int i = 0; i < g.n(); i++) {
                     g_v_x[i] = g.v_c[i][0];
                     g_v_y[i] = g.v_c[i][1];
@@ -437,7 +439,7 @@ namespace morph {
                 // Now sd and ad can be used to construct dataCoords x/y. They are used to
                 // set the position of each datum into dataCoords
                 for (unsigned int i = 0; i < dsize; ++i) {
-                    this->graphDataCoords[didx].get()->at(i) = morph::vec<float>{ static_cast<float>(ad[i]), static_cast<float>(sd[i]), float{0} };
+                    this->graphDataCoords[didx].get()->at(i) = sj::vec<float>{ static_cast<float>(ad[i]), static_cast<float>(sd[i]), float{0} };
                 }
             }
         }
@@ -446,8 +448,8 @@ namespace morph {
         //! style. The locations of the markers for each dataset are computed and stored
         //! in this->graphDataCoords, one vector for each dataset.
         template <typename Ctnr1, typename Ctnr2>
-        std::enable_if_t<morph::is_copyable_container<Ctnr1>::value
-                         && morph::is_copyable_container<Ctnr2>::value, void>
+        std::enable_if_t<sj::is_copyable_container<Ctnr1>::value
+                         && sj::is_copyable_container<Ctnr2>::value, void>
         setdata (const Ctnr1& _abscissae, const Ctnr2& _data, const DatasetStyle& ds)
         {
             if (_abscissae.size() != _data.size()) {
@@ -472,7 +474,7 @@ namespace morph {
 
             // Allocate memory for the new data coords, add the data style info and the
             // starting index for dataCoords
-            this->graphDataCoords.push_back (std::make_unique<std::vector<morph::vec<float>>>(dsize, morph::vec<float>{0,0,0}));
+            this->graphDataCoords.push_back (std::make_unique<std::vector<sj::vec<float>>>(dsize, sj::vec<float>{0,0,0}));
 
             this->datastyles.push_back (ds);
 
@@ -485,8 +487,8 @@ namespace morph {
 
             if (dsize > 0) {
                 // Transform the data into temporary containers sd and ad
-                morph::vvec<Flt> ad (dsize, Flt{0});
-                morph::vvec<Flt> sd (dsize, Flt{0});
+                sj::vvec<Flt> ad (dsize, Flt{0});
+                sj::vvec<Flt> sd (dsize, Flt{0});
                 if (ds.axisside == morph::axisside::left) {
                     this->ord1_scale.transform (_data, sd);
                 } else {
@@ -497,21 +499,21 @@ namespace morph {
                 // Now sd and ad can be used to construct dataCoords x/y. They are used to
                 // set the position of each datum into dataCoords
                 for (uint64_t i = 0; i < dsize; ++i) {
-                    this->graphDataCoords[didx].get()->at(i) = morph::vec<float>{ static_cast<float>(ad[i]), static_cast<float>(sd[i]), float{0} };
+                    this->graphDataCoords[didx].get()->at(i) = sj::vec<float>{ static_cast<float>(ad[i]), static_cast<float>(sd[i]), float{0} };
                 }
             }
         }
 
         //! Set data using two ranges as input
-        void setdata (const morph::range<Flt> xx, const morph::range<Flt> yy, const DatasetStyle& ds)
+        void setdata (const sj::range<Flt> xx, const sj::range<Flt> yy, const DatasetStyle& ds)
         {
-            morph::vvec<Flt> xxvv = { xx.min, xx.max };
-            morph::vvec<Flt> yyvv = { yy.min, yy.max };
+            sj::vvec<Flt> xxvv = { xx.min, xx.max };
+            sj::vvec<Flt> yyvv = { yy.min, yy.max };
             this->setdata (xxvv, yyvv, ds);
         }
 
-        //! setdata overload that accepts vvec of coords (as morph::vec<Flt, 2>)
-        void setdata (const morph::vvec<morph::vec<Flt, 2>>& _coords, const DatasetStyle& ds)
+        //! setdata overload that accepts vvec of coords (as sj::vec<Flt, 2>)
+        void setdata (const sj::vvec<sj::vec<Flt, 2>>& _coords, const DatasetStyle& ds)
         {
             // Split coords into two vectors then call setdata() overload
             std::vector<Flt> absc (_coords.size(), Flt{0});
@@ -523,9 +525,9 @@ namespace morph {
             this->setdata (absc, ord, ds);
         }
 
-        //! Special setdata for a morph::histo object
+        //! Special setdata for a sj::histo object
         template<typename H>
-        void setdata (const morph::histo<H, Flt>& h, const std::string name = "")
+        void setdata (const sj::histo<H, Flt>& h, const std::string name = "")
         {
             DatasetStyle ds(morph::stylepolicy::bar);
             if (!name.empty()) { ds.datalabel = name; }
@@ -552,13 +554,13 @@ namespace morph {
          *
          * If you want to manually change the histogram bar widths, then call
          *
-         * morph::histo<H, Flt> h(data);
+         * sj::histo<H, Flt> h(data);
          * morph::DatasetStyle ds(morph::stylepolicy::bar);
          * // ds setup goes here including ds.markersize for bar width
          * gv->setdata<H, false> (h, ds);
          */
         template<typename H, bool bar_width_auto = true>
-        void setdata (const morph::histo<H, Flt>& h, morph::DatasetStyle& ds)
+        void setdata (const sj::histo<H, Flt>& h, morph::DatasetStyle& ds)
         {
             if (ds.policy != morph::stylepolicy::bar) {
                 throw std::runtime_error ("GraphVisual::setdata(histo, DatasetStyle): Your DatasetStyle policy must be morph::stylepolicy::bar");
@@ -587,11 +589,11 @@ namespace morph {
          * This method does not draw a horizontal line on the graph at y_value.
          */
         template <typename Ctnr1, typename Ctnr2>
-        requires (morph::is_copyable_container<Ctnr1>::value && morph::is_copyable_container<Ctnr2>::value)
-        morph::vvec<Flt> add_y_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt y_value, const morph::DatasetStyle& ds_data)
+        requires (sj::is_copyable_container<Ctnr1>::value && sj::is_copyable_container<Ctnr2>::value)
+        sj::vvec<Flt> add_y_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt y_value, const morph::DatasetStyle& ds_data)
         {
-            morph::vvec<Flt> xvals = morph::GraphVisual<Flt>::x_at_y_value (_abscissae, _data, y_value);
-            morph::range<Flt> yy (morph::range_init::for_search);
+            sj::vvec<Flt> xvals = morph::GraphVisual<Flt>::x_at_y_value (_abscissae, _data, y_value);
+            sj::range<Flt> yy (sj::range_init::for_search);
             for (auto d : _data) { yy.update (d); } // Find the range
             morph::DatasetStyle dsv (morph::stylepolicy::lines);
             if (ds_data.policy == morph::stylepolicy::lines) {
@@ -602,7 +604,7 @@ namespace morph {
             dsv.linewidth = ds_data.linewidth * 0.5f; // Use a reduced width cf the original dataset style
             dsv.datalabel = ""; // Always empty the datalabel
             for (auto xv : xvals) {
-                morph::range<Flt> xx = { xv, xv };
+                sj::range<Flt> xx = { xv, xv };
                 this->setdata (xx, yy, dsv);
             }
             return xvals;
@@ -617,13 +619,13 @@ namespace morph {
          * ds_hline.
          */
         template <typename Ctnr1, typename Ctnr2>
-        requires (morph::is_copyable_container<Ctnr1>::value && morph::is_copyable_container<Ctnr2>::value)
-        morph::vvec<Flt> add_y_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt y_value,
-                                               const morph::DatasetStyle& ds_data, const morph::DatasetStyle& ds_hline)
+        requires (sj::is_copyable_container<Ctnr1>::value && sj::is_copyable_container<Ctnr2>::value)
+        sj::vvec<Flt> add_y_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt y_value,
+                                            const morph::DatasetStyle& ds_data, const morph::DatasetStyle& ds_hline)
         {
             // Draw the horizontal line
-            morph::range<Flt> yy = { y_value, y_value };
-            morph::range<Flt> xx (morph::range_init::for_search);
+            sj::range<Flt> yy = { y_value, y_value };
+            sj::range<Flt> xx (sj::range_init::for_search);
             for (auto a : _abscissae) { xx.update (a); }
             this->setdata (xx, yy, ds_hline);
             // And the vertical y crossings
@@ -633,8 +635,8 @@ namespace morph {
         // Static function to find the crossings in the right money. Requires data to be passed in.
         // Return all the x values where the function crosses the y_value.
         template <typename Ctnr1, typename Ctnr2>
-        requires (morph::is_copyable_container<Ctnr1>::value && morph::is_copyable_container<Ctnr2>::value)
-        static morph::vvec<Flt> x_at_y_value (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt y_value)
+        requires (sj::is_copyable_container<Ctnr1>::value && sj::is_copyable_container<Ctnr2>::value)
+        static sj::vvec<Flt> x_at_y_value (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt y_value)
         {
             if (_abscissae.size() != _data.size()) {
                 std::stringstream ee;
@@ -643,18 +645,18 @@ namespace morph {
                 throw std::runtime_error (ee.str());
             }
             // First find crossing points, for which we require that the y values are in vvec format
-            morph::vvec<Flt> y_values (_data);
-            morph::vvec<float> crossings = y_values.crossing_points (y_value);
+            sj::vvec<Flt> y_values (_data);
+            sj::vvec<float> crossings = y_values.crossing_points (y_value);
             // Now, for each of crossings, we have to interpolate the points in _abscissae to get the x to return
-            morph::vvec<Flt> x_values = {};
+            sj::vvec<Flt> x_values = {};
             for (const float crs : crossings) {
                 // bool up = crs > float{0} ? true : false; // Don't care here, but could
                 float crs_abs = std::abs (crs);
                 int crs_i = static_cast<int>(crs_abs);
                 if (crs_abs - static_cast<float>(crs_i) > 0.25f) {
                     // intermediate. Interpolate
-                    morph::scale<Flt> interp;
-                    interp.output_range = morph::range<Flt>{static_cast<Flt>(_data.at(crs_i)), static_cast<Flt>(_data.at(crs_i + 1))};
+                    sj::scale<Flt> interp;
+                    interp.output_range = sj::range<Flt>{static_cast<Flt>(_data.at(crs_i)), static_cast<Flt>(_data.at(crs_i + 1))};
                     interp.compute_scaling (static_cast<Flt>(_abscissae.at(crs_i)), static_cast<Flt>(_abscissae.at(crs_i + 1)));
                     x_values.push_back (interp.inverse_one (y_value));
                 } else {
@@ -667,12 +669,12 @@ namespace morph {
 
         // Now the x crossing lines
         template <typename Ctnr1, typename Ctnr2>
-        requires (morph::is_copyable_container<Ctnr1>::value && morph::is_copyable_container<Ctnr2>::value)
-        morph::vvec<Flt> add_x_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt x_value, const morph::DatasetStyle& ds_data)
+        requires (sj::is_copyable_container<Ctnr1>::value && sj::is_copyable_container<Ctnr2>::value)
+        sj::vvec<Flt> add_x_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt x_value, const morph::DatasetStyle& ds_data)
         {
-            morph::vvec<Flt> yvals = morph::GraphVisual<Flt>::y_at_x_value (_abscissae, _data, x_value);
+            sj::vvec<Flt> yvals = morph::GraphVisual<Flt>::y_at_x_value (_abscissae, _data, x_value);
 
-            morph::range<Flt> xx (morph::range_init::for_search);
+            sj::range<Flt> xx (sj::range_init::for_search);
             for (auto a : _abscissae) { xx.update (a); } // Find the range
             morph::DatasetStyle dsv (morph::stylepolicy::lines);
             if (ds_data.policy == morph::stylepolicy::lines) {
@@ -683,7 +685,7 @@ namespace morph {
             dsv.linewidth = ds_data.linewidth * 0.5f; // Use a reduced width cf the original dataset style
             dsv.datalabel = ""; // Always empty the datalabel
             for (auto yv : yvals) {
-                morph::range<Flt> yy = { yv, yv };
+                sj::range<Flt> yy = { yv, yv };
                 this->setdata (xx, yy, dsv);
             }
             return yvals;
@@ -697,13 +699,13 @@ namespace morph {
          * ds_vline.
          */
         template <typename Ctnr1, typename Ctnr2>
-        requires (morph::is_copyable_container<Ctnr1>::value && morph::is_copyable_container<Ctnr2>::value)
-        morph::vvec<Flt> add_x_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt x_value,
+        requires (sj::is_copyable_container<Ctnr1>::value && sj::is_copyable_container<Ctnr2>::value)
+        sj::vvec<Flt> add_x_crossing_lines (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt x_value,
                                                const morph::DatasetStyle& ds_data, const morph::DatasetStyle& ds_vline)
         {
             // Draw the vertical line
-            morph::range<Flt> xx = { x_value, x_value };
-            morph::range<Flt> yy (morph::range_init::for_search);
+            sj::range<Flt> xx = { x_value, x_value };
+            sj::range<Flt> yy (sj::range_init::for_search);
             for (auto d : _data) { yy.update (d); }
             this->setdata (xx, yy, ds_vline);
             // And the horizontal x crossings
@@ -711,8 +713,8 @@ namespace morph {
         }
 
         template <typename Ctnr1, typename Ctnr2>
-        requires (morph::is_copyable_container<Ctnr1>::value && morph::is_copyable_container<Ctnr2>::value)
-        static morph::vvec<Flt> y_at_x_value (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt x_value)
+        requires (sj::is_copyable_container<Ctnr1>::value && sj::is_copyable_container<Ctnr2>::value)
+        static sj::vvec<Flt> y_at_x_value (const Ctnr1& _abscissae, const Ctnr2& _data, const Flt x_value)
         {
             if (_abscissae.size() != _data.size()) {
                 std::stringstream ee;
@@ -721,18 +723,18 @@ namespace morph {
                 throw std::runtime_error (ee.str());
             }
             // First find crossing points, for which we require that the x values are in vvec format
-            morph::vvec<Flt> x_values (_abscissae);
-            morph::vvec<float> crossings = x_values.crossing_points (x_value);
+            sj::vvec<Flt> x_values (_abscissae);
+            sj::vvec<float> crossings = x_values.crossing_points (x_value);
             // Now, for each of crossings, we have to interpolate the points in _data to get the y to return
-            morph::vvec<Flt> y_values = {};
+            sj::vvec<Flt> y_values = {};
             for (const float crs : crossings) {
                 // bool up = crs > float{0} ? true : false; // Don't care here, but could
                 float crs_abs = std::abs (crs);
                 int crs_i = static_cast<int>(crs_abs);
                 if (crs_abs - static_cast<float>(crs_i) > 0.25f) {
                     // intermediate. Interpolate
-                    morph::scale<Flt> interp;
-                    interp.output_range = morph::range<Flt>{static_cast<Flt>(_data.at(crs_i)), static_cast<Flt>(_data.at(crs_i + 1))};
+                    sj::scale<Flt> interp;
+                    interp.output_range = sj::range<Flt>{static_cast<Flt>(_data.at(crs_i)), static_cast<Flt>(_data.at(crs_i + 1))};
                     interp.compute_scaling (static_cast<Flt>(_abscissae.at(crs_i)), static_cast<Flt>(_abscissae.at(crs_i + 1)));
                     y_values.push_back (interp.transform_one (x_value));
                 } else {
@@ -746,12 +748,12 @@ namespace morph {
     protected:
         //! Compute the scaling of ord1_scale and abscissa_scale according to the scalingpolicies
         template <typename Ctnr1, typename Ctnr2>
-        std::enable_if_t<morph::is_copyable_container<Ctnr1>::value
-                         && morph::is_copyable_container<Ctnr2>::value, void>
+        std::enable_if_t<sj::is_copyable_container<Ctnr1>::value
+                         && sj::is_copyable_container<Ctnr2>::value, void>
         compute_scaling (const Ctnr1& _abscissae, const Ctnr2& _data, const morph::axisside axisside)
         {
-            morph::range<Flt> data_range = morph::range<Flt>::get_from (_data);
-            morph::range<Flt> absc_range = morph::range<Flt>::get_from (_abscissae);
+            sj::range<Flt> data_range = sj::range<Flt>::get_from (_data);
+            sj::range<Flt> absc_range = sj::range<Flt>::get_from (_abscissae);
 
             this->resetsize (this->width, this->height);
 
@@ -889,13 +891,13 @@ namespace morph {
         //! but before setdata and finalize.
         void setlimits_x (const Flt _xmin, const Flt _xmax)
         {
-            morph::range<Flt> range_x(_xmin, _xmax);
+            sj::range<Flt> range_x(_xmin, _xmax);
             this->setlimits_x (range_x);
         }
 
-        //! Set manual limits for the x axis (abscissa) passing by morph::range. Call
+        //! Set manual limits for the x axis (abscissa) passing by sj::range. Call
         //! after setsize/zoomgraph, but before setdata and finalize.
-        void setlimits_x (const morph::range<Flt>& range_x, bool force = false)
+        void setlimits_x (const sj::range<Flt>& range_x, bool force = false)
         {
             if (!force && !this->graphDataCoords.empty()) {
                 throw std::runtime_error ("GraphVisual::setlimits_x: Set your axis limits *before* using setdata to set the data");
@@ -908,12 +910,12 @@ namespace morph {
         //! Set manual limits for the y axis (ordinate)
         void setlimits_y (const Flt _ymin, const Flt _ymax)
         {
-            morph::range<Flt> range_y(_ymin, _ymax);
+            sj::range<Flt> range_y(_ymin, _ymax);
             this->setlimits_y (range_y);
         }
 
-        //! Set manual limits for the x axis (abscissa) passing by morph::range
-        void setlimits_y (const morph::range<Flt>& range_y, bool force = false)
+        //! Set manual limits for the x axis (abscissa) passing by sj::range
+        void setlimits_y (const sj::range<Flt>& range_y, bool force = false)
         {
             if (!force && !this->graphDataCoords.empty()) {
                 throw std::runtime_error ("GraphVisual::setlimits_y: Set your axis limits *before* using setdata to set the data");
@@ -926,12 +928,12 @@ namespace morph {
         //! Set manual limits for the second y axis (ordinate)
         void setlimits_y2 (const Flt _ymin2, const Flt _ymax2)
         {
-            morph::range<Flt> range_y2(_ymin2, _ymax2);
+            sj::range<Flt> range_y2(_ymin2, _ymax2);
             this->setlimits_y2 (range_y2);
         }
 
-        //! Set manual limits for the x axis (abscissa) passing by morph::range
-        void setlimits_y2 (const morph::range<Flt>& range_y2, bool force = false)
+        //! Set manual limits for the x axis (abscissa) passing by sj::range
+        void setlimits_y2 (const sj::range<Flt>& range_y2, bool force = false)
         {
             if (!force && !this->graphDataCoords.empty()) {
                 throw std::runtime_error ("GraphVisual::setlimits_y2: Set your axis limits *before* using setdata to set the data");
@@ -947,13 +949,13 @@ namespace morph {
         // to extend.
         void setlimits (const Flt _xmin, const Flt _xmax, const Flt _ymin, const Flt _ymax)
         {
-            morph::range<Flt> range_x(_xmin, _xmax);
-            morph::range<Flt> range_y(_ymin, _ymax);
+            sj::range<Flt> range_x(_xmin, _xmax);
+            sj::range<Flt> range_y(_ymin, _ymax);
             this->setlimits (range_x, range_y);
         }
 
-        // Set axis limits for x/y passing by morph::range
-        void setlimits (const morph::range<Flt>& range_x, const morph::range<Flt>& range_y)
+        // Set axis limits for x/y passing by sj::range
+        void setlimits (const sj::range<Flt>& range_x, const sj::range<Flt>& range_y)
         {
             if (!this->graphDataCoords.empty()) {
                 throw std::runtime_error ("GraphVisual::setlimits: Set your axis limits *before* using setdata to set the data");
@@ -973,15 +975,15 @@ namespace morph {
         void setlimits (const Flt _xmin, const Flt _xmax,
                         const Flt _ymin, const Flt _ymax, const Flt _ymin2, const Flt _ymax2)
         {
-            morph::range<Flt> range_x(_xmin, _xmax);
-            morph::range<Flt> range_y(_ymin, _ymax);
-            morph::range<Flt> range_y2(_ymin2, _ymax2);
+            sj::range<Flt> range_x(_xmin, _xmax);
+            sj::range<Flt> range_y(_ymin, _ymax);
+            sj::range<Flt> range_y2(_ymin2, _ymax2);
             this->setlimits (range_x, range_y, range_y2);
         }
 
-        //! setlimits overload that sets BOTH left and right axes limits, passing by morph::range
-        void setlimits (const morph::range<Flt>& range_x,
-                        const morph::range<Flt>& range_y, const morph::range<Flt>& range_y2)
+        //! setlimits overload that sets BOTH left and right axes limits, passing by sj::range
+        void setlimits (const sj::range<Flt>& range_x,
+                        const sj::range<Flt>& range_y, const sj::range<Flt>& range_y2)
         {
             if (!this->graphDataCoords.empty()) {
                 throw std::runtime_error ("GraphVisual::setlimits: Set your axis limits *before* using setdata to set the data");
@@ -1030,7 +1032,7 @@ namespace morph {
         }
 
         //! Is the passed in coordinate within the graph axes (in the x/y sense, ignoring z)?
-        bool within_axes (morph::vec<float>& datapoint)
+        bool within_axes (sj::vec<float>& datapoint)
         {
             bool within = false;
             if (datapoint[0] >= 0 && datapoint[0] <= this->width
@@ -1041,8 +1043,8 @@ namespace morph {
         }
 
         //! Is the passed in coordinate within the graph axes (in the x sense, ignoring z)?
-        bool within_axes_x (morph::vec<float>& dpt) { return (dpt[0] >= 0 && dpt[0] <= this->width); }
-        bool within_axes_y (morph::vec<float>& dpt) { return (dpt[1] >= 0 && dpt[1] <= this->height); }
+        bool within_axes_x (sj::vec<float>& dpt) { return (dpt[0] >= 0 && dpt[0] <= this->width); }
+        bool within_axes_y (sj::vec<float>& dpt) { return (dpt[1] >= 0 && dpt[1] <= this->height); }
 
         //! dsi: data set iterator
         void drawDataCommon (unsigned int dsi, unsigned int coords_start, unsigned int coords_end, bool appending = false)
@@ -1068,10 +1070,10 @@ namespace morph {
                         if (!this->quiver_length_scale.ready()) { this->quiver_length_scale.do_autoscale = true; }
 
                         // Have to derive some scaling info from the quivers first.
-                        //morph::vvec<Flt> raw_qlengths (nquiv, Flt{0});           // 'raw' quiver lengths
-                        morph::vvec<Flt> userscaled_qlengths (nquiv, Flt{0});    // 'user-scaled' quiver lengths (may exaggerate one axis)
-                        morph::vvec<Flt> renorm_qlengths (nquiv, Flt{0});        // renormalized user-scaled quiver lengths with linear OR log scaling
-                        morph::vvec<Flt> renorm_linear_qlengths (nquiv, Flt{0}); // renormalized user-scaled quiver lengths with linear scaling
+                        //sj::vvec<Flt> raw_qlengths (nquiv, Flt{0});           // 'raw' quiver lengths
+                        sj::vvec<Flt> userscaled_qlengths (nquiv, Flt{0});    // 'user-scaled' quiver lengths (may exaggerate one axis)
+                        sj::vvec<Flt> renorm_qlengths (nquiv, Flt{0});        // renormalized user-scaled quiver lengths with linear OR log scaling
+                        sj::vvec<Flt> renorm_linear_qlengths (nquiv, Flt{0}); // renormalized user-scaled quiver lengths with linear scaling
 
                         // Compute the length of each quiver
                         for (uint64_t i = 0; i < nquiv; ++i) {
@@ -1083,12 +1085,12 @@ namespace morph {
                         // Also create a guaranteed linearly renormalized vvec of lengths
                         this->quiver_linear_scale.transform (userscaled_qlengths, renorm_linear_qlengths);
                         // Compute a scaling factor from these to apply to the final quiver lengths
-                        morph::vvec<Flt> lfactor = renorm_qlengths / renorm_linear_qlengths;
+                        sj::vvec<Flt> lfactor = renorm_qlengths / renorm_linear_qlengths;
                         for (auto& lf : lfactor) { lf = lf < Flt{0} ? Flt{0} : lf; } // replace any negative factors with 0
 
                         // 'final' quivers, with scaling applied. From these computed final_qlengths which will give colours
-                        morph::vvec<Flt> final_qlengths (nquiv, Flt{0});
-                        morph::vvec<morph::vec<Flt, 3>> final_quivers (this->quivers);
+                        sj::vvec<Flt> final_qlengths (nquiv, Flt{0});
+                        sj::vvec<sj::vec<Flt, 3>> final_quivers (this->quivers);
                         for (uint64_t i = 0; i < nquiv; ++i) {
                             final_quivers[i] *= this->datastyles[dsi].quiver_gain * (Flt{0.5} * this->quiver_grid_spacing) * lfactor[i];
                             final_qlengths[i] = final_quivers[i].length();
@@ -1097,7 +1099,7 @@ namespace morph {
                         Flt fqlmin = final_qlengths.prune_zero().min();
                         final_qlengths.search_replace (Flt{0}, fqlmin);
                         // Then scaled the final_qlengths to range [0-1]
-                        morph::vvec<Flt> colour_qlengths (nquiv, Flt{0});
+                        sj::vvec<Flt> colour_qlengths (nquiv, Flt{0});
                         this->quiver_colour_scale.transform (final_qlengths, colour_qlengths);
 
                         // Finally loop thru coords, drawing a quiver for each
@@ -1227,14 +1229,14 @@ namespace morph {
             unsigned int num_legends_max = static_cast<unsigned int>(this->graphDataCoords.size());
 
             // Text offset from marker to text
-            morph::vec<float> toffset = {this->fontsize, 0.0f, 0.0f};
+            sj::vec<float> toffset = {this->fontsize, 0.0f, 0.0f};
 
             // To determine the legend layout, will need all the text geometries
             std::vector<morph::TextGeometry> geom;
 
             std::map<unsigned int, std::unique_ptr<morph::VisualTextModel<glver>>> legtexts;
 
-            morph::vvec<unsigned int> ds_indices; // dataset indices.
+            sj::vvec<unsigned int> ds_indices; // dataset indices.
 
             float text_advance = 0.0f;
             int num_legends = 0;
@@ -1277,7 +1279,7 @@ namespace morph {
             }
 
             // Label position
-            morph::vec<float> lpos = {this->dataaxisdist, 0.0f, 0.0f};
+            sj::vec<float> lpos = {this->dataaxisdist, 0.0f, 0.0f};
             int cur_entry = 0;
             for (auto _dsi : ds_indices) {
                 int dsi = static_cast<int>(_dsi);
@@ -1292,7 +1294,7 @@ namespace morph {
                 // Legend line/marker
                 if (this->datastyles[dsi].showlines == true && this->datastyles[dsi].markerstyle != markerstyle::bar) {
                     // draw short line at lpos (rounded ends)
-                    morph::vec<float, 3> abit = { 0.5f * toffset[0], 0.0f, 0.0f };
+                    sj::vec<float, 3> abit = { 0.5f * toffset[0], 0.0f, 0.0f };
                     this->computeFlatLineRnd (lpos - abit, lpos + abit,
                                               this->uz,
                                               this->datastyles[dsi].linecolour,
@@ -1319,7 +1321,7 @@ namespace morph {
             morph::TextFeatures tf(this->fontsize, this->fontres, false, morph::colour::black, this->font);
             auto lbl = this->makeVisualTextModel (tf);
             morph::TextGeometry geom = lbl->getTextGeometry (this->xlabel);
-            morph::vec<float> lblpos;
+            sj::vec<float> lblpos;
             if (this->axisstyle == axisstyle::cross) {
                 float _y0_mdl = this->ord1_scale.transform_one (0);
                 lblpos = {{0.9f * this->width,
@@ -1354,7 +1356,7 @@ namespace morph {
             }
 
             if (geom.width() > 2*this->fontsize) {
-                morph::quaternion<float> leftrot(this->uz, morph::mathconst<float>::pi_over_2);
+                sj::quaternion<float> leftrot(this->uz, sj::mathconst<float>::pi_over_2);
                 lbl2->setupText (this->ylabel, leftrot, lblpos+this->mv_offset, this->axiscolour);
             } else {
                 lbl2->setupText (this->ylabel, lblpos+this->mv_offset, this->axiscolour);
@@ -1378,7 +1380,7 @@ namespace morph {
                             0.5f*this->height - downshift, 0 }};
 
                 if (geom.width() > 2*this->fontsize) {
-                    morph::quaternion<float> leftrot(this->uz, morph::mathconst<float>::pi_over_2);
+                    sj::quaternion<float> leftrot(this->uz, sj::mathconst<float>::pi_over_2);
                     lbl3->setupText (this->ylabel2, leftrot, lblpos+this->mv_offset, this->axiscolour);
                 } else {
                     lbl3->setupText (this->ylabel2, lblpos+this->mv_offset, this->axiscolour);
@@ -1448,7 +1450,7 @@ namespace morph {
                     tf.fontsize = this->fontsize; // reset
                     morph::TextGeometry geom = lbl->getTextGeometry (s);
                     this->xtick_label_height = geom.height() > this->xtick_label_height ? geom.height() : this->xtick_label_height;
-                    morph::vec<float> lblpos = {(float)this->xtick_posns[i]-geom.half_width(), y_for_xticks-(this->ticklabelgap+geom.height()), 0};
+                    sj::vec<float> lblpos = {(float)this->xtick_posns[i]-geom.half_width(), y_for_xticks-(this->ticklabelgap+geom.height()), 0};
                     lbl->setupText (s, lblpos+this->mv_offset, this->axiscolour);
                     this->texts.push_back (std::move(lbl));
                 }
@@ -1463,7 +1465,7 @@ namespace morph {
                     auto lbl = this->makeVisualTextModel (tf);
                     morph::TextGeometry geom = lbl->getTextGeometry (s);
                     this->ytick_label_width = geom.width() > this->ytick_label_width ? geom.width() : this->ytick_label_width;
-                    morph::vec<float> lblpos = {x_for_yticks-this->ticklabelgap-geom.width(), (float)this->ytick_posns[i]-geom.half_height(), 0};
+                    sj::vec<float> lblpos = {x_for_yticks-this->ticklabelgap-geom.width(), (float)this->ytick_posns[i]-geom.half_height(), 0};
                     std::array<float, 3> clr = this->axiscolour;
                     if (this->axisstyle == axisstyle::twinax && this->datastyles.size() > 0) {
                         clr = this->datastyles[0].policy == stylepolicy::lines ? this->datastyles[0].linecolour : this->datastyles[0].markercolour;
@@ -1480,7 +1482,7 @@ namespace morph {
                     auto lbl = this->makeVisualTextModel (tf);
                     morph::TextGeometry geom = lbl->getTextGeometry (s);
                     this->ytick_label_width2 = geom.width() > this->ytick_label_width2 ? geom.width() : this->ytick_label_width2;
-                    morph::vec<float> lblpos = {x_for_yticks+this->ticklabelgap, (float)this->ytick_posns2[i]-geom.half_height(), 0};
+                    sj::vec<float> lblpos = {x_for_yticks+this->ticklabelgap, (float)this->ytick_posns2[i]-geom.half_height(), 0};
                     std::array<float, 3> clr = this->axiscolour;
                     if (this->datastyles.size() > 1) {
                         clr = this->datastyles[1].policy == stylepolicy::lines ? this->datastyles[1].linecolour : this->datastyles[1].markercolour;
@@ -1604,11 +1606,11 @@ namespace morph {
         }
 
         //! Draw a single quiver at point coords_i with direction/magnitude quiv.
-        void quiver (morph::vec<float>& coords_i, morph::vec<Flt, 3>& quiv,
+        void quiver (sj::vec<float>& coords_i, sj::vec<Flt, 3>& quiv,
                      const Flt lengthcolour, const morph::DatasetStyle& style)
         {
-            morph::vec<Flt> halfquiv, half = { Flt{0.5}, Flt{0.5}, Flt{0.5} };
-            morph::vec<float> start, end;
+            sj::vec<Flt> halfquiv, half = { Flt{0.5}, Flt{0.5}, Flt{0.5} };
+            sj::vec<float> start, end;
 
             Flt dlength = quiv.length();
             if ((std::isnan(dlength) || dlength == Flt{0})
@@ -1636,8 +1638,8 @@ namespace morph {
                 ? style.linewidth * style.quiver_thickness_gain : quiv.length() * 0.1f * style.quiver_thickness_gain;
 
                 // The right way to draw an arrow.
-                morph::vec<float> arrow_line = end - start;
-                morph::vec<float> cone_start = arrow_line.shorten (quiv.length() * style.quiver_arrowhead_prop);
+                sj::vec<float> arrow_line = end - start;
+                sj::vec<float> cone_start = arrow_line.shorten (quiv.length() * style.quiver_arrowhead_prop);
                 cone_start += start;
                 constexpr int shapesides = 12;
                 std::array<float, 3> clr = style.quiver_colourmap.convert (lengthcolour);
@@ -1657,20 +1659,20 @@ namespace morph {
         //! Generate vertices for a bar of a bar graph, with p1 and p2 defining the top
         //! left and right corners of the bar. bottom left and right assumed to be on x
         //! axis.
-        void bar (morph::vec<float>& p, const morph::DatasetStyle& style)
+        void bar (sj::vec<float>& p, const morph::DatasetStyle& style)
         {
             // To update the z position of the data, must also add z thickness to p[2]
             p[2] += thickness;
 
-            morph::vec<float> p1 = p;
+            sj::vec<float> p1 = p;
             p1[0] -= style.markersize/2.0f;
-            morph::vec<float> p2 = p;
+            sj::vec<float> p2 = p;
             p2[0] += style.markersize/2.0f;
 
             // Zero is at (height*dataaxisdist)
-            morph::vec<float> p1b = p1;
+            sj::vec<float> p1b = p1;
             p1b[1] = this->height * this->dataaxisdist;
-            morph::vec<float> p2b = p2;
+            sj::vec<float> p2b = p2;
             p2b[1] = this->height * this->dataaxisdist;
 
             this->computeFlatQuad (p1b, p1, p2, p2b, style.markercolour);
@@ -1687,19 +1689,19 @@ namespace morph {
         }
 
         //! Special code to draw a marker representing a bargraph bar for the legend
-        void bar_symbol (morph::vec<float>& p, const morph::DatasetStyle& style)
+        void bar_symbol (sj::vec<float>& p, const morph::DatasetStyle& style)
         {
             p[2] += this->thickness;
 
-            morph::vec<float> p1 = p;
+            sj::vec<float> p1 = p;
             p1[0] -= 0.035f; // Note fixed size for legend
-            morph::vec<float> p2 = p;
+            sj::vec<float> p2 = p;
             p2[0] += 0.035f;
 
             // Zero is at (height*dataaxisdist)
-            morph::vec<float> p1b = p1;
+            sj::vec<float> p1b = p1;
             p1b[1] -= 0.03f;
-            morph::vec<float> p2b = p2;
+            sj::vec<float> p2b = p2;
             p2b[1] -= 0.03f;
 
             float outline_width = 0.005f; // also fixed
@@ -1719,7 +1721,7 @@ namespace morph {
         }
 
         //! Generate vertices for a marker of the given style at location p
-        void marker (morph::vec<float>& p, const morph::DatasetStyle& style)
+        void marker (sj::vec<float>& p, const morph::DatasetStyle& style)
         {
             switch (style.markerstyle) {
             case morph::markerstyle::triangle:
@@ -1793,7 +1795,7 @@ namespace morph {
         }
 
         // Create an n sided polygon with first vertex 'pointing up'
-        void polygonMarker  (morph::vec<float> p, int n, const morph::DatasetStyle& style)
+        void polygonMarker (sj::vec<float> p, int n, const morph::DatasetStyle& style)
         {
             p[2] += this->thickness;
             this->computeFlatPoly (p, this->ux, this->uy,
@@ -1802,12 +1804,12 @@ namespace morph {
         }
 
         // Create an n sided polygon with a flat edge 'pointing up'
-        void polygonFlattop (morph::vec<float> p, int n, const morph::DatasetStyle& style)
+        void polygonFlattop (sj::vec<float> p, int n, const morph::DatasetStyle& style)
         {
             p[2] += this->thickness;
             this->computeFlatPoly (p, this->ux, this->uy,
                                    style.markercolour,
-                                   style.markersize*Flt{0.5}, n, morph::mathconst<float>::pi/static_cast<float>(n));
+                                   style.markersize*Flt{0.5}, n, sj::mathconst<float>::pi/static_cast<float>(n));
         }
 
         // Given the data, compute the ticks (or use the ones that client code gave us)
@@ -1893,46 +1895,46 @@ namespace morph {
          * this, there are runtime exceptions that guide you to call setlimits_x before
          * setdata.
          */
-        std::vector<std::unique_ptr<std::vector<vec<float>>>> graphDataCoords;
+        std::vector<std::unique_ptr<std::vector<sj::vec<float>>>> graphDataCoords;
         //! Quiver data, if used. Limitation: You can ONLY have ONE quiver field per
         //! GraphVisual. Note that the quivers can point in three dimensions. That's intentional,
         //! even though 2D quivers are going to be used most. The locations for the quivers for
         //! dataset i are stored in graphDataCoords, like normal points in a non-quiver graph.
-        morph::vvec<morph::vec<Flt, 3>> quivers;
+        sj::vvec<sj::vec<Flt, 3>> quivers;
         //! The input vectors are scaled in length to the range [0, 1], which is then modified by the
         //! user using quiver_length_gain. This scaling can be made logarithmic by calling
         //! GraphVisual::quiver_setlog() before calling finalize(). The scaling can be ignored by calling
         //! GraphVisual::quiver_length_scale.compute_scaling (0, 1); before finalize().
-        morph::scale<float> quiver_length_scale;
+        sj::scale<float> quiver_length_scale;
         //! Linear scaling for any quivers, which is independent from the length scaling and can be used for colours
-        morph::scale<float> quiver_linear_scale;
-        morph::scale<float> quiver_colour_scale;
-        //! The dx from the morph::grid, but scaled with abscissa_scale and ord1_scale to be in 'VisualModel units'
-        morph::vec<Flt, 3> quiver_grid_spacing;
+        sj::scale<float> quiver_linear_scale;
+        sj::scale<float> quiver_colour_scale;
+        //! The dx from the sj::grid, but scaled with abscissa_scale and ord1_scale to be in 'VisualModel units'
+        sj::vec<Flt, 3> quiver_grid_spacing;
         //! A scaling for the abscissa.
-        morph::scale<Flt> abscissa_scale;
+        sj::scale<Flt> abscissa_scale;
         //! A scaling for the first (left hand) ordinate
-        morph::scale<Flt> ord1_scale;
+        sj::scale<Flt> ord1_scale;
         //! A scaling for the second (right hand) ordinate, if it's a twin axis graph
-        morph::scale<Flt> ord2_scale;
+        sj::scale<Flt> ord2_scale;
         //! A copy of the abscissa data values for ord1
-        morph::vvec<Flt> absc1;
+        sj::vvec<Flt> absc1;
         //! A copy of the abscissa data values for ord2
-        morph::vvec<Flt> absc2;
+        sj::vvec<Flt> absc2;
         //! A copy of the first (left hand) ordinate data values
-        morph::vvec<Flt> ord1;
+        sj::vvec<Flt> ord1;
         //! A copy of the second (right hand) ordinate data values
-        morph::vvec<Flt> ord2;
+        sj::vvec<Flt> ord2;
         //! What's the scaling policy for the abscissa?
         morph::scalingpolicy scalingpolicy_x = morph::scalingpolicy::autoscale;
         //! What's the scaling policy for the ordinate?
         morph::scalingpolicy scalingpolicy_y = morph::scalingpolicy::autoscale;
         //! If required, the abscissa's minimum/max data values
-        morph::range<Flt> datarange_x{ Flt{0}, Flt{1} };
+        sj::range<Flt> datarange_x{ Flt{0}, Flt{1} };
         //! If required, the ordinate's minimum/max data values
-        morph::range<Flt> datarange_y{ Flt{0}, Flt{1} };
+        sj::range<Flt> datarange_y{ Flt{0}, Flt{1} };
         //! If required, the second ordinate's minimum/max data values (twinax)
-        morph::range<Flt> datarange_y2{ Flt{0}, Flt{1} };
+        sj::range<Flt> datarange_y2{ Flt{0}, Flt{1} };
         //! Auto-rescale x axis if data goes off the edge of the graph (by setting the out of range data as new boundary)
         bool auto_rescale_x = false;
         //! Auto-rescale y axis if data goes off the edge of the graph (by setting the out of range data as new boundary)
@@ -1980,10 +1982,10 @@ namespace morph {
         bool omit_x_tick_labels = false;
         //! Should the y (and y2) tick *labels* be omitted?
         bool omit_y_tick_labels = false;
-        //! The number of tick labels permitted, stored as a morph::range
-        morph::range<Flt> num_ticks_range_x{ Flt{5}, Flt{10} };
-        morph::range<Flt> num_ticks_range_y{ Flt{5}, Flt{10} };
-        morph::range<Flt> num_ticks_range_y2{ Flt{5}, Flt{10} };
+        //! The number of tick labels permitted, stored as a sj::range
+        sj::range<Flt> num_ticks_range_x{ Flt{5}, Flt{10} };
+        sj::range<Flt> num_ticks_range_y{ Flt{5}, Flt{10} };
+        sj::range<Flt> num_ticks_range_y2{ Flt{5}, Flt{10} };
         // Default font
         morph::VisualFont font = morph::VisualFont::DVSans;
         //! Font resolution - determines how textures for glyphs are generated. If your

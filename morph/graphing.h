@@ -21,9 +21,9 @@
 # include <ios>
 #endif
 
-#include <morph/range.h>
-#include <morph/algo.h>
-#include <morph/vvec.h>
+#include <sj/range>
+#include <sj/algo>
+#include <sj/vvec>
 
 namespace morph::graphing {
 
@@ -32,23 +32,23 @@ namespace morph::graphing {
     template <typename F>
     static std::string number_format (const F num, const F adjacent_num)
     {
-        morph::range<int> num_sigcols = morph::algo::significant_cols<F> (num);
+        sj::range<int> num_sigcols = sj::algo::significant_cols<F> (num);
         F num_diff = std::abs (num - adjacent_num);
-        morph::range<int> diff_sigcols = morph::algo::significant_cols<F> (num_diff);
+        sj::range<int> diff_sigcols = sj::algo::significant_cols<F> (num_diff);
 
         // Whats the num_diff maxcol? is it 9.5 plus? In which case it would round up
-        if (num_diff * morph::math::pow (F{10}, -diff_sigcols.max) >= F{9.5}) { diff_sigcols.max += 1; }
+        if (num_diff * sj::math::pow (F{10}, -diff_sigcols.max) >= F{9.5}) { diff_sigcols.max += 1; }
 
         // Which is the minimum column we should show?
         int min_col = std::min (num_sigcols.max, diff_sigcols.max);
 
         // What's the best precision value - actual value? If it's non-negligible, then
         // add to precision. I think this is the graphing specific logic that I need.
-        F rounded = morph::algo::round_to_col (num, min_col);
+        F rounded = sj::algo::round_to_col (num, min_col);
 
-        while (min_col > (diff_sigcols.max - 2) && std::abs (rounded - num) > morph::math::pow (F{10}, min_col - 1)) {
+        while (min_col > (diff_sigcols.max - 2) && std::abs (rounded - num) > sj::math::pow (F{10}, min_col - 1)) {
             min_col -= 1;
-            rounded = morph::algo::round_to_col (num, min_col);
+            rounded = sj::algo::round_to_col (num, min_col);
         }
 
 #ifdef MORPH_HAVE_STD_FORMAT
@@ -90,7 +90,7 @@ namespace morph::graphing {
      * rmax. realmin and realmax gives the data range actually displayed on the graph - it's the
      * data range, plus any padding introduced by GraphVisual::dataaxisdist
      *
-     * This overload accepts a morph::range for the preferred number of ticks.
+     * This overload accepts a sj::range for the preferred number of ticks.
      *
      * The bool arg allows the client code to either accept that _num_ticks_range is
      * guidance OR to *force* the number of ticks to be in the range, even if it
@@ -98,7 +98,7 @@ namespace morph::graphing {
      * of maketicks.
      */
     template <typename F>
-    static std::deque<F> maketicks (F rmin, F rmax, float realmin, float realmax, const morph::range<F>& _num_ticks_range)
+    static std::deque<F> maketicks (F rmin, F rmax, float realmin, float realmax, const sj::range<F>& _num_ticks_range)
     {
         std::deque<F> ticks = {};
 
@@ -153,7 +153,7 @@ namespace morph::graphing {
         if (actual_numticks < _num_ticks_range.min || actual_numticks > _num_ticks_range.max) {
             // In this case our 'neat' algorithm failed, so just force some ticks with linspace
             int force_num = static_cast<int>(std::floor((_num_ticks_range.max + _num_ticks_range.min)  / F{2}));
-            morph::vvec<F> linticks;
+            sj::vvec<F> linticks;
             linticks.linspace (rmin, rmax, force_num);
             for (auto lt : linticks) { ticks.push_back (lt); }
 
@@ -194,7 +194,7 @@ namespace morph::graphing {
     template <typename F>
     static std::deque<F> maketicks (F rmin, F rmax, float realmin, float realmax, const F _min_num_ticks = 3, const F _max_num_ticks = 10)
     {
-        morph::range<F> _num_ticks_range(_min_num_ticks, _max_num_ticks);
+        sj::range<F> _num_ticks_range(_min_num_ticks, _max_num_ticks);
         return morph::graphing::maketicks<F> (rmin, rmax, realmin, realmax, _num_ticks_range);
     }
 
@@ -204,7 +204,7 @@ namespace morph::graphing {
     template <typename F>
     static std::deque<F> maketicks (F rmin, F rmax, float realmin, float realmax, const F num_ticks)
     {
-        morph::range<F> _num_ticks_range(num_ticks, num_ticks);
+        sj::range<F> _num_ticks_range(num_ticks, num_ticks);
         return morph::graphing::maketicks<F> (rmin, rmax, realmin, realmax, _num_ticks_range);
     }
 

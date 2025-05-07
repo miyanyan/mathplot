@@ -9,16 +9,6 @@
 
 #pragma once
 
-#include <morph/gl/version.h>
-#include <morph/quaternion.h>
-#include <morph/mat44.h>
-#include <morph/vec.h>
-#include <morph/mathconst.h>
-#include <morph/VisualCommon.h>
-#include <morph/unicode.h>
-#include <morph/TextGeometry.h>
-#include <morph/TextFeatures.h>
-#include <morph/colour.h>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -26,6 +16,19 @@
 #include <map>
 #include <limits>
 #include <memory>
+
+#include <morph/gl/version.h>
+
+#include <sj/quaternion>
+#include <sj/mat44>
+#include <sj/vec>
+#include <sj/mathconst>
+
+#include <morph/VisualCommon.h>
+#include <morph/unicode.h>
+#include <morph/TextGeometry.h>
+#include <morph/TextFeatures.h>
+#include <morph/colour.h>
 
 namespace morph {
 
@@ -58,13 +61,13 @@ namespace morph {
         }
 
         //! Setter for VisualTextModel::viewmatrix, the model view
-        void setViewMatrix (const mat44<float>& mv) { this->viewmatrix = mv; }
+        void setViewMatrix (const sj::mat44<float>& mv) { this->viewmatrix = mv; }
 
         //! Setter for VisualTextModel::scenematrix, the scene view
-        void setSceneMatrix (const mat44<float>& sv) { this->scenematrix = sv; }
+        void setSceneMatrix (const sj::mat44<float>& sv) { this->scenematrix = sv; }
 
         //! Set the translation specified by \a v0 into the scene translation
-        void setSceneTranslation (const vec<float>& v0)
+        void setSceneTranslation (const sj::vec<float>& v0)
         {
             this->sv_offset = v0;
             this->scenematrix.setToIdentity();
@@ -73,14 +76,14 @@ namespace morph {
         }
 
         //! Set a translation (only) into the scene view matrix
-        void addSceneTranslation (const vec<float>& v0)
+        void addSceneTranslation (const sj::vec<float>& v0)
         {
             this->sv_offset += v0;
             this->scenematrix.translate (v0);
         }
 
         //! Set a rotation (only) into the scene view matrix
-        void setSceneRotation (const quaternion<float>& r)
+        void setSceneRotation (const sj::quaternion<float>& r)
         {
             this->sv_rotation = r;
             this->scenematrix.setToIdentity();
@@ -91,14 +94,14 @@ namespace morph {
         }
 
         //! Add a rotation to the scene view matrix
-        void addSceneRotation (const quaternion<float>& r)
+        void addSceneRotation (const sj::quaternion<float>& r)
         {
             this->sv_rotation.premultiply (r);
             this->scenematrix.prerotate (r);
         }
 
         //! Set a translation to the model view matrix
-        void setViewTranslation (const vec<float>& v0)
+        void setViewTranslation (const sj::vec<float>& v0)
         {
             this->mv_offset = v0;
             this->viewmatrix.setToIdentity();
@@ -107,14 +110,14 @@ namespace morph {
         }
 
         //! Add a translation to the model view matrix
-        void addViewTranslation (const vec<float>& v0)
+        void addViewTranslation (const sj::vec<float>& v0)
         {
             this->mv_offset += v0;
             this->viewmatrix.translate (v0);
         }
 
         //! Set a rotation (only) into the model view matrix
-        void setViewRotation (const quaternion<float>& r)
+        void setViewRotation (const sj::quaternion<float>& r)
         {
             this->mv_rotation = r;
             this->viewmatrix.setToIdentity();
@@ -126,7 +129,7 @@ namespace morph {
         }
 
         //! Apply a further rotation to the model view matrix
-        void addViewRotation (const quaternion<float>& r)
+        void addViewRotation (const sj::quaternion<float>& r)
         {
             this->mv_rotation.premultiply (r);
             this->viewmatrix.prerotate (r);
@@ -270,26 +273,26 @@ namespace morph {
         //! VisualTextModel is the letter 'x' within a CoordArrows VisualModel, then the
         //! model-view offset here should be the CoordArrows model-view offset PLUS the
         //! length of the CoordArrow x axis length.
-        vec<float> mv_offset = { 0.0f };
+        sj::vec<float> mv_offset = { 0.0f };
         //! The model-view rotation of this text object. mv_offset and mv_rotation are
         //! together used to compute viewmatrix. Keep a copy so that it is easy to reset
         //! the viewmatrix and recompute it with either a new offset or a new rotation.
-        quaternion<float> mv_rotation = {};
+        sj::quaternion<float> mv_rotation = {};
 
         //! A rotation of the parent model
-        quaternion<float> parent_rotation = {};
+        sj::quaternion<float> parent_rotation = {};
 
         //! Scene view offset
-        vec<float> sv_offset = { 0.0f };
+        sj::vec<float> sv_offset = { 0.0f };
         //! Scene view rotation
-        quaternion<float> sv_rotation = {};
+        sj::quaternion<float> sv_rotation = {};
         //! The text-model-specific view matrix and a scene matrix
-        mat44<float> viewmatrix = {};
+        sj::mat44<float> viewmatrix = {};
         //! Before, I wrote: We protect the scene matrix as updating it with the parent
         //! model's scene matrix likely involves also adding an additional
         //! translation. Now, I'm still slightly confused as to whether I *need* to have a
         //! copy of the scenematrix *here*.
-        mat44<float> scenematrix = {};
+        sj::mat44<float> scenematrix = {};
 
         //! The text string stored for debugging
         std::basic_string<char32_t> txt;
@@ -298,7 +301,7 @@ namespace morph {
         //! left, right, top and bottom extents of the text for this
         //! VisualTextModel. setupText should modify these as it sets up quads. Order of
         //! numbers is left, right, bottom, top
-        vec<float, 4> extents = { 1e7, -1e7, 1e7, -1e7 };
+        sj::vec<float, 4> extents = { 1e7, -1e7, 1e7, -1e7 };
         //! The texture ID for each quad - so that we draw the right texture image over each quad.
         std::vector<unsigned int> quad_ids = {};
         //! Position within vertex buffer object (if I use an array of VBO)
@@ -342,7 +345,7 @@ namespace morph {
             vp.push_back (arr[2]);
         }
         //! Push morph::vec of 3 floats onto the vector of floats \a vp
-        void vertex_push (const vec<float>& vec, std::vector<float>& vp)
+        void vertex_push (const sj::vec<float>& vec, std::vector<float>& vp)
         {
             std::copy (vec.begin(), vec.end(), std::back_inserter (vp));
         }

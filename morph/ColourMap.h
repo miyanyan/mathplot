@@ -10,10 +10,11 @@
 #include <cmath>
 #include <cstdint>
 #include <morph/tools.h>
-#include <morph/vec.h>
-#include <morph/mathconst.h>
-#include <morph/flags.h>
-#include <morph/crc32.h>
+
+#include <sj/vec>
+#include <sj/mathconst>
+#include <sj/flags>
+#include <sj/crc32>
 
 namespace morph {
 
@@ -222,10 +223,10 @@ namespace morph {
     };
 
     // Return a set of ColourMapFlags suitable for ColourMapType t
-    morph::flags<morph::ColourMapFlags> makeColourMapFlags (const morph::ColourMapType t)
+    sj::flags<morph::ColourMapFlags> makeColourMapFlags (const morph::ColourMapType t)
     {
         // Logic to create default flags
-        morph::flags<morph::ColourMapFlags> f(uint32_t{0});
+        sj::flags<morph::ColourMapFlags> f(uint32_t{0});
 
         // Dimensionality
         if (t == ColourMapType::DiscFourWhite
@@ -527,7 +528,7 @@ namespace morph {
     {
     public:
         //! Feature flags associated with the ColourMapType (generated in setType)
-        morph::flags<ColourMapFlags> flags;
+        sj::flags<ColourMapFlags> flags;
     private:
         //! Type of map
         ColourMapType type = ColourMapType::Plasma;
@@ -583,294 +584,294 @@ namespace morph {
             ColourMapType cmt = morph::ColourMapType::Plasma;
             std::string _s = s;
             morph::tools::toLowerCase (_s);
-            uint32_t _s_crc = morph::crc32 (_s);
+            uint32_t _s_crc = sj::crc32 (_s);
             switch (_s_crc) {
-            case morph::crc32 ("fixed"sv):
+            case sj::crc32 ("fixed"sv):
                 cmt = morph::ColourMapType::Fixed; break;
-            case morph::crc32 ("trichrome"sv):
+            case sj::crc32 ("trichrome"sv):
                 cmt = morph::ColourMapType::Trichrome; break;
-            case morph::crc32 ("duochrome"sv):
+            case sj::crc32 ("duochrome"sv):
                 cmt = morph::ColourMapType::Duochrome; break;
-            case morph::crc32 ("rgb"sv):
+            case sj::crc32 ("rgb"sv):
                 cmt = morph::ColourMapType::RGB; break;
-            case morph::crc32 ("rgbmono"sv):
+            case sj::crc32 ("rgbmono"sv):
                 cmt = morph::ColourMapType::RGBMono; break;
-            case morph::crc32 ("rgbgrey"sv):
+            case sj::crc32 ("rgbgrey"sv):
                 cmt = morph::ColourMapType::RGBGrey; break;
-            case morph::crc32 ("hsv"sv):
+            case sj::crc32 ("hsv"sv):
                 cmt = morph::ColourMapType::HSV; break;
-            case morph::crc32 ("hsv1d"sv):
+            case sj::crc32 ("hsv1d"sv):
                 cmt = morph::ColourMapType::HSV1D; break;
-            case morph::crc32 ("monochromegreen"sv):
+            case sj::crc32 ("monochromegreen"sv):
                 cmt = morph::ColourMapType::MonochromeGreen; break;
-            case morph::crc32 ("monochromeblue"sv):
+            case sj::crc32 ("monochromeblue"sv):
                 cmt = morph::ColourMapType::MonochromeBlue; break;
-            case morph::crc32 ("monochromered"sv):
+            case sj::crc32 ("monochromered"sv):
                 cmt = morph::ColourMapType::MonochromeRed; break;
-            case morph::crc32 ("monochrome"sv):
+            case sj::crc32 ("monochrome"sv):
                 cmt = morph::ColourMapType::Monochrome; break;
-            case morph::crc32 ("monovalgreen"sv):
+            case sj::crc32 ("monovalgreen"sv):
                 cmt = morph::ColourMapType::MonovalGreen; break;
-            case morph::crc32 ("monovalblue"sv):
+            case sj::crc32 ("monovalblue"sv):
                 cmt = morph::ColourMapType::MonovalBlue; break;
-            case morph::crc32 ("monovalred"sv):
+            case sj::crc32 ("monovalred"sv):
                 cmt = morph::ColourMapType::MonovalRed; break;
-            case morph::crc32 ("monoval"sv):
+            case sj::crc32 ("monoval"sv):
                 cmt = morph::ColourMapType::Monoval; break;
-            case morph::crc32 ("greyscale"sv):
+            case sj::crc32 ("greyscale"sv):
                 cmt = morph::ColourMapType::Greyscale; break;
-            case morph::crc32 ("greyscaleinv"sv):
+            case sj::crc32 ("greyscaleinv"sv):
                 cmt = morph::ColourMapType::GreyscaleInv; break;
-            case morph::crc32 ("twilight"sv):
+            case sj::crc32 ("twilight"sv):
                 cmt = morph::ColourMapType::Twilight; break;
-            case morph::crc32 ("petrov"sv):
+            case sj::crc32 ("petrov"sv):
                 cmt = morph::ColourMapType::Petrov; break;
 
             // Crameri
-            case morph::crc32 ("devon"sv):
+            case sj::crc32 ("devon"sv):
                 cmt = morph::ColourMapType::Devon; break;
-            case morph::crc32 ("naviaw"sv):
+            case sj::crc32 ("naviaw"sv):
                 cmt = morph::ColourMapType::NaviaW; break;
-            case morph::crc32 ("broco"sv):
+            case sj::crc32 ("broco"sv):
                 cmt = morph::ColourMapType::BrocO; break;
-            case morph::crc32 ("acton"sv):
+            case sj::crc32 ("acton"sv):
                 cmt = morph::ColourMapType::Acton; break;
-            case morph::crc32 ("batlow"sv):
+            case sj::crc32 ("batlow"sv):
                 cmt = morph::ColourMapType::Batlow; break;
-            case morph::crc32 ("berlin"sv):
+            case sj::crc32 ("berlin"sv):
                 cmt = morph::ColourMapType::Berlin; break;
-            case morph::crc32 ("tofino"sv):
+            case sj::crc32 ("tofino"sv):
                 cmt = morph::ColourMapType::Tofino; break;
-            case morph::crc32 ("broc"sv):
+            case sj::crc32 ("broc"sv):
                 cmt = morph::ColourMapType::Broc; break;
-            case morph::crc32 ("corko"sv):
+            case sj::crc32 ("corko"sv):
                 cmt = morph::ColourMapType::CorkO; break;
-            case morph::crc32 ("lapaz"sv):
+            case sj::crc32 ("lapaz"sv):
                 cmt = morph::ColourMapType::Lapaz; break;
-            case morph::crc32 ("bamo"sv):
+            case sj::crc32 ("bamo"sv):
                 cmt = morph::ColourMapType::BamO; break;
-            case morph::crc32 ("vanimo"sv):
+            case sj::crc32 ("vanimo"sv):
                 cmt = morph::ColourMapType::Vanimo; break;
-            case morph::crc32 ("lajolla"sv):
+            case sj::crc32 ("lajolla"sv):
                 cmt = morph::ColourMapType::Lajolla; break;
-            case morph::crc32 ("lisbon"sv):
+            case sj::crc32 ("lisbon"sv):
                 cmt = morph::ColourMapType::Lisbon; break;
-            case morph::crc32 ("grayc"sv):
+            case sj::crc32 ("grayc"sv):
                 cmt = morph::ColourMapType::GrayC; break;
-            case morph::crc32 ("roma"sv):
+            case sj::crc32 ("roma"sv):
                 cmt = morph::ColourMapType::Roma; break;
-            case morph::crc32 ("vik"sv):
+            case sj::crc32 ("vik"sv):
                 cmt = morph::ColourMapType::Vik; break;
-            case morph::crc32 ("navia"sv):
+            case sj::crc32 ("navia"sv):
                 cmt = morph::ColourMapType::Navia; break;
-            case morph::crc32 ("bilbao"sv):
+            case sj::crc32 ("bilbao"sv):
                 cmt = morph::ColourMapType::Bilbao; break;
-            case morph::crc32 ("turku"sv):
+            case sj::crc32 ("turku"sv):
                 cmt = morph::ColourMapType::Turku; break;
-            case morph::crc32 ("lipari"sv):
+            case sj::crc32 ("lipari"sv):
                 cmt = morph::ColourMapType::Lipari; break;
-            case morph::crc32 ("viko"sv):
+            case sj::crc32 ("viko"sv):
                 cmt = morph::ColourMapType::VikO; break;
-            case morph::crc32 ("batlowk"sv):
+            case sj::crc32 ("batlowk"sv):
                 cmt = morph::ColourMapType::BatlowK; break;
-            case morph::crc32 ("oslo"sv):
+            case sj::crc32 ("oslo"sv):
                 cmt = morph::ColourMapType::Oslo; break;
-            case morph::crc32 ("oleron"sv):
+            case sj::crc32 ("oleron"sv):
                 cmt = morph::ColourMapType::Oleron; break;
-            case morph::crc32 ("davos"sv):
+            case sj::crc32 ("davos"sv):
                 cmt = morph::ColourMapType::Davos; break;
-            case morph::crc32 ("fes"sv):
+            case sj::crc32 ("fes"sv):
                 cmt = morph::ColourMapType::Fes; break;
-            case morph::crc32 ("managua"sv):
+            case sj::crc32 ("managua"sv):
                 cmt = morph::ColourMapType::Managua; break;
-            case morph::crc32 ("glasgow"sv):
+            case sj::crc32 ("glasgow"sv):
                 cmt = morph::ColourMapType::Glasgow; break;
-            case morph::crc32 ("tokyo"sv):
+            case sj::crc32 ("tokyo"sv):
                 cmt = morph::ColourMapType::Tokyo; break;
-            case morph::crc32 ("bukavu"sv):
+            case sj::crc32 ("bukavu"sv):
                 cmt = morph::ColourMapType::Bukavu; break;
-            case morph::crc32 ("bamako"sv):
+            case sj::crc32 ("bamako"sv):
                 cmt = morph::ColourMapType::Bamako; break;
-            case morph::crc32 ("batloww"sv):
+            case sj::crc32 ("batloww"sv):
                 cmt = morph::ColourMapType::BatlowW; break;
-            case morph::crc32 ("nuuk"sv):
+            case sj::crc32 ("nuuk"sv):
                 cmt = morph::ColourMapType::Nuuk; break;
-            case morph::crc32 ("cork"sv):
+            case sj::crc32 ("cork"sv):
                 cmt = morph::ColourMapType::Cork; break;
-            case morph::crc32 ("hawaii"sv):
+            case sj::crc32 ("hawaii"sv):
                 cmt = morph::ColourMapType::Hawaii; break;
-            case morph::crc32 ("bam"sv):
+            case sj::crc32 ("bam"sv):
                 cmt = morph::ColourMapType::Bam; break;
-            case morph::crc32 ("imola"sv):
+            case sj::crc32 ("imola"sv):
                 cmt = morph::ColourMapType::Imola; break;
-            case morph::crc32 ("romao"sv):
+            case sj::crc32 ("romao"sv):
                 cmt = morph::ColourMapType::RomaO; break;
-            case morph::crc32 ("buda"sv):
+            case sj::crc32 ("buda"sv):
                 cmt = morph::ColourMapType::Buda; break;
 
             // Lenthe
-            case morph::crc32 ("fire"sv):
+            case sj::crc32 ("fire"sv):
                 cmt = morph::ColourMapType::Fire; break;
-            case morph::crc32 ("ocean"sv):
+            case sj::crc32 ("ocean"sv):
                 cmt = morph::ColourMapType::Ocean; break;
-            case morph::crc32 ("ice"sv):
+            case sj::crc32 ("ice"sv):
                 cmt = morph::ColourMapType::Ice; break;
-            case morph::crc32 ("divbluered"sv):
+            case sj::crc32 ("divbluered"sv):
                 cmt = morph::ColourMapType::DivBlueRed; break;
-            case morph::crc32 ("cyclicgrey"sv):
+            case sj::crc32 ("cyclicgrey"sv):
                 cmt = morph::ColourMapType::CyclicGrey; break;
-            case morph::crc32 ("cyclicfour"sv):
+            case sj::crc32 ("cyclicfour"sv):
                 cmt = morph::ColourMapType::CyclicFour; break;
-            case morph::crc32 ("cyclicsix"sv):
+            case sj::crc32 ("cyclicsix"sv):
                 cmt = morph::ColourMapType::CyclicSix; break;
-            case morph::crc32 ("cyclicdivbluered"sv):
+            case sj::crc32 ("cyclicdivbluered"sv):
                 cmt = morph::ColourMapType::CyclicDivBlueRed; break;
-            case morph::crc32 ("discfourwhite"sv):
+            case sj::crc32 ("discfourwhite"sv):
                 cmt = morph::ColourMapType::DiscFourWhite; break;
-            case morph::crc32 ("discfourblack"sv):
+            case sj::crc32 ("discfourblack"sv):
                 cmt = morph::ColourMapType::DiscFourBlack; break;
-            case morph::crc32 ("discsixwhite"sv):
+            case sj::crc32 ("discsixwhite"sv):
                 cmt = morph::ColourMapType::DiscSixWhite; break;
-            case morph::crc32 ("discsixblack"sv):
+            case sj::crc32 ("discsixblack"sv):
                 cmt = morph::ColourMapType::DiscSixBlack; break;
 
             // CET
-            case morph::crc32 ("cet_l02"sv):
+            case sj::crc32 ("cet_l02"sv):
                 cmt = morph::ColourMapType::CET_L02; break;
-            case morph::crc32 ("cet_l13"sv):
+            case sj::crc32 ("cet_l13"sv):
                 cmt = morph::ColourMapType::CET_L13; break;
-            case morph::crc32 ("cet_c4"sv):
+            case sj::crc32 ("cet_c4"sv):
                 cmt = morph::ColourMapType::CET_C4; break;
-            case morph::crc32 ("cet_d04"sv):
+            case sj::crc32 ("cet_d04"sv):
                 cmt = morph::ColourMapType::CET_D04; break;
-            case morph::crc32 ("cet_l12"sv):
+            case sj::crc32 ("cet_l12"sv):
                 cmt = morph::ColourMapType::CET_L12; break;
-            case morph::crc32 ("cet_c1s"sv):
+            case sj::crc32 ("cet_c1s"sv):
                 cmt = morph::ColourMapType::CET_C1s; break;
-            case morph::crc32 ("cet_l01"sv):
+            case sj::crc32 ("cet_l01"sv):
                 cmt = morph::ColourMapType::CET_L01; break;
-            case morph::crc32 ("cet_c5"sv):
+            case sj::crc32 ("cet_c5"sv):
                 cmt = morph::ColourMapType::CET_C5; break;
-            case morph::crc32 ("cet_d11"sv):
+            case sj::crc32 ("cet_d11"sv):
                 cmt = morph::ColourMapType::CET_D11; break;
-            case morph::crc32 ("cet_l04"sv):
+            case sj::crc32 ("cet_l04"sv):
                 cmt = morph::ColourMapType::CET_L04; break;
-            case morph::crc32 ("cet_cbl2"sv):
+            case sj::crc32 ("cet_cbl2"sv):
                 cmt = morph::ColourMapType::CET_CBL2; break;
-            case morph::crc32 ("cet_c4s"sv):
+            case sj::crc32 ("cet_c4s"sv):
                 cmt = morph::ColourMapType::CET_C4s; break;
-            case morph::crc32 ("cet_l15"sv):
+            case sj::crc32 ("cet_l15"sv):
                 cmt = morph::ColourMapType::CET_L15; break;
-            case morph::crc32 ("cet_l20"sv):
+            case sj::crc32 ("cet_l20"sv):
                 cmt = morph::ColourMapType::CET_L20; break;
-            case morph::crc32 ("cet_cbd1"sv):
+            case sj::crc32 ("cet_cbd1"sv):
                 cmt = morph::ColourMapType::CET_CBD1; break;
-            case morph::crc32 ("cet_d06"sv):
+            case sj::crc32 ("cet_d06"sv):
                 cmt = morph::ColourMapType::CET_D06; break;
-            case morph::crc32 ("cet_i3"sv):
+            case sj::crc32 ("cet_i3"sv):
                 cmt = morph::ColourMapType::CET_I3; break;
-            case morph::crc32 ("cet_d01a"sv):
+            case sj::crc32 ("cet_d01a"sv):
                 cmt = morph::ColourMapType::CET_D01A; break;
-            case morph::crc32 ("cet_l16"sv):
+            case sj::crc32 ("cet_l16"sv):
                 cmt = morph::ColourMapType::CET_L16; break;
-            case morph::crc32 ("cet_l06"sv):
+            case sj::crc32 ("cet_l06"sv):
                 cmt = morph::ColourMapType::CET_L06; break;
-            case morph::crc32 ("cet_c2s"sv):
+            case sj::crc32 ("cet_c2s"sv):
                 cmt = morph::ColourMapType::CET_C2s; break;
-            case morph::crc32 ("cet_i1"sv):
+            case sj::crc32 ("cet_i1"sv):
                 cmt = morph::ColourMapType::CET_I1; break;
-            case morph::crc32 ("cet_c7s"sv):
+            case sj::crc32 ("cet_c7s"sv):
                 cmt = morph::ColourMapType::CET_C7s; break;
-            case morph::crc32 ("cet_i2"sv):
+            case sj::crc32 ("cet_i2"sv):
                 cmt = morph::ColourMapType::CET_I2; break;
-            case morph::crc32 ("cet_c6s"sv):
+            case sj::crc32 ("cet_c6s"sv):
                 cmt = morph::ColourMapType::CET_C6s; break;
-            case morph::crc32 ("cet_c6"sv):
+            case sj::crc32 ("cet_c6"sv):
                 cmt = morph::ColourMapType::CET_C6; break;
-            case morph::crc32 ("cet_l05"sv):
+            case sj::crc32 ("cet_l05"sv):
                 cmt = morph::ColourMapType::CET_L05; break;
-            case morph::crc32 ("cet_d08"sv):
+            case sj::crc32 ("cet_d08"sv):
                 cmt = morph::ColourMapType::CET_D08; break;
-            case morph::crc32 ("cet_l03"sv):
+            case sj::crc32 ("cet_l03"sv):
                 cmt = morph::ColourMapType::CET_L03; break;
-            case morph::crc32 ("cet_l14"sv):
+            case sj::crc32 ("cet_l14"sv):
                 cmt = morph::ColourMapType::CET_L14; break;
-            case morph::crc32 ("cet_c2"sv):
+            case sj::crc32 ("cet_c2"sv):
                 cmt = morph::ColourMapType::CET_C2; break;
-            case morph::crc32 ("cet_r3"sv):
+            case sj::crc32 ("cet_r3"sv):
                 cmt = morph::ColourMapType::CET_R3; break;
-            case morph::crc32 ("cet_d01"sv):
+            case sj::crc32 ("cet_d01"sv):
                 cmt = morph::ColourMapType::CET_D01; break;
-            case morph::crc32 ("cet_c1"sv):
+            case sj::crc32 ("cet_c1"sv):
                 cmt = morph::ColourMapType::CET_C1; break;
-            case morph::crc32 ("cet_d02"sv):
+            case sj::crc32 ("cet_d02"sv):
                 cmt = morph::ColourMapType::CET_D02; break;
-            case morph::crc32 ("cet_cbc1"sv):
+            case sj::crc32 ("cet_cbc1"sv):
                 cmt = morph::ColourMapType::CET_CBC1; break;
-            case morph::crc32 ("cet_d09"sv):
+            case sj::crc32 ("cet_d09"sv):
                 cmt = morph::ColourMapType::CET_D09; break;
-            case morph::crc32 ("cet_l10"sv):
+            case sj::crc32 ("cet_l10"sv):
                 cmt = morph::ColourMapType::CET_L10; break;
-            case morph::crc32 ("cet_r1"sv):
+            case sj::crc32 ("cet_r1"sv):
                 cmt = morph::ColourMapType::CET_R1; break;
-            case morph::crc32 ("cet_c3"sv):
+            case sj::crc32 ("cet_c3"sv):
                 cmt = morph::ColourMapType::CET_C3; break;
-            case morph::crc32 ("cet_cbl1"sv):
+            case sj::crc32 ("cet_cbl1"sv):
                 cmt = morph::ColourMapType::CET_CBL1; break;
-            case morph::crc32 ("cet_c3s"sv):
+            case sj::crc32 ("cet_c3s"sv):
                 cmt = morph::ColourMapType::CET_C3s; break;
-            case morph::crc32 ("cet_c5s"sv):
+            case sj::crc32 ("cet_c5s"sv):
                 cmt = morph::ColourMapType::CET_C5s; break;
-            case morph::crc32 ("cet_l08"sv):
+            case sj::crc32 ("cet_l08"sv):
                 cmt = morph::ColourMapType::CET_L08; break;
-            case morph::crc32 ("cet_r4"sv):
+            case sj::crc32 ("cet_r4"sv):
                 cmt = morph::ColourMapType::CET_R4; break;
-            case morph::crc32 ("cet_r2"sv):
+            case sj::crc32 ("cet_r2"sv):
                 cmt = morph::ColourMapType::CET_R2; break;
-            case morph::crc32 ("cet_l11"sv):
+            case sj::crc32 ("cet_l11"sv):
                 cmt = morph::ColourMapType::CET_L11; break;
-            case morph::crc32 ("cet_d10"sv):
+            case sj::crc32 ("cet_d10"sv):
                 cmt = morph::ColourMapType::CET_D10; break;
-            case morph::crc32 ("cet_d07"sv):
+            case sj::crc32 ("cet_d07"sv):
                 cmt = morph::ColourMapType::CET_D07; break;
-            case morph::crc32 ("cet_l17"sv):
+            case sj::crc32 ("cet_l17"sv):
                 cmt = morph::ColourMapType::CET_L17; break;
-            case morph::crc32 ("cet_d12"sv):
+            case sj::crc32 ("cet_d12"sv):
                 cmt = morph::ColourMapType::CET_D12; break;
-            case morph::crc32 ("cet_cbc2"sv):
+            case sj::crc32 ("cet_cbc2"sv):
                 cmt = morph::ColourMapType::CET_CBC2; break;
-            case morph::crc32 ("cet_d13"sv):
+            case sj::crc32 ("cet_d13"sv):
                 cmt = morph::ColourMapType::CET_D13; break;
-            case morph::crc32 ("cet_d03"sv):
+            case sj::crc32 ("cet_d03"sv):
                 cmt = morph::ColourMapType::CET_D03; break;
-            case morph::crc32 ("cet_c7"sv):
+            case sj::crc32 ("cet_c7"sv):
                 cmt = morph::ColourMapType::CET_C7; break;
-            case morph::crc32 ("cet_l07"sv):
+            case sj::crc32 ("cet_l07"sv):
                 cmt = morph::ColourMapType::CET_L07; break;
-            case morph::crc32 ("cet_l09"sv):
+            case sj::crc32 ("cet_l09"sv):
                 cmt = morph::ColourMapType::CET_L09; break;
-            case morph::crc32 ("cet_l18"sv):
+            case sj::crc32 ("cet_l18"sv):
                 cmt = morph::ColourMapType::CET_L18; break;
-            case morph::crc32 ("cet_l19"sv):
+            case sj::crc32 ("cet_l19"sv):
                 cmt = morph::ColourMapType::CET_L19; break;
 
-            case morph::crc32 ("cividis"sv):
+            case sj::crc32 ("cividis"sv):
                 cmt = morph::ColourMapType::Cividis; break;
-            case morph::crc32 ("viridis"sv):
+            case sj::crc32 ("viridis"sv):
                 cmt = morph::ColourMapType::Viridis; break;
-            case morph::crc32 ("plasma"sv):
+            case sj::crc32 ("plasma"sv):
                 cmt = morph::ColourMapType::Plasma; break;
-            case morph::crc32 ("inferno"sv):
+            case sj::crc32 ("inferno"sv):
                 cmt = morph::ColourMapType::Inferno; break;
-            case morph::crc32 ("magma"sv):
+            case sj::crc32 ("magma"sv):
                 cmt = morph::ColourMapType::Magma; break;
-            case morph::crc32 ("rainbowzerowhite"sv):
+            case sj::crc32 ("rainbowzerowhite"sv):
                 cmt = morph::ColourMapType::RainbowZeroWhite; break;
-            case morph::crc32 ("rainbowzeroblack"sv):
+            case sj::crc32 ("rainbowzeroblack"sv):
                 cmt = morph::ColourMapType::RainbowZeroBlack; break;
-            case morph::crc32 ("rainbow"sv):
+            case sj::crc32 ("rainbow"sv):
                 cmt = morph::ColourMapType::Rainbow; break;
-            case morph::crc32 ("jet"sv):
+            case sj::crc32 ("jet"sv):
                 cmt = morph::ColourMapType::Jet; break;
             default:
                 break; // cmt remains Plasma
@@ -878,7 +879,7 @@ namespace morph {
             return cmt;
         }
 
-        static std::string colourMapFlagsToStr (const morph::flags<morph::ColourMapFlags>& _f)
+        static std::string colourMapFlagsToStr (const sj::flags<morph::ColourMapFlags>& _f)
         {
             std::string s("");
             if (_f.test (ColourMapFlags::one_d)) { s += (s.empty() ? "1D" : ", 1D"); }
@@ -2962,11 +2963,11 @@ namespace morph {
             return ColourMap<T>::hsv2rgb (hsv[0], hsv[1], hsv[2]);
         }
 
-        //! HSB to RGB. morph::vec input/output
-        static morph::vec<float, 3> hsv2rgb_vec (const morph::vec<float, 3>& hsv)
+        //! HSB to RGB. sj::vec input/output
+        static sj::vec<float, 3> hsv2rgb_vec (const sj::vec<float, 3>& hsv)
         {
             std::array<float, 3> rgb_ar = ColourMap<T>::hsv2rgb (hsv[0], hsv[1], hsv[2]);
-            morph::vec<float, 3> rgb;
+            sj::vec<float, 3> rgb;
             rgb.set_from (rgb_ar);
             return rgb;
         }
@@ -2998,11 +2999,11 @@ namespace morph {
             return ColourMap<T>::rgb2hsv (rgb[0], rgb[1], rgb[2]);
         }
 
-        //! Convert RGB to HSV, receiving input and returning output as morph::vec
-        static morph::vec<float, 3> rgb2hsv_vec (const morph::vec<float, 3>& rgb)
+        //! Convert RGB to HSV, receiving input and returning output as sj::vec
+        static sj::vec<float, 3> rgb2hsv_vec (const sj::vec<float, 3>& rgb)
         {
             std::array<float, 3> hsv_ar = ColourMap<T>::rgb2hsv (rgb[0], rgb[1], rgb[2]);
-            morph::vec<float, 3> hsv;
+            sj::vec<float, 3> hsv;
             hsv.set_from (hsv_ar);
             return hsv;
         }
@@ -3144,17 +3145,17 @@ namespace morph {
 
             std::array<T, 2> radius_angle;
             // Get the datums centralised about 0 & scale so that the radius is 1 at max
-            x = (x - T{0.5}) * morph::mathconst<T>::root_2;
-            y = (y - T{0.5}) * morph::mathconst<T>::root_2;
+            x = (x - T{0.5}) * sj::mathconst<T>::root_2;
+            y = (y - T{0.5}) * sj::mathconst<T>::root_2;
 
             radius_angle[0] = std::sqrt(x * x + y * y);
             radius_angle[0] = radius_angle[0] > T{1} ? T{1} : radius_angle[0];
             radius_angle[0] = radius_angle[0] < T{0} ? T{0} : radius_angle[0];
 
             radius_angle[1] = std::atan2 (y, x) + this->hue_rotation;
-            radius_angle[1] = radius_angle[1] < T{0} ? radius_angle[1] + morph::mathconst<T>::two_pi : radius_angle[1];
-            radius_angle[1] = radius_angle[1] > morph::mathconst<T>::two_pi ? radius_angle[1] - morph::mathconst<T>::two_pi : radius_angle[1];
-            radius_angle[1] /= morph::mathconst<T>::two_pi;
+            radius_angle[1] = radius_angle[1] < T{0} ? radius_angle[1] + sj::mathconst<T>::two_pi : radius_angle[1];
+            radius_angle[1] = radius_angle[1] > sj::mathconst<T>::two_pi ? radius_angle[1] - sj::mathconst<T>::two_pi : radius_angle[1];
+            radius_angle[1] /= sj::mathconst<T>::two_pi;
             radius_angle[1] = this->hue_reverse_direction ? (T{1} - radius_angle[1]) : radius_angle[1];
 
             return radius_angle;
@@ -3173,9 +3174,9 @@ namespace morph {
             r = r > T{1} ? T{1} : r;
             r = r < T{0} ? T{0} : r;
             phi += this->hue_rotation;
-            phi = phi < T{0} ? phi + morph::mathconst<T>::two_pi : phi;
-            phi = phi > morph::mathconst<T>::two_pi ? phi - morph::mathconst<T>::two_pi : phi;
-            phi /= morph::mathconst<T>::two_pi;
+            phi = phi < T{0} ? phi + sj::mathconst<T>::two_pi : phi;
+            phi = phi > sj::mathconst<T>::two_pi ? phi - sj::mathconst<T>::two_pi : phi;
+            phi /= sj::mathconst<T>::two_pi;
             phi = this->hue_reverse_direction ? (T{1} - phi) : phi;
             return std::array<T, 2>{r, phi};
         }

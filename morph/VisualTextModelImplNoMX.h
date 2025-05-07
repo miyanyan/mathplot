@@ -140,7 +140,7 @@ namespace morph {
         //!{
         //! Set up a new text at a given position, with the given colour.
         void setupText (const std::string& _txt,
-                        const morph::vec<float> _mv_offset, std::array<float, 3> _clr = {0,0,0})
+                        const sj::vec<float> _mv_offset, std::array<float, 3> _clr = {0,0,0})
         {
             this->mv_offset = _mv_offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -150,7 +150,7 @@ namespace morph {
 
         //! Set up a new text at a given position, with the given colour and a pre-rotation
         void setupText (const std::string& _txt,
-                        const morph::quaternion<float>& _rotation, const morph::vec<float> _mv_offset,
+                        const sj::quaternion<float>& _rotation, const sj::vec<float> _mv_offset,
                         std::array<float, 3> _clr = {0,0,0})
         {
             this->mv_rotation = _rotation;

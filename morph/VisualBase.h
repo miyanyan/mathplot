@@ -9,6 +9,18 @@
  */
 #pragma once
 
+#include <string>
+#include <array>
+#include <vector>
+#include <memory>
+#include <functional>
+#include <cstddef>
+
+#include <sj/flags>
+#include <sj/quaternion>
+#include <sj/mat44>
+#include <sj/vec>
+
 #include <morph/gl/version.h>
 #include <morph/VisualModel.h>
 #include <morph/TextFeatures.h>
@@ -17,21 +29,11 @@
 #include <morph/gl/shaders.h>
 #include <morph/keys.h>
 #include <morph/version.h>
-#include <morph/flags.h>
 
 #include <nlohmann/json.hpp>
 #include <morph/CoordArrows.h>
-#include <morph/quaternion.h>
-#include <morph/mat44.h>
-#include <morph/vec.h>
 #include <morph/tools.h>
 
-#include <string>
-#include <array>
-#include <vector>
-#include <memory>
-#include <functional>
-#include <cstddef>
 
 #include <morph/VisualDefaultShaders.h>
 
@@ -168,7 +170,7 @@ namespace morph {
 
         //! Take a screenshot of the window. Return vec containing width * height or {-1, -1} on
         //! failure. Set transparent_bg to get a transparent background.
-        virtual morph::vec<int, 2> saveImage (const std::string& img_filename, const bool transparent_bg = false) = 0;
+        virtual sj::vec<int, 2> saveImage (const std::string& img_filename, const bool transparent_bg = false) = 0;
 
         /*!
          * Set up the passed-in VisualModel (or indeed, VisualTextModel) with functions that need access to Visual attributes.
@@ -257,18 +259,18 @@ namespace morph {
         virtual void render() noexcept = 0;
 
         //! Compute a translation vector for text position, using Visual::text_z.
-        morph::vec<float, 3> textPosition (const morph::vec<float, 2> p0_coord)
+        sj::vec<float, 3> textPosition (const sj::vec<float, 2> p0_coord)
         {
             // For the depth at which a text object lies, use this->text_z.  Use forward
             // projection to determine the correct z coordinate for the inverse
             // projection.
-            morph::vec<float, 4> point =  { 0.0f, 0.0f, this->text_z, 1.0f };
-            morph::vec<float, 4> pp = this->projection * point;
+            sj::vec<float, 4> point =  { 0.0f, 0.0f, this->text_z, 1.0f };
+            sj::vec<float, 4> pp = this->projection * point;
             float coord_z = pp[2]/pp[3]; // divide by pp[3] is divide by/normalise by 'w'.
             // Construct the point for the location of the text
-            morph::vec<float, 4> p0 = { p0_coord.x(), p0_coord.y(), coord_z, 1.0f };
+            sj::vec<float, 4> p0 = { p0_coord.x(), p0_coord.y(), coord_z, 1.0f };
             // Inverse project the point
-            morph::vec<float, 3> v0;
+            sj::vec<float, 3> v0;
             v0.set_from (this->invproj * p0);
             return v0;
         }
@@ -288,9 +290,9 @@ namespace morph {
         std::vector<morph::gl::ShaderInfo> cyl_shader_progs;
         //! Passed to the cyl_shader_progs as a uniform to define the location of the cylindrical
         //! projection camera
-        morph::vec<float, 4> cyl_cam_pos = { 0.0f, 0.0f, 0.0f, 1.0f };
+        sj::vec<float, 4> cyl_cam_pos = { 0.0f, 0.0f, 0.0f, 1.0f };
         //! Default cylindrical camera position
-        morph::vec<float, 4> cyl_cam_pos_default = { 0.0f, 0.0f, 0.0f, 1.0f };
+        sj::vec<float, 4> cyl_cam_pos_default = { 0.0f, 0.0f, 0.0f, 1.0f };
         //! The radius of the 'cylindrical projection screen' around the camera position
         float cyl_radius = 0.005f;
         //! The height of the 'cylindrical projection screen'
@@ -302,11 +304,11 @@ namespace morph {
         static GLuint get_tprog (morph::VisualBase<glver>* _v) { return _v->shaders.tprog; };
 
         //! The colour of ambient and diffuse light sources
-        morph::vec<float, 3> light_colour = { 1.0f, 1.0f, 1.0f };
+        sj::vec<float, 3> light_colour = { 1.0f, 1.0f, 1.0f };
         //! Strength of the ambient light
         float ambient_intensity = 1.0f;
         //! Position of a diffuse light source
-        morph::vec<float, 3> diffuse_position = { 5.0f, 5.0f, 15.0f };
+        sj::vec<float, 3> diffuse_position = { 5.0f, 5.0f, 15.0f };
         //! Strength of the diffuse light source
         float diffuse_intensity = 0.0f;
 
@@ -318,14 +320,14 @@ namespace morph {
 
             // Add the depth at which the object lies.  Use forward projection to determine the
             // correct z coordinate for the inverse projection. This assumes only one object.
-            morph::vec<float, 4> point =  { 0.0f, 0.0f, this->scenetrans.z(), 1.0f };
-            morph::vec<float, 4> pp = this->projection * point;
+            sj::vec<float, 4> point =  { 0.0f, 0.0f, this->scenetrans.z(), 1.0f };
+            sj::vec<float, 4> pp = this->projection * point;
             float coord_z = pp[2]/pp[3]; // divide by pp[3] is divide by/normalise by 'w'.
 
             // Construct the point for the location of the coord arrows
-            morph::vec<float, 4> p0 = { this->coordArrowsOffset.x(), this->coordArrowsOffset.y(), coord_z, 1.0f };
+            sj::vec<float, 4> p0 = { this->coordArrowsOffset.x(), this->coordArrowsOffset.y(), coord_z, 1.0f };
             // Inverse project
-            morph::vec<float, 3> v0;
+            sj::vec<float, 3> v0;
             v0.set_from ((this->invproj * p0));
             // Translate the scene for the CoordArrows such that they sit in a single position on
             // the screen
@@ -335,24 +337,24 @@ namespace morph {
         }
 
         // state defaults. All state is false by default
-        constexpr morph::flags<visual_state> state_defaults()
+        constexpr sj::flags<visual_state> state_defaults()
         {
-            morph::flags<visual_state> _state;
+            sj::flags<visual_state> _state;
             return _state;
         }
 
         // State flags
-        morph::flags<visual_state> state = state_defaults();
+        sj::flags<visual_state> state = state_defaults();
 
         // Options defaults. All options are false by default
-        constexpr morph::flags<visual_options> options_defaults()
+        constexpr sj::flags<visual_options> options_defaults()
         {
-            morph::flags<visual_options> _options;
+            sj::flags<visual_options> _options;
             return _options;
         }
 
         // Option flags
-        morph::flags<visual_options> options = options_defaults();
+        sj::flags<visual_options> options = options_defaults();
 
         //! Returns true when the program has been flagged to end
         bool readyToFinish() const { return this->state.test (visual_state::readyToFinish); }
@@ -391,9 +393,9 @@ namespace morph {
         perspective_type ptype = perspective_type::perspective;
 
         //! Orthographic screen left-bottom coordinate (you can change these to encapsulate your models)
-        morph::vec<float, 2> ortho_lb = { -1.3f, -1.0f };
+        sj::vec<float, 2> ortho_lb = { -1.3f, -1.0f };
         //! Orthographic screen right-top coordinate
-        morph::vec<float, 2> ortho_rt = { 1.3f, 1.0f };
+        sj::vec<float, 2> ortho_rt = { 1.3f, 1.0f };
 
         //! The background colour; white by default.
         std::array<float, 4> bgcolour = { 1.0f, 1.0f, 1.0f, 0.5f };
@@ -442,7 +444,7 @@ namespace morph {
             this->scenetrans[2] = _z;
             this->scenetrans_default[2] = _z;
         }
-        void setSceneTrans (const morph::vec<float, 3>& _xyz)
+        void setSceneTrans (const sj::vec<float, 3>& _xyz)
         {
             if (_xyz[2] > 0.0f) {
                 std::cerr << "WARNING setSceneTrans(vec<>&): Normally, the default z value is negative.\n";
@@ -451,7 +453,7 @@ namespace morph {
             this->scenetrans_default = _xyz;
         }
 
-        void setSceneRotation (const morph::quaternion<float>& _rotn)
+        void setSceneRotation (const sj::quaternion<float>& _rotn)
         {
             this->rotation = _rotn;
             this->rotation_default = _rotn;
@@ -661,9 +663,9 @@ namespace morph {
         std::unique_ptr<morph::CoordArrows<glver>> coordArrows;
 
         //! Position coordinate arrows on screen. Configurable at morph::Visual construction.
-        morph::vec<float, 2> coordArrowsOffset = { -0.8f, -0.8f };
+        sj::vec<float, 2> coordArrowsOffset = { -0.8f, -0.8f };
         //! Length of coordinate arrows. Configurable at morph::Visual construction.
-        morph::vec<float, 3> coordArrowsLength = { 0.1f, 0.1f, 0.1f };
+        sj::vec<float, 3> coordArrowsLength = { 0.1f, 0.1f, 0.1f };
         //! A factor used to slim (<1) or thicken (>1) the thickness of the axes of the CoordArrows.
         float coordArrowsThickness = 1.0f;
         //! Text size for x,y,z.
@@ -674,46 +676,46 @@ namespace morph {
          */
 
         //! Current cursor position
-        morph::vec<float,2> cursorpos = { 0.0f, 0.0f };
+        sj::vec<float,2> cursorpos = { 0.0f, 0.0f };
 
         //! The default z position for VisualModels should be 'away from the screen' (negative) so we can see them!
         constexpr static float zDefault = -5.0f;
 
         //! Holds the translation coordinates for the current location of the entire scene
-        morph::vec<float, 3> scenetrans = {0.0f, 0.0f, zDefault};
+        sj::vec<float, 3> scenetrans = {0.0f, 0.0f, zDefault};
 
         //! Default for scenetrans. This is a scene position that can be reverted to, to
         //! 'reset the view'. This is copied into scenetrans when user presses Ctrl-a.
-        morph::vec<float, 3> scenetrans_default = { 0.0f, 0.0f, zDefault };
+        sj::vec<float, 3> scenetrans_default = { 0.0f, 0.0f, zDefault };
 
         //! The world depth at which text objects should be rendered
         float text_z = -1.0f;
 
         //! Screen coordinates of the position of the last mouse press
-        morph::vec<float,2> mousePressPosition = { 0.0f, 0.0f };
+        sj::vec<float,2> mousePressPosition = { 0.0f, 0.0f };
 
         //! The current rotation axis. World frame?
-        morph::vec<float, 3> rotationAxis = { 0.0f, 0.0f, 0.0f };
+        sj::vec<float, 3> rotationAxis = { 0.0f, 0.0f, 0.0f };
 
         //! A rotation quaternion. You could have guessed that, right?
-        morph::quaternion<float> rotation;
+        sj::quaternion<float> rotation;
 
         //! The default rotation of the scene
-        morph::quaternion<float> rotation_default;
+        sj::quaternion<float> rotation_default;
 
         //! A rotation that is saved between mouse button callbacks
-        morph::quaternion<float> savedRotation;
+        sj::quaternion<float> savedRotation;
 
         //! The projection matrix is a member of this class
-        morph::mat44<float> projection;
+        sj::mat44<float> projection;
 
         //! The inverse of the projection
-        morph::mat44<float> invproj;
+        sj::mat44<float> invproj;
 
         //! A scene transformation
-        morph::mat44<float> scene;
+        sj::mat44<float> scene;
         //! Scene transformation inverse
-        morph::mat44<float> invscene;
+        sj::mat44<float> invscene;
 
     public:
 
@@ -806,12 +808,12 @@ namespace morph {
             }
 
             if (_key == key::z && (mods & keymod::control) && action == keyaction::press) {
-                std::cout << "Scenetrans setup code:\n    v.setSceneTrans (morph::vec<float,3>{ float{"
+                std::cout << "Scenetrans setup code:\n    v.setSceneTrans (sj::vec<float,3>{ float{"
                           << this->scenetrans.x() << "}, float{"
                           << this->scenetrans.y() << "}, float{"
                           << this->scenetrans.z()
                           << "} });"
-                          <<  "\n    v.setSceneRotation (morph::quaternion<float>{ float{"
+                          <<  "\n    v.setSceneRotation (sj::quaternion<float>{ float{"
                           << this->rotation.w << "}, float{" << this->rotation.x << "}, float{"
                           << this->rotation.y << "}, float{" << this->rotation.z << "} });\n";
                 std::cout << "Writing scene trans/rotation into /tmp/Visual.json... ";
@@ -958,10 +960,10 @@ namespace morph {
         }
 
         //! Rotate the scene about axis by angle (angle in radians)
-        void rotate_scene (const morph::vec<float>& axis, const float angle)
+        void rotate_scene (const sj::vec<float>& axis, const float angle)
         {
             this->rotationAxis = axis;
-            morph::quaternion<float> rotnQuat (this->rotationAxis, -angle);
+            sj::quaternion<float> rotnQuat (this->rotationAxis, -angle);
             this->rotation.postmultiply (rotnQuat);
         }
 
@@ -970,35 +972,35 @@ namespace morph {
             this->cursorpos[0] = static_cast<float>(x);
             this->cursorpos[1] = static_cast<float>(y);
 
-            morph::vec<float, 3> mouseMoveWorld = { 0.0f, 0.0f, 0.0f };
+            sj::vec<float, 3> mouseMoveWorld = { 0.0f, 0.0f, 0.0f };
 
             bool needs_render = false;
 
             // This is "rotate the scene" model. Will need "rotate one visual" mode.
             if (this->state.test (visual_state::rotateMode)) {
                 // Convert mousepress/cursor positions (in pixels) to the range -1 -> 1:
-                morph::vec<float, 2> p0_coord = this->mousePressPosition;
+                sj::vec<float, 2> p0_coord = this->mousePressPosition;
                 p0_coord -= this->window_w * 0.5f;
                 p0_coord /= this->window_w * 0.5f;
-                morph::vec<float, 2> p1_coord = this->cursorpos;
+                sj::vec<float, 2> p1_coord = this->cursorpos;
                 p1_coord -= this->window_w * 0.5f;
                 p1_coord /= this->window_w * 0.5f;
                 // Note: don't update this->mousePressPosition until user releases button.
 
                 // Add the depth at which the object lies.  Use forward projection to determine the
                 // correct z coordinate for the inverse projection. This assumes only one object.
-                morph::vec<float, 4> point =  { 0.0f, 0.0f, this->scenetrans.z(), 1.0f };
-                morph::vec<float, 4> pp = this->projection * point;
+                sj::vec<float, 4> point =  { 0.0f, 0.0f, this->scenetrans.z(), 1.0f };
+                sj::vec<float, 4> pp = this->projection * point;
                 float coord_z = pp[2]/pp[3]; // divide by pp[3] is divide by/normalise by 'w'.
 
                 // Construct two points for the start and end of the mouse movement
-                morph::vec<float, 4> p0 = { p0_coord[0], p0_coord[1], coord_z, 1.0f };
-                morph::vec<float, 4> p1 = { p1_coord[0], p1_coord[1], coord_z, 1.0f };
+                sj::vec<float, 4> p0 = { p0_coord[0], p0_coord[1], coord_z, 1.0f };
+                sj::vec<float, 4> p1 = { p1_coord[0], p1_coord[1], coord_z, 1.0f };
 
                 // Apply the inverse projection to get two points in the world frame of reference
                 // for the mouse movement
-                morph::vec<float, 4> v0 = this->invproj * p0;
-                morph::vec<float, 4> v1 = this->invproj * p1;
+                sj::vec<float, 4> v0 = this->invproj * p0;
+                sj::vec<float, 4> v1 = this->invproj * p1;
 
                 // This computes the difference betwen v0 and v1, the 2 mouse positions in the world
                 // space. Note the swap between x and y
@@ -1019,22 +1021,22 @@ namespace morph {
 
                 // Now inverse apply the rotation of the scene to the rotation axis (vec<float,3>),
                 // so that we rotate the model the right way.
-                morph::vec<float, 4> tmp_4D = this->invscene * this->rotationAxis;
+                sj::vec<float, 4> tmp_4D = this->invscene * this->rotationAxis;
                 this->rotationAxis.set_from (tmp_4D); // Set rotationAxis from 4D result
 
                 // Update rotation from the saved position.
                 this->rotation = this->savedRotation;
-                morph::quaternion<float> rotnQuat (this->rotationAxis, -rotamount * morph::mathconst<float>::deg2rad);
+                sj::quaternion<float> rotnQuat (this->rotationAxis, -rotamount * sj::mathconst<float>::deg2rad);
                 this->rotation.postmultiply (rotnQuat); // combines rotations
                 needs_render = true;
 
             } else if (this->state.test (visual_state::translateMode)) { // allow only rotate OR translate for a single mouse movement
 
                 // Convert mousepress/cursor positions (in pixels) to the range -1 -> 1:
-                morph::vec<float, 2> p0_coord = this->mousePressPosition;
+                sj::vec<float, 2> p0_coord = this->mousePressPosition;
                 p0_coord -= this->window_w * 0.5f;
                 p0_coord /= this->window_w * 0.5f;
-                morph::vec<float, 2> p1_coord = this->cursorpos;
+                sj::vec<float, 2> p1_coord = this->cursorpos;
                 p1_coord -= this->window_w * 0.5f;
                 p1_coord /= this->window_w * 0.5f;
 
@@ -1042,16 +1044,16 @@ namespace morph {
 
                 // Add the depth at which the object lies.  Use forward projection to determine the
                 // correct z coordinate for the inverse projection. This assumes only one object.
-                morph::vec<float, 4> point =  { 0.0f, 0.0f, this->scenetrans.z(), 1.0f };
-                morph::vec<float, 4> pp = this->projection * point;
+                sj::vec<float, 4> point =  { 0.0f, 0.0f, this->scenetrans.z(), 1.0f };
+                sj::vec<float, 4> pp = this->projection * point;
                 float coord_z = pp[2]/pp[3]; // divide by pp[3] is divide by/normalise by 'w'.
 
                 // Construct two points for the start and end of the mouse movement
-                morph::vec<float, 4> p0 = { p0_coord[0], p0_coord[1], coord_z, 1.0f };
-                morph::vec<float, 4> p1 = { p1_coord[0], p1_coord[1], coord_z, 1.0f };
+                sj::vec<float, 4> p0 = { p0_coord[0], p0_coord[1], coord_z, 1.0f };
+                sj::vec<float, 4> p1 = { p1_coord[0], p1_coord[1], coord_z, 1.0f };
                 // Apply the inverse projection to get two points in the world frame of reference:
-                morph::vec<float, 4> v0 = this->invproj * p0;
-                morph::vec<float, 4> v1 = this->invproj * p1;
+                sj::vec<float, 4> v0 = this->invproj * p0;
+                sj::vec<float, 4> v1 = this->invproj * p1;
                 // This computes the difference betwen v0 and v1, the 2 mouse positions in the world
                 mouseMoveWorld[0] = (v1[0]/v1[3]) - (v0[0]/v0[3]);
                 mouseMoveWorld[1] = (v1[1]/v1[3]) - (v0[1]/v0[3]);
@@ -1126,8 +1128,8 @@ namespace morph {
 
             if (this->ptype == perspective_type::orthographic) {
                 // In orthographic, the wheel should scale ortho_lb and ortho_rt
-                morph::vec<float, 2> _lb = this->ortho_lb + (yoffset * this->scenetrans_stepsize);
-                morph::vec<float, 2> _rt = this->ortho_rt - (yoffset * this->scenetrans_stepsize);
+                sj::vec<float, 2> _lb = this->ortho_lb + (yoffset * this->scenetrans_stepsize);
+                sj::vec<float, 2> _rt = this->ortho_rt - (yoffset * this->scenetrans_stepsize);
                 if (_lb < 0.0f && _rt > 0.0f) {
                     this->ortho_lb = _lb;
                     this->ortho_rt = _rt;
@@ -1140,10 +1142,10 @@ namespace morph {
                 this->cyl_cam_pos[0] += xoffset * this->scenetrans_stepsize;
 
                 // yoffset does the 'in-out zooming'
-                morph::vec<float, 4> scroll_move_y = { 0.0f, static_cast<float>(yoffset) * this->scenetrans_stepsize, 0.0f, 1.0f };
+                sj::vec<float, 4> scroll_move_y = { 0.0f, static_cast<float>(yoffset) * this->scenetrans_stepsize, 0.0f, 1.0f };
                 this->scenetrans[2] += scroll_move_y[1];
                 // Translate scroll_move_y then add it to cyl_cam_pos here
-                morph::mat44<float> sceneview_rotn;
+                sj::mat44<float> sceneview_rotn;
                 sceneview_rotn.rotate (this->rotation);
                 this->cyl_cam_pos += sceneview_rotn * scroll_move_y;
             }

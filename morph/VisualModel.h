@@ -42,7 +42,7 @@ namespace morph {
     template <int glver = morph::gl::version_4_1>
     struct VisualModel : public morph::VisualModelImpl<glver, morph::gl::multicontext> {
         VisualModel() : morph::VisualModelImpl<glver, morph::gl::multicontext>::VisualModelImpl() {}
-        VisualModel(const morph::vec<float, 3>& _mv_offset)
+        VisualModel(const sj::vec<float, 3>& _mv_offset)
             : morph::VisualModelImpl<glver, morph::gl::multicontext>::VisualModelImpl(_mv_offset) {}
     };
 

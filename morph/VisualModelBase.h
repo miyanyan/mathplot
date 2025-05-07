@@ -12,18 +12,6 @@
 
 #pragma once
 
-#include <morph/gl/version.h>
-#include <morph/geometry.h>
-#include <morph/quaternion.h>
-#include <morph/mat44.h>
-#include <morph/vvec.h>
-#include <morph/vec.h>
-#include <morph/range.h>
-#include <morph/mathconst.h>
-#include <morph/VisualCommon.h>
-#include <morph/colour.h>
-#include <morph/base64.h>
-#include <morph/algo.h>
 #include <iostream>
 #include <vector>
 #include <array>
@@ -35,6 +23,20 @@
 #include <cstddef>
 #include <cmath>
 #include <bitset>
+
+#include <morph/gl/version.h>
+
+#include <sj/geometry>
+#include <sj/quaternion>
+#include <sj/mat44>
+#include <sj/vec>
+#include <sj/range>
+#include <sj/mathconst>
+#include <sj/base64>
+#include <sj/algo>
+
+#include <morph/VisualCommon.h>
+#include <morph/colour.h>
 
 namespace morph {
 
@@ -68,7 +70,7 @@ namespace morph {
             this->model_scaling.setToIdentity();
         }
 
-        VisualModelBase (const vec<float> _mv_offset)
+        VisualModelBase (const sj::vec<float> _mv_offset)
         {
             this->mv_offset = _mv_offset;
             this->viewmatrix.translate (this->mv_offset);
@@ -182,21 +184,21 @@ namespace morph {
         virtual void render() = 0;
 
         //! Setter for the viewmatrix
-        void setViewMatrix (const mat44<float>& mv) { this->viewmatrix = mv; }
+        void setViewMatrix (const sj::mat44<float>& mv) { this->viewmatrix = mv; }
 
-        virtual void setSceneMatrixTexts (const mat44<float>& sv) = 0;
+        virtual void setSceneMatrixTexts (const sj::mat44<float>& sv) = 0;
 
         //! When setting the scene matrix, also have to set the text's scene matrices.
-        void setSceneMatrix (const mat44<float>& sv)
+        void setSceneMatrix (const sj::mat44<float>& sv)
         {
             this->scenematrix = sv;
             this->setSceneMatrixTexts (sv);
         }
 
-        virtual void setSceneTranslationTexts (const vec<float>& v0) = 0;
+        virtual void setSceneTranslationTexts (const sj::vec<float>& v0) = 0;
 
         //! Set a translation into the scene and into any child texts
-        void setSceneTranslation (const vec<float>& v0)
+        void setSceneTranslation (const sj::vec<float>& v0)
         {
             this->scenematrix.setToIdentity();
             this->sv_offset = v0;
@@ -206,14 +208,14 @@ namespace morph {
         }
 
         //! Set a translation (only) into the scene view matrix
-        void addSceneTranslation (const vec<float>& v0)
+        void addSceneTranslation (const sj::vec<float>& v0)
         {
             this->sv_offset += v0;
             this->scenematrix.translate (v0);
         }
 
         //! Set a rotation (only) into the scene view matrix
-        void setSceneRotation (const quaternion<float>& r)
+        void setSceneRotation (const sj::quaternion<float>& r)
         {
             this->scenematrix.setToIdentity();
             this->sv_rotation = r;
@@ -222,14 +224,14 @@ namespace morph {
         }
 
         //! Add a rotation to the scene view matrix
-        void addSceneRotation (const quaternion<float>& r)
+        void addSceneRotation (const sj::quaternion<float>& r)
         {
             this->sv_rotation.premultiply (r);
             this->scenematrix.prerotate (r);
         }
 
         //! Set a translation to the model view matrix
-        void setViewTranslation (const vec<float>& v0)
+        void setViewTranslation (const sj::vec<float>& v0)
         {
             this->viewmatrix.setToIdentity();
             this->mv_offset = v0;
@@ -238,13 +240,13 @@ namespace morph {
         }
 
         //! Add a translation to the model view matrix
-        void addViewTranslation (const vec<float>& v0)
+        void addViewTranslation (const sj::vec<float>& v0)
         {
             this->mv_offset += v0;
             this->viewmatrix.translate (v0);
         }
 
-        void setViewRotationFixTexts (const quaternion<float>& r)
+        void setViewRotationFixTexts (const sj::quaternion<float>& r)
         {
             this->viewmatrix.setToIdentity();
             this->mv_rotation = r;
@@ -252,10 +254,10 @@ namespace morph {
             this->viewmatrix.prerotate (this->mv_rotation);
         }
 
-        virtual void setViewRotationTexts (const quaternion<float>& r) = 0;
+        virtual void setViewRotationTexts (const sj::quaternion<float>& r) = 0;
 
         //! Set a rotation (only) into the view
-        void setViewRotation (const quaternion<float>& r)
+        void setViewRotation (const sj::quaternion<float>& r)
         {
             this->viewmatrix.setToIdentity();
             this->mv_rotation = r;
@@ -264,10 +266,10 @@ namespace morph {
             this->setViewRotationTexts (r);
         }
 
-        virtual void addViewRotationTexts (const quaternion<float>& r) = 0;
+        virtual void addViewRotationTexts (const sj::quaternion<float>& r) = 0;
 
         //! Apply a further rotation to the model view matrix
-        void addViewRotation (const quaternion<float>& r)
+        void addViewRotation (const sj::quaternion<float>& r)
         {
             this->mv_rotation.premultiply (r);
             this->viewmatrix.prerotate (r);
@@ -300,7 +302,7 @@ namespace morph {
         //! Get mv_offset in a json-friendly string
         std::string translation_str() { return this->mv_offset.str_mat(); }
         //! And a simple getter for mv_offset
-        vec<float> get_mv_offset() { return this->mv_offset; }
+        sj::vec<float> get_mv_offset() { return this->mv_offset; }
 
         //! Return the number of elements in this->indices
         std::size_t indices_size() { return this->indices.size(); }
@@ -324,9 +326,9 @@ namespace morph {
         /*!
          * Find the extents of this VisualModel, returning it as the x range, the y range and the z range.
          */
-        morph::vec<morph::range<float>, 3> extents()
+        sj::vec<sj::range<float>, 3> extents()
         {
-            morph::vec<morph::range<float>, 3> axis_extents;
+            sj::vec<sj::range<float>, 3> axis_extents;
             for (unsigned int i = 0; i < 3; ++i) { axis_extents[i].search_init(); }
             for (unsigned int j = 0; j < static_cast<unsigned int>(this->vertexPositions.size() - 2); j += 3) {
                 for (unsigned int i = 0; i < 3; ++i) { axis_extents[i].update (this->vertexPositions[j+i]); }
@@ -479,11 +481,11 @@ namespace morph {
     protected:
 
         //! The model-specific view matrix.
-        mat44<float> viewmatrix = {};
+        sj::mat44<float> viewmatrix = {};
         //! The model-specific scene view matrix.
-        mat44<float> scenematrix = {};
+        sj::mat44<float> scenematrix = {};
         //! An additional scaling applied to viewmatrix to scale the size of the model [see render()]
-        mat44<float> model_scaling = {};
+        sj::mat44<float> model_scaling = {};
 
         /*!
          * The spatial offset of this VisualModel within the morph::Visual 'scene
@@ -492,25 +494,25 @@ namespace morph {
          * model->world transformation - it's applied as a translation in
          * VisualModel::viewmatrix.
          */
-        vec<float> mv_offset = { 0.0f, 0.0f, 0.0f };
+        sj::vec<float> mv_offset = { 0.0f, 0.0f, 0.0f };
         //! Model view rotation
-        quaternion<float> mv_rotation = {};
+        sj::quaternion<float> mv_rotation = {};
 
         //! Scene view offset
-        vec<float> sv_offset = { 0.0f, 0.0f, 0.0f };
+        sj::vec<float> sv_offset = { 0.0f, 0.0f, 0.0f };
         //! Scene view rotation
-        quaternion<float> sv_rotation = {};
+        sj::quaternion<float> sv_rotation = {};
 
         //! This enum contains the positions within the vbo array of the different
         //! vertex buffer objects
         enum VBOPos { posnVBO, normVBO, colVBO, idxVBO, numVBO };
 
         //! A unit vector in the x direction
-        morph::vec<float, 3> ux = { 1.0f, 0.0f, 0.0f };
+        sj::vec<float, 3> ux = { 1.0f, 0.0f, 0.0f };
         //! A unit vector in the y direction
-        morph::vec<float, 3> uy = { 0.0f, 1.0f, 0.0f };
+        sj::vec<float, 3> uy = { 0.0f, 1.0f, 0.0f };
         //! A unit vector in the z direction
-        morph::vec<float, 3> uz = { 0.0f, 0.0f, 1.0f };
+        sj::vec<float, 3> uz = { 0.0f, 0.0f, 1.0f };
 
         /*
          * Compute positions and colours of vertices for the hexes and store in these:
@@ -538,13 +540,13 @@ namespace morph {
         // to be output by Visual::savegltf()
 
         //! Max values of 0th, 1st and 2nd coordinates in vertexPositions
-        morph::vec<float, 3> vpos_maxes = { _low, _low, _low };
+        sj::vec<float, 3> vpos_maxes = { _low, _low, _low };
         //! Min values in vertexPositions
-        morph::vec<float, 3> vpos_mins = { _max, _max, _max };
-        morph::vec<float, 3> vcol_maxes = { _low, _low, _low };
-        morph::vec<float, 3> vcol_mins = { _max, _max, _max };
-        morph::vec<float, 3> vnorm_maxes = { _low, _low, _low };
-        morph::vec<float, 3> vnorm_mins = { _max, _max, _max };
+        sj::vec<float, 3> vpos_mins = { _max, _max, _max };
+        sj::vec<float, 3> vcol_maxes = { _low, _low, _low };
+        sj::vec<float, 3> vcol_mins = { _max, _max, _max };
+        sj::vec<float, 3> vnorm_maxes = { _low, _low, _low };
+        sj::vec<float, 3> vnorm_mins = { _max, _max, _max };
         //! Max value in indices
         GLuint idx_max = 0u;
         //! Min value in indices.
@@ -561,7 +563,7 @@ namespace morph {
         //! Push three floats onto the vector of floats \a vp
         void vertex_push (const float& x, const float& y, const float& z, std::vector<float>& vp)
         {
-            vec<float> vec = { x, y, z };
+            sj::vec<float> vec = { x, y, z };
             std::copy (vec.begin(), vec.end(), std::back_inserter (vp));
         }
         //! Push array of 3 floats onto the vector of floats \a vp
@@ -569,8 +571,8 @@ namespace morph {
         {
             std::copy (arr.begin(), arr.end(), std::back_inserter (vp));
         }
-        //! Push morph::vec of 3 floats onto the vector of floats \a vp
-        void vertex_push (const vec<float>& vec, std::vector<float>& vp)
+        //! Push sj::vec of 3 floats onto the vector of floats \a vp
+        void vertex_push (const sj::vec<float>& vec, std::vector<float>& vp)
         {
             std::copy (vec.begin(), vec.end(), std::back_inserter (vp));
         }
@@ -593,7 +595,7 @@ namespace morph {
          * \param r Radius of the tube
          * \param segments Number of segments used to render the tube
          */
-        void computeTube (vec<float> start, vec<float> end,
+        void computeTube (sj::vec<float> start, sj::vec<float> end,
                           std::array<float, 3> colStart, std::array<float, 3> colEnd,
                           float r = 1.0f, int segments = 12)
         {
@@ -619,17 +621,17 @@ namespace morph {
          * \param rotation A rotation in the _ux/_uy plane to orient the vertices of the
          * tube. Useful if this is to be a short tube used as a graph marker.
          */
-        void computeTube (vec<float> start, vec<float> end,
-                          vec<float> _ux, vec<float> _uy,
+        void computeTube (sj::vec<float> start, sj::vec<float> end,
+                          sj::vec<float> _ux, sj::vec<float> _uy,
                           std::array<float, 3> colStart, std::array<float, 3> colEnd,
                           float r = 1.0f, int segments = 12, float rotation = 0.0f)
         {
             // The vector from start to end defines direction of the tube
-            vec<float> vstart = start;
-            vec<float> vend = end;
+            sj::vec<float> vstart = start;
+            sj::vec<float> vend = end;
 
             // v is a face normal
-            vec<float> v = _uy.cross(_ux);
+            sj::vec<float> v = _uy.cross(_ux);
             v.renormalize();
 
             // Push the central point of the start cap - this is at location vstart
@@ -640,8 +642,8 @@ namespace morph {
             // Start cap vertices (a triangle fan)
             for (int j = 0; j < segments; j++) {
                 // t is the angle of the segment
-                float t = rotation + j * morph::mathconst<float>::two_pi/(float)segments;
-                vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
+                float t = rotation + j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 this->vertex_push (-v, this->vertexNormals);
                 this->vertex_push (colStart, this->vertexColors);
@@ -649,8 +651,8 @@ namespace morph {
 
             // Intermediate, near start cap. Normals point in direction c
             for (int j = 0; j < segments; j++) {
-                float t = rotation + j * morph::mathconst<float>::two_pi/(float)segments;
-                vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
+                float t = rotation + j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 c.renormalize();
                 this->vertex_push (c, this->vertexNormals);
@@ -659,8 +661,8 @@ namespace morph {
 
             // Intermediate, near end cap. Normals point in direction c
             for (int j = 0; j < segments; j++) {
-                float t = rotation + (float)j * morph::mathconst<float>::two_pi/(float)segments;
-                vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
+                float t = rotation + (float)j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
                 this->vertex_push (vend+c, this->vertexPositions);
                 c.renormalize();
                 this->vertex_push (c, this->vertexNormals);
@@ -669,8 +671,8 @@ namespace morph {
 
             // Bottom cap vertices
             for (int j = 0; j < segments; j++) {
-                float t = rotation + (float)j * morph::mathconst<float>::two_pi/(float)segments;
-                vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
+                float t = rotation + (float)j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
                 this->vertex_push (vend+c, this->vertexPositions);
                 this->vertex_push (v, this->vertexNormals);
                 this->vertex_push (colEnd, this->vertexColors);
@@ -759,7 +761,7 @@ namespace morph {
          *
          * \param shapesides How many facets to draw tube/cone with
          */
-        void computeArrow (const vec<float>& start, const vec<float>& end,
+        void computeArrow (const sj::vec<float>& start, const sj::vec<float>& end,
                            const std::array<float, 3> clr,
                            float tube_radius = -1.0f,
                            float arrowhead_prop = -1.0f,
@@ -767,14 +769,14 @@ namespace morph {
                            const int shapesides = 18)
         {
             // The right way to draw an arrow.
-            vec<float> arrow_line = end - start;
+            sj::vec<float> arrow_line = end - start;
             float len = arrow_line.length();
             // Unless client code specifies, compute tube radius from length of arrow
             if (tube_radius < 0.0f) { tube_radius = len / 40.0f; }
             if (arrowhead_prop < 0.0f) { arrowhead_prop = 0.15f; }
             if (cone_radius < 0.0f) { cone_radius = 1.75f * tube_radius; }
             // We don't draw the full tube
-            vec<float> cone_start = arrow_line.shorten (len * arrowhead_prop);
+            sj::vec<float> cone_start = arrow_line.shorten (len * arrowhead_prop);
             cone_start += start;
             this->computeTube (start, cone_start, clr, clr, tube_radius, shapesides);
             float conelen = (end-cone_start).length();
@@ -798,12 +800,12 @@ namespace morph {
          * \param flare The angle, measured wrt the direction of the tube in radians, by which the
          * tube 'flares'
          */
-        void computeFlaredTube (morph::vec<float> start, morph::vec<float> end,
+        void computeFlaredTube (sj::vec<float> start, sj::vec<float> end,
                                 std::array<float, 3> colStart, std::array<float, 3> colEnd,
                                 float r = 1.0f, int segments = 12, float flare = 0.0f)
         {
             // Find the length of the tube
-            morph::vec<float> v = end - start;
+            sj::vec<float> v = end - start;
             float l = v.length();
             // Compute end radius from the length and the flare angle:
             float r_add = l * std::tan (std::abs(flare)) * (flare > 0.0f ? 1.0f : -1.0f);
@@ -825,15 +827,15 @@ namespace morph {
          * \param r_end radius of the end cap
          * \param segments Number of segments used to render the tube
          */
-        void computeFlaredTube (morph::vec<float> start, morph::vec<float> end,
+        void computeFlaredTube (sj::vec<float> start, sj::vec<float> end,
                                 std::array<float, 3> colStart, std::array<float, 3> colEnd,
                                 float r = 1.0f, float r_end = 1.0f, int segments = 12)
         {
             // The vector from start to end defines a vector and a plane. Find a
             // 'circle' of points in that plane.
-            morph::vec<float> vstart = start;
-            morph::vec<float> vend = end;
-            morph::vec<float> v = vend - vstart;
+            sj::vec<float> vstart = start;
+            sj::vec<float> vend = end;
+            sj::vec<float> v = vend - vstart;
             v.renormalize();
 
             // circle in a plane defined by a point (v0 = vstart or vend) and a normal
@@ -842,15 +844,15 @@ namespace morph {
             // plan to define a point on the circle. Note that this starting point on
             // the circle is at a random position, which means that this version of
             // computeTube is useful for tubes that have quite a few segments.
-            morph::vec<float> rand_vec;
+            sj::vec<float> rand_vec;
             rand_vec.randomize();
-            morph::vec<float> inplane = rand_vec.cross(v);
+            sj::vec<float> inplane = rand_vec.cross(v);
             inplane.renormalize();
 
             // Now use parameterization of circle inplane = p1-x1 and
             // c1(t) = ( (p1-x1).normalized std::sin(t) + v.normalized cross (p1-x1).normalized * std::cos(t) )
             // c1(t) = ( inplane std::sin(t) + v * inplane * std::cos(t)
-            morph::vec<float> v_x_inplane = v.cross(inplane);
+            sj::vec<float> v_x_inplane = v.cross(inplane);
 
             // Push the central point of the start cap - this is at location vstart
             this->vertex_push (vstart, this->vertexPositions);
@@ -861,8 +863,8 @@ namespace morph {
             // only need a single call to glDrawElements.
             for (int j = 0; j < segments; j++) {
                 // t is the angle of the segment
-                float t = j * morph::mathconst<float>::two_pi/(float)segments;
-                morph::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
+                float t = j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 this->vertex_push (-v, this->vertexNormals);
                 this->vertex_push (colStart, this->vertexColors);
@@ -870,8 +872,8 @@ namespace morph {
 
             // Intermediate, near start cap. Normals point in direction c
             for (int j = 0; j < segments; j++) {
-                float t = j * morph::mathconst<float>::two_pi/(float)segments;
-                morph::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
+                float t = j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 c.renormalize();
                 this->vertex_push (c, this->vertexNormals);
@@ -880,8 +882,8 @@ namespace morph {
 
             // Intermediate, near end cap. Normals point in direction c
             for (int j = 0; j < segments; j++) {
-                float t = (float)j * morph::mathconst<float>::two_pi/(float)segments;
-                morph::vec<float> c = inplane * std::sin(t) * r_end + v_x_inplane * std::cos(t) * r_end;
+                float t = (float)j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = inplane * std::sin(t) * r_end + v_x_inplane * std::cos(t) * r_end;
                 this->vertex_push (vend+c, this->vertexPositions);
                 c.renormalize();
                 this->vertex_push (c, this->vertexNormals);
@@ -890,8 +892,8 @@ namespace morph {
 
             // Bottom cap vertices
             for (int j = 0; j < segments; j++) {
-                float t = (float)j * morph::mathconst<float>::two_pi/(float)segments;
-                morph::vec<float> c = inplane * std::sin(t) * r_end + v_x_inplane * std::cos(t) * r_end;
+                float t = (float)j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = inplane * std::sin(t) * r_end + v_x_inplane * std::cos(t) * r_end;
                 this->vertex_push (vend+c, this->vertexPositions);
                 this->vertex_push (v, this->vertexNormals);
                 this->vertex_push (colEnd, this->vertexColors);
@@ -989,26 +991,26 @@ namespace morph {
          * \param r_end radius of the end circle
          * \param segments Number of segments used to render the tube
          */
-        void computeOpenFlaredTube (morph::vec<float> start, morph::vec<float> end,
-                                    morph::vec<float> n_start, morph::vec<float> n_end,
+        void computeOpenFlaredTube (sj::vec<float> start, sj::vec<float> end,
+                                    sj::vec<float> n_start, sj::vec<float> n_end,
                                     std::array<float, 3> colStart, std::array<float, 3> colEnd,
                                     float r = 1.0f, float r_end = 1.0f, int segments = 12)
         {
             // The vector from start to end defines a vector and a plane. Find a
             // 'circle' of points in that plane.
-            morph::vec<float> vstart = start;
-            morph::vec<float> vend = end;
-            morph::vec<float> v = vend - vstart;
+            sj::vec<float> vstart = start;
+            sj::vec<float> vend = end;
+            sj::vec<float> v = vend - vstart;
             v.renormalize();
 
             // Two rotations about our face normals
-            morph::quaternion<float> rotn_start (n_start, morph::mathconst<float>::pi_over_2);
-            morph::quaternion<float> rotn_end (-n_end, morph::mathconst<float>::pi_over_2);
+            sj::quaternion<float> rotn_start (n_start, sj::mathconst<float>::pi_over_2);
+            sj::quaternion<float> rotn_end (-n_end, sj::mathconst<float>::pi_over_2);
 
-            morph::vec<float> inplane = v.cross (n_start);
+            sj::vec<float> inplane = v.cross (n_start);
             // The above is no good if n_start and v are colinear. In that case choose random inplane:
             if (inplane.length() < std::numeric_limits<float>::epsilon()) {
-                vec<float> rand_vec;
+                sj::vec<float> rand_vec;
                 rand_vec.randomize();
                 inplane = rand_vec.cross(v);
             }
@@ -1016,7 +1018,7 @@ namespace morph {
 
             // inplane defines a plane, n_start defines a plane. Our first point is the
             // intersection of the two planes and the circle of the end.
-            morph::vec<float> v_x_inplane = n_start.cross (inplane);// rotn_start * inplane;
+            sj::vec<float> v_x_inplane = n_start.cross (inplane);// rotn_start * inplane;
             v_x_inplane.renormalize();
 
             // If r == r_end we want a circular cross section tube (and not an elliptical cross section).
@@ -1027,8 +1029,8 @@ namespace morph {
             // c1(t) = ( (p1-x1).normalized std::sin(t) + v.normalized cross (p1-x1).normalized * std::cos(t) )
             // c1(t) = ( inplane std::sin(t) + v * inplane * std::cos(t)
             for (int j = 0; j < segments; j++) {
-                float t = j * morph::mathconst<float>::two_pi/(float)segments;
-                morph::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r_mod;
+                float t = j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r_mod;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 c.renormalize();
                 this->vertex_push (c, this->vertexNormals);
@@ -1041,8 +1043,8 @@ namespace morph {
             r_mod = r_end / v_x_inplane.cross (v).length();
 
             for (int j = 0; j < segments; j++) {
-                float t = (float)j * morph::mathconst<float>::two_pi/(float)segments;
-                morph::vec<float> c = inplane * std::sin(t) * r_end + v_x_inplane * std::cos(t) * r_mod;
+                float t = (float)j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = inplane * std::sin(t) * r_end + v_x_inplane * std::cos(t) * r_mod;
                 this->vertex_push (vend+c, this->vertexPositions);
                 c.renormalize();
                 this->vertex_push (c, this->vertexNormals);
@@ -1084,8 +1086,8 @@ namespace morph {
         } // end computeOpenFlaredTube
 
         // An open, but un-flared tube with no end caps
-        void computeOpenTube (morph::vec<float> start, morph::vec<float> end,
-                              morph::vec<float> n_start, morph::vec<float> n_end,
+        void computeOpenTube (sj::vec<float> start, sj::vec<float> end,
+                              sj::vec<float> n_start, sj::vec<float> n_end,
                               std::array<float, 3> colStart, std::array<float, 3> colEnd,
                               float r = 1.0f, int segments = 12)
         {
@@ -1094,14 +1096,14 @@ namespace morph {
 
 
         //! Compute a Quad from 4 arbitrary corners which must be ordered clockwise around the quad.
-        void computeFlatQuad (vec<float> c1, vec<float> c2,
-                              vec<float> c3, vec<float> c4,
+        void computeFlatQuad (sj::vec<float> c1, sj::vec<float> c2,
+                              sj::vec<float> c3, sj::vec<float> c4,
                               std::array<float, 3> col)
         {
             // v is the face normal
-            vec<float> u1 = c1-c2;
-            vec<float> u2 = c2-c3;
-            vec<float> v = u2.cross(u1);
+            sj::vec<float> u1 = c1-c2;
+            sj::vec<float> u2 = c2-c3;
+            sj::vec<float> v = u2.cross(u1);
             v.renormalize();
 
             // Push corner vertices
@@ -1154,13 +1156,13 @@ namespace morph {
          * \param rotation A rotation in the ux/uy plane to orient the vertices of the
          * tube. Useful if this is to be a short tube used as a graph marker.
          */
-        void computeFlatPoly (vec<float> vstart,
-                              vec<float> _ux, vec<float> _uy,
+        void computeFlatPoly (sj::vec<float> vstart,
+                              sj::vec<float> _ux, sj::vec<float> _uy,
                               std::array<float, 3> col,
                               float r = 1.0f, int segments = 12, float rotation = 0.0f)
         {
             // v is a face normal
-            vec<float> v = _uy.cross(_ux);
+            sj::vec<float> v = _uy.cross(_ux);
             v.renormalize();
 
             // Push the central point of the start cap - this is at location vstart
@@ -1171,8 +1173,8 @@ namespace morph {
             // Polygon vertices (a triangle fan)
             for (int j = 0; j < segments; j++) {
                 // t is the angle of the segment
-                float t = rotation + j * morph::mathconst<float>::two_pi/(float)segments;
-                vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
+                float t = rotation + j * sj::mathconst<float>::two_pi/(float)segments;
+                sj::vec<float> c = _ux * std::sin(t) * r + _uy * std::cos(t) * r;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 this->vertex_push (-v, this->vertexNormals);
                 this->vertex_push (col, this->vertexColors);
@@ -1209,28 +1211,28 @@ namespace morph {
          * \param t Thickness of the ring
          * \param segments Number of tube segments used to render the ring
          */
-        void computeRing (vec<float> ro, std::array<float, 3> rc, float r = 1.0f,
+        void computeRing (sj::vec<float> ro, std::array<float, 3> rc, float r = 1.0f,
                           float t = 0.1f, int segments = 12)
         {
             for (int j = 0; j < segments; j++) {
-                float segment = morph::mathconst<float>::two_pi * static_cast<float>(j) / segments;
+                float segment = sj::mathconst<float>::two_pi * static_cast<float>(j) / segments;
                 // x and y of inner point
                 float xin = (r-(t*0.5f)) * std::cos(segment);
                 float yin = (r-(t*0.5f)) * std::sin(segment);
                 float xout = (r+(t*0.5f)) * std::cos(segment);
                 float yout = (r+(t*0.5f)) * std::sin(segment);
                 int segjnext = (j+1) % segments;
-                float segnext = morph::mathconst<float>::two_pi * static_cast<float>(segjnext) / segments;
+                float segnext = sj::mathconst<float>::two_pi * static_cast<float>(segjnext) / segments;
                 float xin_n = (r-(t*0.5f)) * std::cos(segnext);
                 float yin_n = (r-(t*0.5f)) * std::sin(segnext);
                 float xout_n = (r+(t*0.5f)) * std::cos(segnext);
                 float yout_n = (r+(t*0.5f)) * std::sin(segnext);
 
                 // Now draw a quad
-                vec<float> c4 = { xin, yin, 0.0f };
-                vec<float> c3 = { xout, yout, 0.0f };
-                vec<float> c2 = { xout_n, yout_n, 0.0f };
-                vec<float> c1 = { xin_n, yin_n, 0.0f };
+                sj::vec<float> c4 = { xin, yin, 0.0f };
+                sj::vec<float> c3 = { xout, yout, 0.0f };
+                sj::vec<float> c2 = { xout_n, yout_n, 0.0f };
+                sj::vec<float> c1 = { xin_n, yin_n, 0.0f };
                 this->computeFlatQuad (ro+c1, ro+c2, ro+c3, ro+c4, rc);
             }
         }
@@ -1274,7 +1276,7 @@ namespace morph {
          * \return The number of vertices in the generated geodesic sphere
          */
         template<typename F=float>
-        int computeSphereGeo (vec<float> so, std::array<float, 3> sc, float r = 1.0f, int iterations = 2)
+        int computeSphereGeo (sj::vec<float> so, std::array<float, 3> sc, float r = 1.0f, int iterations = 2)
         {
             if (iterations < 0) { throw std::runtime_error ("computeSphereGeo: iterations must be positive"); }
             // test if type F is float
@@ -1288,7 +1290,7 @@ namespace morph {
                 }
             }
             // Note that we need double precision to compute higher iterations of the geodesic (iterations > 5)
-            morph::geometry::icosahedral_geodesic<F> geo = morph::geometry::make_icosahedral_geodesic<F> (iterations);
+            sj::geometry::icosahedral_geodesic<F> geo = sj::geometry::make_icosahedral_geodesic<F> (iterations);
 
             // Now essentially copy geo into vertex buffers
             for (auto v : geo.poly.vertices) {
@@ -1325,7 +1327,7 @@ namespace morph {
          * through. Determines number of faces
          */
         template<typename F=float>
-        int computeSphereGeoFaces (morph::vec<float> so, std::array<float, 3> sc, float r = 1.0f, int iterations = 2)
+        int computeSphereGeoFaces (sj::vec<float> so, std::array<float, 3> sc, float r = 1.0f, int iterations = 2)
         {
             if (iterations < 0) { throw std::runtime_error ("computeSphereGeo: iterations must be positive"); }
             // test if type F is float
@@ -1339,16 +1341,16 @@ namespace morph {
                 }
             }
             // Note that we need double precision to compute higher iterations of the geodesic (iterations > 5)
-            morph::geometry::icosahedral_geodesic<F> geo = morph::geometry::make_icosahedral_geodesic<F> (iterations);
+            sj::geometry::icosahedral_geodesic<F> geo = sj::geometry::make_icosahedral_geodesic<F> (iterations);
             int n_faces = static_cast<int>(geo.poly.faces.size());
 
             for (int i = 0; i < n_faces; ++i) { // For each face in the geodesic...
-                morph::vec<F, 3> norm = { F{0}, F{0}, F{0} };
+                sj::vec<F, 3> norm = { F{0}, F{0}, F{0} };
                 for (auto vtx : geo.poly.faces[i]) { // For each vertex in face...
                     norm += vtx; // Add to the face norm
                     this->vertex_push (geo.poly.vertices[vtx].as_float() * r + so, this->vertexPositions);
                 }
-                morph::vec<float, 3> nf = (norm / F{3}).as_float();
+                sj::vec<float, 3> nf = (norm / F{3}).as_float();
                 for (int j = 0; j < 3; ++j) { // Faces all have size 3
                     this->vertex_push (nf, this->vertexNormals);
                     this->vertex_push (sc, this->vertexColors); // A default colour
@@ -1365,7 +1367,7 @@ namespace morph {
         //! resulting vertices and faces are NOT in any kind of order, but ok for
         //! plotting, e.g. scatter graph spheres.
         template<typename F=float, int iterations = 2>
-        int computeSphereGeoFast (vec<float> so, std::array<float, 3> sc, float r = 1.0f)
+        int computeSphereGeoFast (sj::vec<float> so, std::array<float, 3> sc, float r = 1.0f)
         {
             // test if type F is float
             if constexpr (std::is_same<std::decay_t<F>, float>::value == true) {
@@ -1374,7 +1376,7 @@ namespace morph {
                 static_assert (iterations <= 10, "computeSphereGeoFast: This is an abitrary iterations limit (10 gives 20971520 faces)");
             }
             // Note that we need double precision to compute higher iterations of the geodesic (iterations > 5)
-            constexpr morph::geometry_ce::icosahedral_geodesic<F, iterations>  geo = morph::geometry_ce::make_icosahedral_geodesic<F, iterations>();
+            constexpr sj::geometry_ce::icosahedral_geodesic<F, iterations>  geo = sj::geometry_ce::make_icosahedral_geodesic<F, iterations>();
 
             // Now essentially copy geo into vertex buffers
             for (auto v : geo.poly.vertices) {
@@ -1407,16 +1409,16 @@ namespace morph {
          *
          * Number of faces should be (2 + rings) * segments
          */
-        void computeSphere (vec<float> so, std::array<float, 3> sc,
+        void computeSphere (sj::vec<float> so, std::array<float, 3> sc,
                             float r = 1.0f, int rings = 10, int segments = 12)
         {
             // First cap, draw as a triangle fan, but record indices so that
             // we only need a single call to glDrawElements.
-            float rings0 = -morph::mathconst<float>::pi_over_2;
+            float rings0 = -sj::mathconst<float>::pi_over_2;
             float _z0  = std::sin(rings0);
             float z0  = r * _z0;
             float r0 =  std::cos(rings0);
-            float rings1 = morph::mathconst<float>::pi * (-0.5f + 1.0f / rings);
+            float rings1 = sj::mathconst<float>::pi * (-0.5f + 1.0f / rings);
             float _z1 = std::sin(rings1);
             float z1 = r * _z1;
             float r1 = std::cos(rings1);
@@ -1431,7 +1433,7 @@ namespace morph {
 
             bool firstseg = true;
             for (int j = 0; j < segments; j++) {
-                float segment = morph::mathconst<float>::two_pi * static_cast<float>(j) / segments;
+                float segment = sj::mathconst<float>::two_pi * static_cast<float>(j) / segments;
                 float x = std::cos(segment);
                 float y = std::sin(segment);
 
@@ -1460,7 +1462,7 @@ namespace morph {
             // Now add the triangles around the rings
             for (int i = 2; i < rings; i++) {
 
-                rings0 = morph::mathconst<float>::pi * (-0.5f + static_cast<float>(i) / rings);
+                rings0 = sj::mathconst<float>::pi * (-0.5f + static_cast<float>(i) / rings);
                 _z0  = std::sin(rings0);
                 z0  = r * _z0;
                 r0 =  std::cos(rings0);
@@ -1468,7 +1470,7 @@ namespace morph {
                 for (int j = 0; j < segments; j++) {
 
                     // "current" segment
-                    float segment = morph::mathconst<float>::two_pi * static_cast<float>(j) / segments;
+                    float segment = sj::mathconst<float>::two_pi * static_cast<float>(j) / segments;
                     float x = std::cos(segment);
                     float y = std::sin(segment);
 
@@ -1506,7 +1508,7 @@ namespace morph {
             }
 
             // bottom cap
-            rings0 = morph::mathconst<float>::pi_over_2;
+            rings0 = sj::mathconst<float>::pi_over_2;
             _z0  = std::sin(rings0);
             z0  = r * _z0;
             r0 =  std::cos(rings0);
@@ -1545,16 +1547,16 @@ namespace morph {
          * \param rings Number of rings used to render the sphere
          * \param segments Number of segments used to render the sphere
          */
-        void computeSphere (vec<float> so, std::array<float, 3> sc, std::array<float, 3> sc2,
+        void computeSphere (sj::vec<float> so, std::array<float, 3> sc, std::array<float, 3> sc2,
                             float r = 1.0f, int rings = 10, int segments = 12)
         {
             // First cap, draw as a triangle fan, but record indices so that
             // we only need a single call to glDrawElements.
-            float rings0 = -morph::mathconst<float>::pi_over_2;
+            float rings0 = -sj::mathconst<float>::pi_over_2;
             float _z0  = std::sin(rings0);
             float z0  = r * _z0;
             float r0 =  std::cos(rings0);
-            float rings1 = morph::mathconst<float>::pi * (-0.5f + 1.0f / rings);
+            float rings1 = sj::mathconst<float>::pi * (-0.5f + 1.0f / rings);
             float _z1 = std::sin(rings1);
             float z1 = r * _z1;
             float r1 = std::cos(rings1);
@@ -1569,7 +1571,7 @@ namespace morph {
 
             bool firstseg = true;
             for (int j = 0; j < segments; j++) {
-                float segment = morph::mathconst<float>::two_pi * static_cast<float>(j) / segments;
+                float segment = sj::mathconst<float>::two_pi * static_cast<float>(j) / segments;
                 float x = std::cos(segment);
                 float y = std::sin(segment);
 
@@ -1598,7 +1600,7 @@ namespace morph {
             // Now add the triangles around the rings
             for (int i = 2; i < rings; i++) {
 
-                rings0 = morph::mathconst<float>::pi * (-0.5f + static_cast<float>(i) / rings);
+                rings0 = sj::mathconst<float>::pi * (-0.5f + static_cast<float>(i) / rings);
                 _z0  = std::sin(rings0);
                 z0  = r * _z0;
                 r0 =  std::cos(rings0);
@@ -1606,7 +1608,7 @@ namespace morph {
                 for (int j = 0; j < segments; j++) {
 
                     // "current" segment
-                    float segment = morph::mathconst<float>::two_pi * static_cast<float>(j) / segments;
+                    float segment = sj::mathconst<float>::two_pi * static_cast<float>(j) / segments;
                     float x = std::cos(segment);
                     float y = std::sin(segment);
 
@@ -1647,7 +1649,7 @@ namespace morph {
             }
 
             // bottom cap
-            rings0 = morph::mathconst<float>::pi_over_2;
+            rings0 = sj::mathconst<float>::pi_over_2;
             _z0  = std::sin(rings0);
             z0  = r * _z0;
             r0 =  std::cos(rings0);
@@ -1676,15 +1678,15 @@ namespace morph {
         /*!
          * Compute vertices for an icosahedron.
          */
-        void computeIcosahedron (vec<float> centre,
+        void computeIcosahedron (sj::vec<float> centre,
                                  std::array<std::array<float, 3>, 20> face_colours,
                                  float r = 1.0f) // radius or side length?
         {
-            morph::geometry::polyhedron<float> ico = morph::geometry::icosahedron<float>();
+            sj::geometry::polyhedron<float> ico = sj::geometry::icosahedron<float>();
 
             for (int j = 0; j < 20; ++j) {
                 // Compute the face normal
-                morph::vec<float, 3> norml = (ico.vertices[ico.faces[j][0]] + ico.vertices[ico.faces[j][1]] + ico.vertices[ico.faces[j][2]])/3.0f;
+                sj::vec<float, 3> norml = (ico.vertices[ico.faces[j][0]] + ico.vertices[ico.faces[j][1]] + ico.vertices[ico.faces[j][2]])/3.0f;
                 this->vertex_push (centre + (ico.vertices[ico.faces[j][0]] * r), this->vertexPositions);
                 this->vertex_push (centre + (ico.vertices[ico.faces[j][1]] * r), this->vertexPositions);
                 this->vertex_push (centre + (ico.vertices[ico.faces[j][2]] * r), this->vertexPositions);
@@ -1716,8 +1718,8 @@ namespace morph {
          *
          * \param segments Number of segments used to render the tube
          */
-        void computeCone (vec<float> centre,
-                          vec<float> tip,
+        void computeCone (sj::vec<float> centre,
+                          sj::vec<float> tip,
                           float ringoffset,
                           std::array<float, 3> col,
                           float r = 1.0f, int segments = 12)
@@ -1726,17 +1728,17 @@ namespace morph {
             // intermediate ring which is on the base ring, but has different normals, a
             // 'ring' around the tip (with suitable normals) and a 'tip' vertex
 
-            vec<float> vbase = centre;
-            vec<float> vtip = tip;
-            vec<float> v = vtip - vbase;
+            sj::vec<float> vbase = centre;
+            sj::vec<float> vtip = tip;
+            sj::vec<float> v = vtip - vbase;
             v.renormalize();
 
             // circle in a plane defined by a point and a normal
-            vec<float> rand_vec;
+            sj::vec<float> rand_vec;
             rand_vec.randomize();
-            vec<float> inplane = rand_vec.cross(v);
+            sj::vec<float> inplane = rand_vec.cross(v);
             inplane.renormalize();
-            vec<float> v_x_inplane = v.cross(inplane);
+            sj::vec<float> v_x_inplane = v.cross(inplane);
 
             // Push the central point of the start cap - this is at location vstart
             this->vertex_push (vbase, this->vertexPositions);
@@ -1745,8 +1747,8 @@ namespace morph {
 
             // Base ring with normals in direction -v
             for (int j = 0; j < segments; j++) {
-                float t = j * morph::mathconst<float>::two_pi / static_cast<float>(segments);
-                vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
+                float t = j * sj::mathconst<float>::two_pi / static_cast<float>(segments);
+                sj::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
                 // Subtract the vector which makes this circle
                 c = c + (v * ringoffset);
                 this->vertex_push (vbase+c, this->vertexPositions);
@@ -1756,8 +1758,8 @@ namespace morph {
 
             // Intermediate ring of vertices around/aligned with the base ring with normals in direction c
             for (int j = 0; j < segments; j++) {
-                float t = j * morph::mathconst<float>::two_pi / static_cast<float>(segments);
-                vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
+                float t = j * sj::mathconst<float>::two_pi / static_cast<float>(segments);
+                sj::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
                 c = c + (v * ringoffset);
                 this->vertex_push (vbase+c, this->vertexPositions);
                 c.renormalize();
@@ -1767,8 +1769,8 @@ namespace morph {
 
             // Intermediate ring of vertices around the tip with normals direction c
             for (int j = 0; j < segments; j++) {
-                float t = j * morph::mathconst<float>::two_pi / static_cast<float>(segments);
-                vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
+                float t = j * sj::mathconst<float>::two_pi / static_cast<float>(segments);
+                sj::vec<float> c = inplane * std::sin(t) * r + v_x_inplane * std::cos(t) * r;
                 c = c + (v * ringoffset);
                 this->vertex_push (vtip, this->vertexPositions);
                 c.renormalize();
@@ -1845,8 +1847,8 @@ namespace morph {
         } // end of cone calculation
 
         //! Compute a line with a single colour
-        void computeLine (vec<float> start, vec<float> end,
-                          vec<float> _uz,
+        void computeLine (sj::vec<float> start, sj::vec<float> end,
+                          sj::vec<float> _uz,
                           std::array<float, 3> col,
                           float w = 0.1f, float thickness = 0.01f, float shorten = 0.0f)
         {
@@ -1867,8 +1869,8 @@ namespace morph {
          * \param thickness The thickness/depth of the line in uy direction
          * \param shorten An amount by which to shorten the length of the line at each end.
          */
-        void computeLine (vec<float> start, vec<float> end,
-                          vec<float> _uz,
+        void computeLine (sj::vec<float> start, sj::vec<float> end,
+                          sj::vec<float> _uz,
                           std::array<float, 3> colStart, std::array<float, 3> colEnd,
                           float w = 0.1f, float thickness = 0.01f, float shorten = 0.0f)
         {
@@ -1876,9 +1878,9 @@ namespace morph {
             const int segments = 8;
 
             // The vector from start to end defines direction of the tube
-            vec<float> vstart = start;
-            vec<float> vend = end;
-            vec<float> v = vend - vstart;
+            sj::vec<float> vstart = start;
+            sj::vec<float> vend = end;
+            sj::vec<float> v = vend - vstart;
             v.renormalize();
 
             // If shorten is not 0, then modify vstart and vend
@@ -1888,7 +1890,7 @@ namespace morph {
             }
 
             // vv is normal to v and _uz
-            vec<float> vv = v.cross(_uz);
+            sj::vec<float> vv = v.cross(_uz);
             vv.renormalize();
 
             // Push the central point of the start cap - this is at location vstart
@@ -1903,18 +1905,18 @@ namespace morph {
             float r = std::sqrt (w_ * w_ + d_ * d_);
             angles[0] = std::acos (w_ / r);
             angles[1] = angles[0];
-            angles[2] = morph::mathconst<float>::pi - angles[0];
+            angles[2] = sj::mathconst<float>::pi - angles[0];
             angles[3] = angles[2];
-            angles[4] = morph::mathconst<float>::pi + angles[0];
+            angles[4] = sj::mathconst<float>::pi + angles[0];
             angles[5] = angles[4];
-            angles[6] = morph::mathconst<float>::two_pi - angles[0];
+            angles[6] = sj::mathconst<float>::two_pi - angles[0];
             angles[7] = angles[6];
             // The normals for the vertices around the line
-            std::array<vec<float>, 8> norms = { vv, _uz, _uz, -vv, -vv, -_uz, -_uz, vv };
+            std::array<sj::vec<float>, 8> norms = { vv, _uz, _uz, -vv, -vv, -_uz, -_uz, vv };
 
             // Start cap vertices (a triangle fan)
             for (int j = 0; j < segments; j++) {
-                vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
+                sj::vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 this->vertex_push (-v, this->vertexNormals);
                 this->vertex_push (colStart, this->vertexColors);
@@ -1922,7 +1924,7 @@ namespace morph {
 
             // Intermediate, near start cap. Normals point outwards. Need Additional vertices
             for (int j = 0; j < segments; j++) {
-                vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
+                sj::vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
                 this->vertex_push (vstart+c, this->vertexPositions);
                 this->vertex_push (norms[j], this->vertexNormals);
                 this->vertex_push (colStart, this->vertexColors);
@@ -1930,7 +1932,7 @@ namespace morph {
 
             // Intermediate, near end cap. Normals point in direction c
             for (int j = 0; j < segments; j++) {
-                vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
+                sj::vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
                 this->vertex_push (vend+c, this->vertexPositions);
                 this->vertex_push (norms[j], this->vertexNormals);
                 this->vertex_push (colEnd, this->vertexColors);
@@ -1938,7 +1940,7 @@ namespace morph {
 
             // Bottom cap vertices
             for (int j = 0; j < segments; j++) {
-                vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
+                sj::vec<float> c = _uz * std::sin(angles[j]) * r + vv * std::cos(angles[j]) * r;
                 this->vertex_push (vend+c, this->vertexPositions);
                 this->vertex_push (v, this->vertexNormals);
                 this->vertex_push (colEnd, this->vertexColors);
@@ -2010,15 +2012,15 @@ namespace morph {
         } // end computeLine
 
         // Like computeLine, but this line has no thickness.
-        void computeFlatLine (vec<float> start, vec<float> end,
-                              vec<float> _uz,
+        void computeFlatLine (sj::vec<float> start, sj::vec<float> end,
+                              sj::vec<float> _uz,
                               std::array<float, 3> col,
                               float w = 0.1f, float shorten = 0.0f)
         {
             // The vector from start to end defines direction of the tube
-            vec<float> vstart = start;
-            vec<float> vend = end;
-            vec<float> v = vend - vstart;
+            sj::vec<float> vstart = start;
+            sj::vec<float> vend = end;
+            sj::vec<float> v = vend - vstart;
             v.renormalize();
 
             // If shorten is not 0, then modify vstart and vend
@@ -2028,15 +2030,15 @@ namespace morph {
             }
 
             // vv is normal to v and _uz
-            vec<float> vv = v.cross(_uz);
+            sj::vec<float> vv = v.cross(_uz);
             vv.renormalize();
 
             // corners of the line, and the start angle is determined from vv and w
-            vec<float> ww = vv * w * 0.5f;
-            vec<float> c1 = vstart + ww;
-            vec<float> c2 = vstart - ww;
-            vec<float> c3 = vend - ww;
-            vec<float> c4 = vend + ww;
+            sj::vec<float> ww = vv * w * 0.5f;
+            sj::vec<float> c1 = vstart + ww;
+            sj::vec<float> c2 = vstart - ww;
+            sj::vec<float> c3 = vend - ww;
+            sj::vec<float> c4 = vend + ww;
 
             this->vertex_push (c1, this->vertexPositions);
             this->vertex_push (_uz, this->vertexNormals);
@@ -2074,15 +2076,15 @@ namespace morph {
         // Like computeFlatLine but with option to add rounded start/end caps (I lazily
         // draw a whole circle around start/end to achieve this, rather than figuring
         // out a semi-circle).
-        void computeFlatLineRnd (vec<float> start, vec<float> end,
-                                 vec<float> _uz,
+        void computeFlatLineRnd (sj::vec<float> start, sj::vec<float> end,
+                                 sj::vec<float> _uz,
                                  std::array<float, 3> col,
                                  float w = 0.1f, float shorten = 0.0f, bool startcaps = true, bool endcaps = true)
         {
             // The vector from start to end defines direction of the tube
-            vec<float> vstart = start;
-            vec<float> vend = end;
-            vec<float> v = vend - vstart;
+            sj::vec<float> vstart = start;
+            sj::vec<float> vend = end;
+            sj::vec<float> v = vend - vstart;
             v.renormalize();
 
             // If shorten is not 0, then modify vstart and vend
@@ -2092,15 +2094,15 @@ namespace morph {
             }
 
             // vv is normal to v and _uz
-            vec<float> vv = v.cross(_uz);
+            sj::vec<float> vv = v.cross(_uz);
             vv.renormalize();
 
             // corners of the line, and the start angle is determined from vv and w
-            vec<float> ww = vv * w * 0.5f;
-            vec<float> c1 = vstart + ww;
-            vec<float> c2 = vstart - ww;
-            vec<float> c3 = vend - ww;
-            vec<float> c4 = vend + ww;
+            sj::vec<float> ww = vv * w * 0.5f;
+            sj::vec<float> c1 = vstart + ww;
+            sj::vec<float> c2 = vstart - ww;
+            sj::vec<float> c3 = vend - ww;
+            sj::vec<float> c4 = vend + ww;
 
             int segments = 12;
             float r = 0.5f * w;
@@ -2113,8 +2115,8 @@ namespace morph {
                 ++startvertices;
                 // Start cap vertices (a triangle fan)
                 for (int j = 0; j < segments; j++) {
-                    float t = j * morph::mathconst<float>::two_pi / static_cast<float>(segments);
-                    morph::vec<float> c = { std::sin(t) * r, std::cos(t) * r, 0.0f };
+                    float t = j * sj::mathconst<float>::two_pi / static_cast<float>(segments);
+                    sj::vec<float> c = { std::sin(t) * r, std::cos(t) * r, 0.0f };
                     this->vertex_push (vstart+c, this->vertexPositions);
                     this->vertex_push (_uz, this->vertexNormals);
                     this->vertex_push (col, this->vertexColors);
@@ -2147,8 +2149,8 @@ namespace morph {
                 ++endvertices;
                 // End cap vertices (a triangle fan)
                 for (int j = 0; j < segments; j++) {
-                    float t = j * morph::mathconst<float>::two_pi / static_cast<float>(segments);
-                    morph::vec<float> c = { std::sin(t) * r, std::cos(t) * r, 0.0f };
+                    float t = j * sj::mathconst<float>::two_pi / static_cast<float>(segments);
+                    sj::vec<float> c = { std::sin(t) * r, std::cos(t) * r, 0.0f };
                     this->vertex_push (vend+c, this->vertexPositions);
                     this->vertex_push (_uz, this->vertexNormals);
                     this->vertex_push (col, this->vertexColors);
@@ -2207,48 +2209,48 @@ namespace morph {
          * If you want to make a ribbon between points that do *not* lie on a 2D plane,
          * you'll need to write another graphics primitive function.
          */
-        void computeFlatLine (vec<float> start, vec<float> end,
-                              vec<float> prev, vec<float> next,
-                              vec<float> _uz,
+        void computeFlatLine (sj::vec<float> start, sj::vec<float> end,
+                              sj::vec<float> prev, sj::vec<float> next,
+                              sj::vec<float> _uz,
                               std::array<float, 3> col,
                               float w = 0.1f)
         {
             // Corner coordinates for this line section
-            vec<float> c1 = { 0.0f };
-            vec<float> c2 = { 0.0f };
-            vec<float> c3 = { 0.0f };
-            vec<float> c4 = { 0.0f };
+            sj::vec<float> c1 = { 0.0f };
+            sj::vec<float> c2 = { 0.0f };
+            sj::vec<float> c3 = { 0.0f };
+            sj::vec<float> c4 = { 0.0f };
 
             // Ensure _uz is a unit vector
-            vec<float> __uz = _uz;
+            sj::vec<float> __uz = _uz;
             __uz.renormalize();
 
             // First find the rotation to make __uz into the actual unit z dirn
-            morph::quaternion<float> rotn;
-            morph::vec<float> basis_rotn_axis = __uz.cross (this->uz);
+            sj::quaternion<float> rotn;
+            sj::vec<float> basis_rotn_axis = __uz.cross (this->uz);
             if (basis_rotn_axis.length() > 0.0f) {
                 float basis_rotn_angle = __uz.angle (this->uz, basis_rotn_axis);
                 rotn.rotate (basis_rotn_axis, basis_rotn_angle);
             } // else nothing to do  - basis rotn is null
 
             // Transform so that start is the origin
-            // vec<float> s_o = { 0.0f }; // by defn
-            vec<float> e_o = end - start;
-            vec<float> p_o = prev - start;
-            vec<float> n_o = next - start;
+            // sj::vec<float> s_o = { 0.0f }; // by defn
+            sj::vec<float> e_o = end - start;
+            sj::vec<float> p_o = prev - start;
+            sj::vec<float> n_o = next - start;
 
             // Apply basis rotation just to the end point. e_b: 'end point in rotated basis'
-            vec<float> e_b = rotn * e_o;
+            sj::vec<float> e_b = rotn * e_o;
 
             // Use the vector from start to end as the in-plane x dirn. Do this AFTER
             // first coord rotn.  In other words: find the rotation about the new unit z
             // direction to force the end point to be on the x axis
-            vec<float> plane_x = e_b; // - s_b but s_b is (0,0,0) by defn
+            sj::vec<float> plane_x = e_b; // - s_b but s_b is (0,0,0) by defn
             plane_x.renormalize();
-            vec<float> plane_y = this->uz.cross (plane_x);
+            sj::vec<float> plane_y = this->uz.cross (plane_x);
             plane_y.renormalize();
             // Find the in-plane coordinates in the rotated plane system
-            vec<float> e_p = { plane_x.dot (e_b), plane_y.dot (e_b), this->uz.dot (e_b) };
+            sj::vec<float> e_p = { plane_x.dot (e_b), plane_y.dot (e_b), this->uz.dot (e_b) };
 
             // One epsilon is exacting
             if (std::abs(e_p[2]) > std::numeric_limits<float>::epsilon()) {
@@ -2258,56 +2260,56 @@ namespace morph {
             // From e_p and e_b (which should both be in a 2D plane) figure out what
             // angle of rotation brings e_b into the x axis
             float inplane_rotn_angle = e_b.angle (e_p, this->uz);
-            morph::quaternion<float> inplane_rotn (this->uz, inplane_rotn_angle);
+            sj::quaternion<float> inplane_rotn (this->uz, inplane_rotn_angle);
 
             // Apply the in-plane rotation to the basis rotation
             rotn.premultiply (inplane_rotn);
 
             // Transform points
-            vec<float> p_p = rotn * p_o;
-            vec<float> n_p = rotn * n_o;
+            sj::vec<float> p_p = rotn * p_o;
+            sj::vec<float> n_p = rotn * n_o;
             //vec<float> s_p = rotn * s_o; // not necessary, s_p = (0,0,0) by defn
 
             // Line crossings time.
-            vec<float, 2> c1_p = { 0.0f }; // 2D crossing coords that we're going to find
-            vec<float, 2> c2_p = { 0.0f };
-            vec<float, 2> c3_p = e_p.less_one_dim();
-            vec<float, 2> c4_p = e_p.less_one_dim();
+            sj::vec<float, 2> c1_p = { 0.0f }; // 2D crossing coords that we're going to find
+            sj::vec<float, 2> c2_p = { 0.0f };
+            sj::vec<float, 2> c3_p = e_p.less_one_dim();
+            sj::vec<float, 2> c4_p = e_p.less_one_dim();
 
             // 3 lines on each side. l_p, l_c (current) and l_n. Each has two ends. l_p_1, l_p_2 etc.
 
             // 'prev' 'cur' and 'next' vectors
-            vec<float, 2> p_vec = (/*s_p*/ -p_p).less_one_dim();
-            vec<float, 2> c_vec = e_p.less_one_dim();
-            vec<float, 2> n_vec = (n_p - e_p).less_one_dim();
+            sj::vec<float, 2> p_vec = (/*s_p*/ -p_p).less_one_dim();
+            sj::vec<float, 2> c_vec = e_p.less_one_dim();
+            sj::vec<float, 2> n_vec = (n_p - e_p).less_one_dim();
 
-            vec<float, 2> p_ortho = (/*s_p*/ - p_p).cross (this->uz).less_one_dim();
+            sj::vec<float, 2> p_ortho = (/*s_p*/ - p_p).cross (this->uz).less_one_dim();
             p_ortho.renormalize();
-            vec<float, 2> c_ortho = (e_p /*- s_p*/).cross (this->uz).less_one_dim();
+            sj::vec<float, 2> c_ortho = (e_p /*- s_p*/).cross (this->uz).less_one_dim();
             c_ortho.renormalize();
-            vec<float, 2> n_ortho = (n_p - e_p).cross (this->uz).less_one_dim();
+            sj::vec<float, 2> n_ortho = (n_p - e_p).cross (this->uz).less_one_dim();
             n_ortho.renormalize();
 
             const float hw = w / 2.0f;
 
-            vec<float, 2> l_p_1 = p_p.less_one_dim() + (p_ortho * hw) - p_vec; // makes it 3 times as long as the line.
-            vec<float, 2> l_p_2 = /*s_p.less_one_dim() +*/ (p_ortho * hw) + p_vec;
-            vec<float, 2> l_c_1 = /*s_p.less_one_dim() +*/ (c_ortho * hw) - c_vec;
-            vec<float, 2> l_c_2 = e_p.less_one_dim() + (c_ortho * hw) + c_vec;
-            vec<float, 2> l_n_1 = e_p.less_one_dim() + (n_ortho * hw) - n_vec;
-            vec<float, 2> l_n_2 = n_p.less_one_dim() + (n_ortho * hw) + n_vec;
+            sj::vec<float, 2> l_p_1 = p_p.less_one_dim() + (p_ortho * hw) - p_vec; // makes it 3 times as long as the line.
+            sj::vec<float, 2> l_p_2 = /*s_p.less_one_dim() +*/ (p_ortho * hw) + p_vec;
+            sj::vec<float, 2> l_c_1 = /*s_p.less_one_dim() +*/ (c_ortho * hw) - c_vec;
+            sj::vec<float, 2> l_c_2 = e_p.less_one_dim() + (c_ortho * hw) + c_vec;
+            sj::vec<float, 2> l_n_1 = e_p.less_one_dim() + (n_ortho * hw) - n_vec;
+            sj::vec<float, 2> l_n_2 = n_p.less_one_dim() + (n_ortho * hw) + n_vec;
 
-            std::bitset<2> isect = morph::algo::segments_intersect<float> (l_p_1, l_p_2, l_c_1, l_c_2);
+            std::bitset<2> isect = sj::algo::segments_intersect<float> (l_p_1, l_p_2, l_c_1, l_c_2);
             if (isect.test(0) == true && isect.test(1) == false) { // test for intersection but not colinear
-                c1_p = morph::algo::crossing_point (l_p_1, l_p_2, l_c_1, l_c_2);
+                c1_p = sj::algo::crossing_point (l_p_1, l_p_2, l_c_1, l_c_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c1_p = /*s_p.less_one_dim() +*/ (c_ortho * hw);
             } else { // no intersection. prev could have been start
                 c1_p = /*s_p.less_one_dim() +*/ (c_ortho * hw);
             }
-            isect = morph::algo::segments_intersect<float> (l_c_1, l_c_2, l_n_1, l_n_2);
+            isect = sj::algo::segments_intersect<float> (l_c_1, l_c_2, l_n_1, l_n_2);
             if (isect.test(0) == true && isect.test(1) == false) {
-                c4_p = morph::algo::crossing_point (l_c_1, l_c_2, l_n_1, l_n_2);
+                c4_p = sj::algo::crossing_point (l_c_1, l_c_2, l_n_1, l_n_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c4_p = e_p.less_one_dim() + (c_ortho * hw);
             } else { // no intersection, prev could have been end
@@ -2315,25 +2317,25 @@ namespace morph {
             }
 
             // o for 'other side'. Could re-use vars in future version. Or just subtract (*_ortho * w) from each.
-            vec<float, 2> o_l_p_1 = p_p.less_one_dim() - (p_ortho * hw) - p_vec; // makes it 3 times as long as the line.
-            vec<float, 2> o_l_p_2 = /*s_p.less_one_dim()*/ - (p_ortho * hw) + p_vec;
-            vec<float, 2> o_l_c_1 = /*s_p.less_one_dim()*/ - (c_ortho * hw) - c_vec;
-            vec<float, 2> o_l_c_2 = e_p.less_one_dim() - (c_ortho * hw) + c_vec;
-            vec<float, 2> o_l_n_1 = e_p.less_one_dim() - (n_ortho * hw) - n_vec;
-            vec<float, 2> o_l_n_2 = n_p.less_one_dim() - (n_ortho * hw) + n_vec;
+            sj::vec<float, 2> o_l_p_1 = p_p.less_one_dim() - (p_ortho * hw) - p_vec; // makes it 3 times as long as the line.
+            sj::vec<float, 2> o_l_p_2 = /*s_p.less_one_dim()*/ - (p_ortho * hw) + p_vec;
+            sj::vec<float, 2> o_l_c_1 = /*s_p.less_one_dim()*/ - (c_ortho * hw) - c_vec;
+            sj::vec<float, 2> o_l_c_2 = e_p.less_one_dim() - (c_ortho * hw) + c_vec;
+            sj::vec<float, 2> o_l_n_1 = e_p.less_one_dim() - (n_ortho * hw) - n_vec;
+            sj::vec<float, 2> o_l_n_2 = n_p.less_one_dim() - (n_ortho * hw) + n_vec;
 
-            isect = morph::algo::segments_intersect<float> (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
+            isect = sj::algo::segments_intersect<float> (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
             if (isect.test(0) == true && isect.test(1) == false) { // test for intersection but not colinear
-                c2_p = morph::algo::crossing_point (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
+                c2_p = sj::algo::crossing_point (o_l_p_1, o_l_p_2, o_l_c_1, o_l_c_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c2_p = /*s_p.less_one_dim()*/ - (c_ortho * hw);
             } else { // no intersection. prev could have been start
                 c2_p = /*s_p.less_one_dim()*/ - (c_ortho * hw);
             }
 
-            isect = morph::algo::segments_intersect<float> (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
+            isect = sj::algo::segments_intersect<float> (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
             if (isect.test(0) == true && isect.test(1) == false) {
-                c3_p = morph::algo::crossing_point (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
+                c3_p = sj::algo::crossing_point (o_l_c_1, o_l_c_2, o_l_n_1, o_l_n_2);
             } else if (isect.test(0) == true && isect.test(1) == true) {
                 c3_p = e_p.less_one_dim() - (c_ortho * hw);
             } else { // no intersection. next could have been end
@@ -2341,7 +2343,7 @@ namespace morph {
             }
 
             // Transform and rotate back into c1-c4
-            morph::quaternion<float> rotn_inv = rotn.invert();
+            sj::quaternion<float> rotn_inv = rotn.invert();
             c1 = rotn_inv * c1_p.plus_one_dim() + start;
             c2 = rotn_inv * c2_p.plus_one_dim() + start;
             c3 = rotn_inv * c3_p.plus_one_dim() + start;
@@ -2377,9 +2379,9 @@ namespace morph {
         } // end computeFlatLine that joins perfectly
 
         //! Make a joined up line with previous.
-        void computeFlatLineP (vec<float> start, vec<float> end,
-                               vec<float> prev,
-                               vec<float> _uz,
+        void computeFlatLineP (sj::vec<float> start, sj::vec<float> end,
+                               sj::vec<float> prev,
+                               sj::vec<float> _uz,
                                std::array<float, 3> col,
                                float w = 0.1f)
         {
@@ -2387,9 +2389,9 @@ namespace morph {
         } // end computeFlatLine that joins perfectly with prev
 
         //! Flat line, joining up with next
-        void computeFlatLineN (vec<float> start, vec<float> end,
-                               vec<float> next,
-                               vec<float> _uz,
+        void computeFlatLineN (sj::vec<float> start, sj::vec<float> end,
+                               sj::vec<float> next,
+                               sj::vec<float> _uz,
                                std::array<float, 3> col,
                                float w = 0.1f)
         {
@@ -2399,8 +2401,8 @@ namespace morph {
         // Like computeLine, but this line has no thickness and it's dashed.
         // dashlen: the length of dashes
         // gap prop: The proportion of dash length used for the gap
-        void computeFlatDashedLine (vec<float> start, vec<float> end,
-                                    vec<float> _uz,
+        void computeFlatDashedLine (sj::vec<float> start, sj::vec<float> end,
+                                    sj::vec<float> _uz,
                                     std::array<float, 3> col,
                                     float w = 0.1f, float shorten = 0.0f,
                                     float dashlen = 0.1f, float gapprop = 0.3f)
@@ -2408,10 +2410,10 @@ namespace morph {
             if (dashlen == 0.0f) { return; }
 
             // The vector from start to end defines direction of the line
-            vec<float> vstart = start;
-            vec<float> vend = end;
+            sj::vec<float> vstart = start;
+            sj::vec<float> vend = end;
 
-            vec<float> v = vend - vstart;
+            sj::vec<float> v = vend - vstart;
             float linelen = v.length();
             v.renormalize();
 
@@ -2423,22 +2425,22 @@ namespace morph {
             }
 
             // vv is normal to v and _uz
-            vec<float> vv = v.cross(_uz);
+            sj::vec<float> vv = v.cross(_uz);
             vv.renormalize();
 
             // Loop, creating the dashes
-            vec<float> dash_s = vstart;
-            vec<float> dash_e = dash_s + v * dashlen;
-            vec<float> dashes = dash_e - vstart;
+            sj::vec<float> dash_s = vstart;
+            sj::vec<float> dash_e = dash_s + v * dashlen;
+            sj::vec<float> dashes = dash_e - vstart;
 
             while (dashes.length() < linelen) {
 
                 // corners of the line, and the start angle is determined from vv and w
-                vec<float> ww = vv * w * 0.5f;
-                vec<float> c1 = dash_s + ww;
-                vec<float> c2 = dash_s - ww;
-                vec<float> c3 = dash_e - ww;
-                vec<float> c4 = dash_e + ww;
+                sj::vec<float> ww = vv * w * 0.5f;
+                sj::vec<float> c1 = dash_s + ww;
+                sj::vec<float> c2 = dash_s - ww;
+                sj::vec<float> c3 = dash_e - ww;
+                sj::vec<float> c4 = dash_e + ww;
 
                 this->vertex_push (c1, this->vertexPositions);
                 this->vertex_push (_uz, this->vertexNormals);
@@ -2480,7 +2482,7 @@ namespace morph {
         } // end computeFlatDashedLine
 
         // Compute a flat line circle outline
-        void computeFlatCircleLine (vec<float> centre, vec<float> norm, float radius,
+        void computeFlatCircleLine (sj::vec<float> centre, sj::vec<float> norm, float radius,
                                     float linewidth, std::array<float, 3> col, int segments = 128)
         {
             // circle in a plane defined by a point (v0 = vstart or vend) and a normal
@@ -2489,11 +2491,11 @@ namespace morph {
             // plan to define a point on the circle. Note that this starting point on
             // the circle is at a random position, which means that this version of
             // computeTube is useful for tubes that have quite a few segments.
-            vec<float> rand_vec;
+            sj::vec<float> rand_vec;
             rand_vec.randomize();
-            vec<float> inplane = rand_vec.cross(norm);
+            sj::vec<float> inplane = rand_vec.cross(norm);
             inplane.renormalize();
-            vec<float> norm_x_inplane = norm.cross(inplane);
+            sj::vec<float> norm_x_inplane = norm.cross(inplane);
 
             float half_lw = linewidth / 2.0f;
             float r_in = radius - half_lw;
@@ -2501,12 +2503,12 @@ namespace morph {
             // Inner ring at radius radius-linewidth/2 with normals in direction norm;
             // Outer ring at radius radius+linewidth/2 with normals also in direction norm
             for (int j = 0; j < segments; j++) {
-                float t = j * morph::mathconst<float>::two_pi / static_cast<float>(segments);
-                vec<float> c_in = inplane * std::sin(t) * r_in + norm_x_inplane * std::cos(t) * r_in;
+                float t = j * sj::mathconst<float>::two_pi / static_cast<float>(segments);
+                sj::vec<float> c_in = inplane * std::sin(t) * r_in + norm_x_inplane * std::cos(t) * r_in;
                 this->vertex_push (centre+c_in, this->vertexPositions);
                 this->vertex_push (norm, this->vertexNormals);
                 this->vertex_push (col, this->vertexColors);
-                vec<float> c_out = inplane * std::sin(t) * r_out + norm_x_inplane * std::cos(t) * r_out;
+                sj::vec<float> c_out = inplane * std::sin(t) * r_out + norm_x_inplane * std::cos(t) * r_out;
                 this->vertex_push (centre+c_out, this->vertexPositions);
                 this->vertex_push (norm, this->vertexNormals);
                 this->vertex_push (col, this->vertexColors);
@@ -2528,7 +2530,7 @@ namespace morph {
         } // end computeFlatCircle
 
         // Compute triangles to form a true cuboid from 8 corners.
-        void computeCuboid (const std::array<vec<float>, 8>& v, const std::array<float, 3>& clr)
+        void computeCuboid (const std::array<sj::vec<float>, 8>& v, const std::array<float, 3>& clr)
         {
             this->computeFlatQuad (v[0], v[1], v[2], v[3], clr);
             this->computeFlatQuad (v[0], v[4], v[5], v[1], clr);
@@ -2540,20 +2542,20 @@ namespace morph {
 
         // Compute a rhombus using the four defining coordinates. The coordinates are named as if
         // they were the origin, x, y and z of a right-handed 3D coordinate system. These define three edges
-        void computeRhombus (const vec<float>& o, const vec<float>& x, const vec<float>& y, const vec<float>& z,
+        void computeRhombus (const sj::vec<float>& o, const sj::vec<float>& x, const sj::vec<float>& y, const sj::vec<float>& z,
                              const std::array<float, 3>& clr)
         {
             // Edge vectors
-            vec<float> edge1 = x - o;
-            vec<float> edge2 = y - o;
-            vec<float> edge3 = z - o;
+            sj::vec<float> edge1 = x - o;
+            sj::vec<float> edge2 = y - o;
+            sj::vec<float> edge3 = z - o;
 
             // Compute the face normals
-            vec<float> _n1 = edge1.cross (edge2);
+            sj::vec<float> _n1 = edge1.cross (edge2);
             _n1.renormalize();
-            vec<float> _n2 = edge2.cross (edge3);
+            sj::vec<float> _n2 = edge2.cross (edge3);
             _n2.renormalize();
-            vec<float> _n3 = edge1.cross (edge3);
+            sj::vec<float> _n3 = edge1.cross (edge3);
             _n3.renormalize();
 
             // Push positions and normals for 24 vertices to make up the rhombohedron; 4 for each face.
@@ -2609,12 +2611,12 @@ namespace morph {
         } // computeCuboid
 
         // Compute a rectangular cuboid of width (in x), height (in y) and depth (in z).
-        void computeRectCuboid (const vec<float>& o, const float wx, const float hy, const float dz,
+        void computeRectCuboid (const sj::vec<float>& o, const float wx, const float hy, const float dz,
                                 const std::array<float, 3>& clr)
         {
-            vec<float> px = o + vec<float>{wx, 0, 0};
-            vec<float> py = o + vec<float>{0, hy, 0};
-            vec<float> pz = o + vec<float>{0, 0, dz};
+            sj::vec<float> px = o + sj::vec<float>{wx, 0, 0};
+            sj::vec<float> py = o + sj::vec<float>{0, hy, 0};
+            sj::vec<float> pz = o + sj::vec<float>{0, 0, dz};
             this->computeRhombus (o, px, py, pz, clr);
         }
     };

@@ -2,7 +2,8 @@
 
 #include <array>
 #include <string>
-#include <morph/flags.h>
+#include <sj/vec>
+#include <sj/flags>
 #include <morph/graphstyles.h>
 #include <morph/ColourMap.h>
 #include <morph/colour.h>
@@ -61,7 +62,7 @@ namespace morph {
         //! Quiver parameters
         ///@{
         //! Flags for quiver features
-        morph::flags<quiver_flags> quiver_flagset;
+        sj::flags<quiver_flags> quiver_flagset;
         void quiver_flag_defaults()
         {
             //! If true, use markersize for quiver length. Setting a fixed quiver length can be useful
@@ -77,7 +78,7 @@ namespace morph {
         //! Allows user to linearly scale the size of the quivers that are plotted.
         float quiver_length_gain = 1.0f;
         //! Gains for the individual components of the quivers
-        morph::vec<float, 3> quiver_gain = { 1.0f, 1.0f, 1.0f };
+        sj::vec<float, 3> quiver_gain = { 1.0f, 1.0f, 1.0f };
         //! Allows user to scale the thickness of the quivers.
         float quiver_thickness_gain = 1.0f;
         //! What proportion of the arrow length should the arrowhead cone length be?
