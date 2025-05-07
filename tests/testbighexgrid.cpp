@@ -7,14 +7,14 @@
 #include <fstream>
 #include <cmath>
 
-#include <morph/vec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/hexgrid>
 
-#include "morph/Visual.h"
-#include "morph/VisualDataModel.h"
-#include "morph/HexGridVisual.h"
-#include "morph/ReadCurves.h"
-#include "morph/tools.h"
+#include <morph/Visual.h>
+#include <morph/VisualDataModel.h>
+#include <morph/HexGridVisual.h>
+#include <morph/ReadCurves.h>
+#include <morph/tools.h>
 
 int main()
 {
@@ -24,7 +24,7 @@ int main()
     v.zNear = 0.001;
 
     try {
-        morph::hexgrid hg(0.002, 8, 0);
+        sm::hexgrid hg(0.002, 8, 0);
         hg.setEllipticalBoundary (1.6,2);
 
         std::cout << hg.extent() << std::endl;
@@ -44,7 +44,7 @@ int main()
         }
         std::cout << "Created " << data.size() << " floats in data" << std::endl;
 
-        morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+        sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>> (&hg, offset);
         v.bindmodel (hgv);
         hgv->hexVisMode = morph::HexVisMode::Triangles; // Triangles faster to render than the default hexes

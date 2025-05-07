@@ -3,6 +3,7 @@
  * correct.
  */
 
+#include <sm/vec>
 #include <morph/Visual.h>
 #include <morph/VisualModel.h>
 
@@ -43,11 +44,11 @@ namespace morph {
                                    lth);
 
             // Draw 3 lines with a different angle and one extra line
-            vec<float> p1 = {-0.5, 1.5, 0};
-            vec<float> p2 = {0,    2,   0};
-            vec<float> p3 = {1,    2,   0};
-            vec<float> p4 = {1.5,  2.5, 0};
-            vec<float> p5 = {2,    2,   0};
+            sm::vec<float> p1 = {-0.5, 1.5, 0};
+            sm::vec<float> p2 = {0,    2,   0};
+            sm::vec<float> p3 = {1,    2,   0};
+            sm::vec<float> p4 = {1.5,  2.5, 0};
+            sm::vec<float> p5 = {2,    2,   0};
 
             this->computeFlatLine (p1,        p2,
                                    p1,        p3,
@@ -67,10 +68,10 @@ namespace morph {
             float right = 1.0f;
             float bot = 3.0f;
             float top = 4.0f;
-            morph::vec<float> lb = { left,  bot, 0.0f };
-            morph::vec<float> lt = { left,  top, 0.0f };
-            morph::vec<float> rt = { right, top, 0.0f };
-            morph::vec<float> rb = { right, bot, 0.0f };
+            sm::vec<float> lb = { left,  bot, 0.0f };
+            sm::vec<float> lt = { left,  top, 0.0f };
+            sm::vec<float> rt = { right, top, 0.0f };
+            sm::vec<float> rb = { right, bot, 0.0f };
             // draw the vertical from bottom left to top left
             this->computeFlatLine (lb, lt, rb, rt, this->uz, morph::colour::black, lth);
             // draw the horizontal from bottom left to bottom right
@@ -81,7 +82,7 @@ namespace morph {
             this->computeFlatLine (lt, rt, lb, rb, this->uz, morph::colour::dodgerblue1, lth);
 
             // Test a straight line
-            morph::vec<float> p0 = { 0, 4.5, 0 };
+            sm::vec<float> p0 = { 0, 4.5, 0 };
             p1 = { 1, 4.5, 0 };
             p2 = { 2, 4.5, 0 };
             this->computeFlatLine (p0, p1, p0, p2, this->uz, morph::colour::black, lth);

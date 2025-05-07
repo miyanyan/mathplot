@@ -10,7 +10,6 @@
 #include <fstream>
 #include <string>
 #include <morph/Visual.h>
-#include <morph/vec.h>
 
 namespace morph {
 

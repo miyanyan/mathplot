@@ -1,8 +1,8 @@
 #include <utility>
 #include <iostream>
 
-#include <morph/vec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/hexgrid>
 
 #include <morph/tools.h>
 #include <morph/ColourMap.h>
@@ -18,7 +18,7 @@ int main()
         std::string curvepath = "../../tests/trialmod.svg";
         morph::ReadCurves r(curvepath);
 
-        morph::hexgrid hg(0.02, 7, 0);
+        sm::hexgrid hg(0.02, 7, 0);
         hg.setBoundary (r.getCorticalPath());
 
         std::cout << hg.extent() << std::endl;
@@ -33,7 +33,7 @@ int main()
         // Create a HexGrid
         morph::Visual v(1600, 1000, "HexGrid");
         v.lightingEffects();
-        morph::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
+        sm::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>> (&hg, offset);
         v.bindmodel (hgv);
         // Set up data for the HexGridVisual and colour hexes according to their state as being boundary/inside/domain, etc

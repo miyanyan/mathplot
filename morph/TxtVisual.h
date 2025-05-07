@@ -2,15 +2,17 @@
 
 // Add some text as a VisualModel
 
-#include <morph/VisualModel.h>
-#include <morph/vec.h>
-#include <morph/tools.h>
-#include <morph/TextFeatures.h>
 #include <string>
 #include <iostream>
 #include <vector>
 #include <array>
 #include <stdexcept>
+
+#include <sm/vec>
+
+#include <morph/VisualModel.h>
+#include <morph/tools.h>
+#include <morph/TextFeatures.h>
 
 namespace morph {
 
@@ -19,7 +21,7 @@ namespace morph {
     {
     public:
         TxtVisual (const std::string& _text,
-                   const morph::vec<float, 3>& _offset,
+                   const sm::vec<float, 3>& _offset,
                    const morph::TextFeatures& _tfeatures)
         {
             // Set up...
@@ -33,7 +35,7 @@ namespace morph {
         void initializeVertices()
         {
             // No op, but add text
-            this->addLabel (this->text, morph::vec<float>({0,0,0}), this->tfeatures);
+            this->addLabel (this->text, sm::vec<float>({0,0,0}), this->tfeatures);
         }
 
         std::string text;

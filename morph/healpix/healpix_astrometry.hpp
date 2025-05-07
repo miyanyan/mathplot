@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include <morph/mathconst.h>
+#include <sm/mathconst>
 #include <algorithm>
 #include <stdexcept>
 #include <cmath>
@@ -700,13 +700,13 @@ namespace hp {
         }
 
         const double healpix_side_length_arcmin(int Nside) {
-            return std::sqrt((morph::mathconst<double>::four_pi * mysquare(180.0 * 60.0 / morph::mathconst<double>::pi)) /
+            return std::sqrt((sm::mathconst<double>::four_pi * mysquare(180.0 * 60.0 / sm::mathconst<double>::pi)) /
                              (12.0 * Nside * Nside));
         }
 
         double healpix_nside_for_side_length_arcmin(double arcmin) {
             // arcmin2rad: a*pi/10800.0
-            return std::sqrt(morph::mathconst<double>::four_pi / (mysquare(arcmin*morph::mathconst<double>::pi/10800.0) * 12.0));
+            return std::sqrt(sm::mathconst<double>::four_pi / (mysquare(arcmin*sm::mathconst<double>::pi/10800.0) * 12.0));
         }
 
         static bool ispolar(int healpix)
@@ -1132,8 +1132,8 @@ namespace hp {
             /* Convert our point into cylindrical coordinates for middle ring */
             phi = std::atan2(vy, vx);
             if (phi < 0.0)
-                phi += morph::mathconst<double>::two_pi;
-            phi_t = std::fmod(phi, morph::mathconst<double>::pi_over_2);
+                phi += sm::mathconst<double>::two_pi;
+            phi_t = std::fmod(phi, sm::mathconst<double>::pi_over_2);
             assert (phi_t >= 0.0);
 
             // North or south polar cap.
@@ -1154,11 +1154,11 @@ namespace hp {
                 }
 
                 // solve eqn 20: k = Ns - xx (in the northern hemi)
-                root = (1.0 - vz*zfactor) * 3.0 * mysquare(Nside * (2.0 * phi_t - morph::mathconst<double>::pi) / morph::mathconst<double>::pi);
+                root = (1.0 - vz*zfactor) * 3.0 * mysquare(Nside * (2.0 * phi_t - sm::mathconst<double>::pi) / sm::mathconst<double>::pi);
                 kx = (root <= 0.0) ? 0.0 : std::sqrt(root);
 
                 // solve eqn 19 for k = Ns - yy
-                root = (1.0 - vz*zfactor) * 3.0 * mysquare(Nside * 2.0 * phi_t / morph::mathconst<double>::pi);
+                root = (1.0 - vz*zfactor) * 3.0 * mysquare(Nside * 2.0 * phi_t / sm::mathconst<double>::pi);
                 ky = (root <= 0.0) ? 0.0 : std::sqrt(root);
 
                 if (north) {
@@ -1181,7 +1181,7 @@ namespace hp {
                 dx = xx - x;
                 dy = yy - y;
 
-                sector = (phi - phi_t) / (morph::mathconst<double>::pi_over_2);
+                sector = (phi - phi_t) / (sm::mathconst<double>::pi_over_2);
                 offset = (int)std::round(sector);
                 assert(std::abs(sector - offset) < EPS);
                 offset = ((offset % 4) + 4) % 4;
@@ -1204,7 +1204,7 @@ namespace hp {
 
                 // project into the unit square z=[-2/3, 2/3], phi=[0, pi/2]
                 zunits = (vz + twothirds) / (4.0 / 3.0);
-                phiunits = phi_t / morph::mathconst<double>::pi_over_2;
+                phiunits = phi_t / sm::mathconst<double>::pi_over_2;
                 // convert into diagonal units
                 // (add 1 to u2 so that they both cover the range [0,2].
                 u1 = zunits + phiunits;
@@ -1221,7 +1221,7 @@ namespace hp {
                 // (note that we subtract off the modded portion used to
                 // compute the position within the healpix, so this should be
                 // very close to one of the boundaries.)
-                sector = (phi - phi_t) / (morph::mathconst<double>::pi_over_2);
+                sector = (phi - phi_t) / (sm::mathconst<double>::pi_over_2);
                 offset = (int)std::round(sector);
                 assert(std::abs(sector - offset) < EPS);
                 offset = ((offset % 4) + 4) % 4;
@@ -1304,13 +1304,13 @@ namespace hp {
         double radec2y (double r, double d) { return std::cos (d) * std::sin (r); }
         double radec2z (double r, double d) { return std::sin (d); }
 
-        double deg2rad (double d) { return d * morph::mathconst<double>::deg2rad; }
-        double rad2deg (double r) { return r * morph::mathconst<double>::rad2deg; }
+        double deg2rad (double d) { return d * sm::mathconst<double>::deg2rad; }
+        double rad2deg (double r) { return r * sm::mathconst<double>::rad2deg; }
 
         double z2dec(double z) { return std::asin(z); }
         double xy2ra(double x, double y) {
             double a = std::atan2(y, x);
-            if (a < 0) { a += morph::mathconst<double>::two_pi; }
+            if (a < 0) { a += sm::mathconst<double>::two_pi; }
             return a;
         }
         void xyz2radec(double x, double y, double z, double *ra, double *dec) {
@@ -1443,7 +1443,7 @@ namespace hp {
                 }
 
                 z = 2.0/3.0*(x + y + zoff);
-                phi = morph::mathconst<double>::pi_over_4*(x - y + phioff + 2*chp);
+                phi = sm::mathconst<double>::pi_over_4*(x - y + phioff + 2*chp);
 
             } else {
                 /*
@@ -1472,13 +1472,13 @@ namespace hp {
                 if (y == Nside && x == Nside) {
                     phi_t = 0.0;
                 } else {
-                    phi_t = morph::mathconst<double>::pi * (Nside-y) / (2.0 * ((Nside-x) + (Nside-y)));
+                    phi_t = sm::mathconst<double>::pi * (Nside-y) / (2.0 * ((Nside-x) + (Nside-y)));
                 }
 
-                if (phi_t < morph::mathconst<double>::pi_over_4) {
-                    z = 1.0 - mysquare(morph::mathconst<double>::pi * (Nside - x) / ((2.0 * phi_t - morph::mathconst<double>::pi) * Nside)) / 3.0;
+                if (phi_t < sm::mathconst<double>::pi_over_4) {
+                    z = 1.0 - mysquare(sm::mathconst<double>::pi * (Nside - x) / ((2.0 * phi_t - sm::mathconst<double>::pi) * Nside)) / 3.0;
                 } else {
-                    z = 1.0 - mysquare(morph::mathconst<double>::pi * (Nside - y) / (2.0 * phi_t * Nside)) / 3.0;
+                    z = 1.0 - mysquare(sm::mathconst<double>::pi * (Nside - y) / (2.0 * phi_t * Nside)) / 3.0;
                 }
                 assert(0.0 <= std::abs(z) && std::abs(z) <= 1.0);
                 z *= zfactor;
@@ -1486,13 +1486,13 @@ namespace hp {
 
                 // The big healpix determines the phi offset
                 if (issouthpolar(chp))
-                    phi = morph::mathconst<double>::pi_over_2 * (chp-8) + phi_t;
+                    phi = sm::mathconst<double>::pi_over_2 * (chp-8) + phi_t;
                 else
-                    phi = morph::mathconst<double>::pi_over_2 * chp + phi_t;
+                    phi = sm::mathconst<double>::pi_over_2 * chp + phi_t;
             }
 
             if (phi < 0.0)
-                phi += morph::mathconst<double>::two_pi;
+                phi += sm::mathconst<double>::two_pi;
 
             rad = std::sqrt(1.0 - z*z);
             *rx = rad * std::cos(phi);

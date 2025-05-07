@@ -7,6 +7,8 @@
 
 #include <wx/colordlg.h>
 
+#include <sm/vec>
+
 #include <morph/gl/version.h>
 #include <morph/wx/viswx.h>
 #include <morph/TriaxesVisual.h>
@@ -31,13 +33,13 @@ public:
     void setupVisualModels()
     {
         if (this->canvas->ready()) {
-            auto tav = std::make_unique<morph::TriaxesVisual<float, gl_version>> (morph::vec<float,3>({0,0,0}));
+            auto tav = std::make_unique<morph::TriaxesVisual<float, gl_version>> (sm::vec<float,3>({0,0,0}));
             this->canvas->v.bindmodel (tav);
             tav->axisstyle = morph::axisstyle::L;
             // Specify axes min and max with a min and max vector
             //                                         x      y       z
-            tav->input_min = morph::vec<float, 3>({ -1.0f,  0.0f,   0.0f });
-            tav->input_max = morph::vec<float, 3>({  1.0f, 10.0f, 100.0f });
+            tav->input_min = sm::vec<float, 3>({ -1.0f,  0.0f,   0.0f });
+            tav->input_max = sm::vec<float, 3>({  1.0f, 10.0f, 100.0f });
             // Set the axis labels
             tav->xlabel = "x";
             tav->ylabel = "y";

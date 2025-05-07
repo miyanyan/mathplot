@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <sstream>
+#include <sm/vec>
 #include <morph/Visual.h>
 #include <morph/HealpixVisual.h>
 
@@ -14,7 +15,7 @@ int main (int argc, char** argv)
 
     morph::Visual v(1024, 768, "Healpix");
 
-    auto hpv = std::make_unique<morph::HealpixVisual<float>> (morph::vec<float>{0,0,0});
+    auto hpv = std::make_unique<morph::HealpixVisual<float>> (sm::vec<float>{0,0,0});
     v.bindmodel (hpv);
     hpv->indicate_axes = true;
     hpv->set_order (ord);
@@ -37,7 +38,6 @@ int main (int argc, char** argv)
     // Finalize and add
     hpv->finalize();
     v.addVisualModel (hpv);
-
 
     v.keepOpen();
     return 0;

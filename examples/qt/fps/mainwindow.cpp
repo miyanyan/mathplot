@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
 
 #include <morph/qt/viswidget.h>
 #include <morph/GraphVisual.h>
@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
                                          // Access the pointer for the viswidget and set
                                          // needs_reinit to the index of the model that requires
                                          // reinitialization. When paintGL is called (and a GL
-                                         // context is available) the morphologica OpenGL model will
+                                         // context is available) the mathplot OpenGL model will
                                          // be rebuilt.
                                          static_cast<morph::qt::viswidget*>(this->p_vw)->set_model_needs_reinit (0);
                                          // Call the OpenGLWidget's update method. This will cause a
@@ -53,7 +53,7 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::setupHexGridVisual()
 {
     // First set up the hexgrid
-    this->hg = std::make_unique<morph::hexgrid> (0.02f, 15.0f, 0.0f);
+    this->hg = std::make_unique<sm::hexgrid> (0.02f, 15.0f, 0.0f);
     this->hg->setCircularBoundary (4.0f);
 
     // Make some dummy data (a radially symmetric Bessel fn) to make an interesting surface
@@ -66,7 +66,7 @@ void MainWindow::setupHexGridVisual()
     }
 
     // Now create the HexGridVisual
-    morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto hgv = std::make_unique<morph::HexGridVisual<float, morph::qt::gl_version>>(hg.get(), offset);
 
     // In general, you need to bindmodel before calling finalize() (esp. for

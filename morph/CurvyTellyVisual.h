@@ -1,9 +1,9 @@
 #pragma once
 
 #include <array>
-#include <morph/mathconst.h>
-#include <morph/vec.h>
-#include <morph/grid.h>
+#include <sm/mathconst>
+#include <sm/vec>
+#include <sm/grid>
 #include <morph/GridVisual.h>
 
 namespace morph {
@@ -26,7 +26,7 @@ namespace morph {
         // The radius of the curved surface representing the grid
         T radius = T{1};
         // What angle around the circle to draw the telly. 2pi gives a cylinder and is the default.
-        T angle_to_subtend = morph::mathconst<T>::two_pi;
+        T angle_to_subtend = sm::mathconst<T>::two_pi;
         // rotational offset in radians for the rendering. This allows you to arrange the 'centre' of the telly.
         float rotoff = 0.0f;
         // Set this to prevent the edges of the telly from being drawn
@@ -41,12 +41,12 @@ namespace morph {
         bool centroidize = false;
 
         // Note constructor forces GridVisual::centralize to be true, which is important when drawing a curvy CartGrid
-        CurvyTellyVisual(const morph::grid<I, C>* _cg, const morph::vec<float> _offset)
+        CurvyTellyVisual(const sm::grid<I, C>* _cg, const sm::vec<float> _offset)
             : morph::GridVisual<T, I, C, glver>(_cg, _offset) { this->centralize (true); }
 
         void drawcurvygrid()
         {
-            morph::vec<float, 2> dx = this->grid->get_dx();
+            sm::vec<float, 2> dx = this->grid->get_dx();
             float hx = 0.5f * dx[0];
             float vy = 0.5f * dx[1];
 
@@ -78,12 +78,12 @@ namespace morph {
             }
 
             float _x = 0.0f;
-            morph::vec<float> vtx_0; // centre of a Grid element
-            morph::vec<float> vtx_ne, vtx_nw, vtx_se, vtx_sw;
+            sm::vec<float> vtx_0; // centre of a Grid element
+            sm::vec<float> vtx_ne, vtx_nw, vtx_se, vtx_sw;
 
             float angle_per_distance = this->angle_to_subtend / (dx[0]+this->grid->width());
 
-            morph::vec<float> centroid = { 0.0f, 0.0f, 0.0f };
+            sm::vec<float> centroid = { 0.0f, 0.0f, 0.0f };
             unsigned long long int c_count = 0;
             for (unsigned int ri = 0; ri < nrect; ++ri) {
 
@@ -163,9 +163,9 @@ namespace morph {
                 // GridVisual will be coloured the same as the front. To get lighting
                 // effects to look really good, the back of the surface could need the
                 // opposite normal.
-                morph::vec<float> plane1 = vtx_ne - vtx_0;
-                morph::vec<float> plane2 = vtx_se - vtx_0;
-                morph::vec<float> vnorm = plane1.cross (plane2);
+                sm::vec<float> plane1 = vtx_ne - vtx_0;
+                sm::vec<float> plane2 = vtx_se - vtx_0;
+                sm::vec<float> vnorm = plane1.cross (plane2);
                 vnorm.renormalize();
                 this->vertex_push (vnorm, this->vertexNormals);
                 this->vertex_push (vnorm, this->vertexNormals);
@@ -239,43 +239,43 @@ namespace morph {
         }
 
         // Draw a pixel of the top border
-        void draw_top_border (const morph::vec<float> vtx_nw, const morph::vec<float> vtx_ne)
+        void draw_top_border (const sm::vec<float> vtx_nw, const sm::vec<float> vtx_ne)
         {
-            morph::vec<float> vtx_nw_up = vtx_nw;
-            morph::vec<float> vtx_ne_up = vtx_ne;
+            sm::vec<float> vtx_nw_up = vtx_nw;
+            sm::vec<float> vtx_ne_up = vtx_ne;
             vtx_nw_up[2] += this->frame_width;
             vtx_ne_up[2] += this->frame_width;
             this->computeFlatQuad (vtx_nw, vtx_ne, vtx_ne_up, vtx_nw_up, this->frame_clr);
         }
 
         // Draw a pixel of the bottom border
-        void draw_bottom_border (const morph::vec<float> vtx_sw, const morph::vec<float> vtx_se)
+        void draw_bottom_border (const sm::vec<float> vtx_sw, const sm::vec<float> vtx_se)
         {
-            morph::vec<float> vtx_sw_d = vtx_sw;
-            morph::vec<float> vtx_se_d = vtx_se;
+            sm::vec<float> vtx_sw_d = vtx_sw;
+            sm::vec<float> vtx_se_d = vtx_se;
             vtx_sw_d[2] -= this->frame_width;
             vtx_se_d[2] -= this->frame_width;
             this->computeFlatQuad (vtx_sw, vtx_sw_d, vtx_se_d, vtx_se, this->frame_clr);
         }
 
         // Draw an edge pixel (either side).
-        void draw_edge_border (morph::vec<float> vtx_a, morph::vec<float> vtx_b, const morph::vec<float> vtx_c)
+        void draw_edge_border (sm::vec<float> vtx_a, sm::vec<float> vtx_b, const sm::vec<float> vtx_c)
         {
             // vtx_a is the upper vertex
-            morph::vec<float> vtx_a_l = vtx_a;
-            morph::vec<float> vtx_b_l = vtx_b;
-            morph::vec<float> vtx_c_dirn = vtx_a - vtx_c;
+            sm::vec<float> vtx_a_l = vtx_a;
+            sm::vec<float> vtx_b_l = vtx_b;
+            sm::vec<float> vtx_c_dirn = vtx_a - vtx_c;
             vtx_c_dirn.renormalize();
             vtx_c_dirn *= this->frame_width;
             vtx_a_l += vtx_c_dirn;
             vtx_b_l += vtx_c_dirn;
 
             // We have to figure out which way round is clockwise to pass vertices to computeFlatQuad in the right order
-            morph::vec<float> ab = vtx_b - vtx_a;
-            morph::vec<float> a_al = vtx_a_l - vtx_a;
-            morph::vec<float> norm = ab.cross (a_al);
+            sm::vec<float> ab = vtx_b - vtx_a;
+            sm::vec<float> a_al = vtx_a_l - vtx_a;
+            sm::vec<float> norm = ab.cross (a_al);
             norm.renormalize();
-            morph::vec<float> a_rn = vtx_a;
+            sm::vec<float> a_rn = vtx_a;
             a_rn.renormalize();
 
             if (a_rn.dot (norm) < 0.0f) {

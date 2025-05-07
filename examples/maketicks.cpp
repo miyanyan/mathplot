@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sm/range>
 #include <morph/graphing.h>
 
 void usage (char** argv)
@@ -21,7 +22,7 @@ int main (int argc, char** argv)
     }
     std::cout << "Data range: " << a1 << " to " << a2 << std::endl;
 
-    morph::range<float> nticks = {3, 8};
+    sm::range<float> nticks = {3, 8};
     if (argc > 4) {
         nticks.min = std::atof (argv[3]);
         nticks.max = std::atof (argv[4]);

@@ -7,11 +7,12 @@
 
 #include <wx/colordlg.h>
 
+#include <sm/mathconst>
+#include <sm/vvec>
+
 #include <morph/wx/viswx.h>
 
 #include <morph/GraphVisual.h>
-#include <morph/mathconst.h>
-#include <morph/vvec.h>
 
 // Choose your OpenGL version for your app here
 constexpr int gl_version = morph::gl::version_4_1; // options in morph/gl/version.h
@@ -47,7 +48,7 @@ public:
     }
 
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
-    morph::vvec<double> x;
+    sm::vvec<double> x;
     // Member variable used to update GraphVisual
     double dx = 0.0;
     // A pointer to our GraphVisual
@@ -72,13 +73,13 @@ public:
             // We can now add VisualModels to the Visual inside the Widget. Create a GraphVisual
             // object (obtaining a unique_ptr to the object) with a spatial offset within the
             // scene of 0,0,0
-            auto gv = std::make_unique<morph::GraphVisual<double, gl_version>> (morph::vec<float>({0,0,0}));
+            auto gv = std::make_unique<morph::GraphVisual<double, gl_version>> (sm::vec<float>({0,0,0}));
             // This mandatory line of boilerplate code sets the parent pointer in GraphVisual and binds some functions
             this->canvas->v.bindmodel (gv);
             // Allow 3D
             gv->twodimensional = false;
             // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
-            this->x.linspace (-morph::mathconst<double>::pi, morph::mathconst<double>::pi, 100);
+            this->x.linspace (-sm::mathconst<double>::pi, sm::mathconst<double>::pi, 100);
 
             // Set a graph up of y = x^3
             gv->setdata (this->x, (this->x+this->dx).sin());

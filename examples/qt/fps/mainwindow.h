@@ -8,8 +8,9 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 #include <memory>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
 
 class MainWindow : public QMainWindow
 {
@@ -42,12 +43,12 @@ private:
     // is present when the VisualModel::finalize() function is called. This is also true
     // for the HexGrid that is used in the HexGridVisual that's created in the
     // constructor.
-    morph::vvec<float> data;
-    morph::vvec<float> r;
+    sm::vvec<float> data;
+    sm::vvec<float> r;
     float k = 0.0f;
-    std::unique_ptr<morph::hexgrid> hg;
+    std::unique_ptr<sm::hexgrid> hg;
 
     // A location for a graph within the Visual scene inside the viswidget
-    morph::vec<float> graphlocn = {1.5f, 0.0f, 0.0f};
+    sm::vec<float> graphlocn = {1.5f, 0.0f, 0.0f};
 };
 #endif // MAINWINDOW_H

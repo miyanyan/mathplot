@@ -3,7 +3,7 @@
 #include <list>
 #include <array>
 #include <iostream>
-#include "morph/ColourMap.h"
+#include <morph/ColourMap.h>
 
 int main ()
 {

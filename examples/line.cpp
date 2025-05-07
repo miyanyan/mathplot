@@ -2,6 +2,8 @@
  * Draw a line (made of a few segments)
  */
 
+#include <sm/vec>
+#include <sm/vvec>
 #include <morph/Visual.h>
 #include <morph/VisualModel.h>
 
@@ -16,7 +18,7 @@ namespace morph {
         void initializeVertices()
         {
             float lth = 0.1f; // line thickness
-            morph::vvec<vec<float>> p(5);
+            sm::vvec<sm::vec<float>> p(5);
 #ifdef LINE_Z
             // Draw 3 lines with a different angle and one extra line
             p[0] = {-0.5, -0.5, 0};

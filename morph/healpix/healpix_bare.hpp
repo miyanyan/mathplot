@@ -28,7 +28,7 @@
 #include <cstdint>
 #include <cassert>
 #include <algorithm>
-#include <morph/mathconst.h>
+#include <sm/mathconst>
 
 // The healpix namespace contains code from the HEALPix C library, slightly modified.
 namespace hp {
@@ -83,7 +83,7 @@ namespace hp {
     static t_hpc loc2hpc (tloc loc)
     {
         double za = std::fabs (loc.z);
-        double x = loc.phi * morph::mathconst<double>::one_over_two_pi;
+        double x = loc.phi * sm::mathconst<double>::one_over_two_pi;
         if (x < 0.0) {
             x += (int64_t)x + 1.0;
         } else if (x >= 1.0) {
@@ -119,19 +119,19 @@ namespace hp {
             double tmp = jr * jr * (1.0 / 3.0);
             double z = 1.0 - tmp;
             double s = std::sqrt (tmp * (2.0 - tmp));
-            double phi = morph::mathconst<double>::pi_over_4 * (jpll[hpc.f] + (hpc.x - hpc.y) / jr);
+            double phi = sm::mathconst<double>::pi_over_4 * (jpll[hpc.f] + (hpc.x - hpc.y) / jr);
             return hp::tloc{ z, s, phi };
         } else if (jr > 3.0) {
             jr = 4.0 - jr;
             double tmp = jr * jr * (1.0 / 3.0);
             double z = tmp - 1.0;
             double s = std::sqrt(tmp * (2.0 - tmp));
-            double phi = morph::mathconst<double>::pi_over_4 * (jpll[hpc.f] + (hpc.x - hpc.y) / jr);
+            double phi = sm::mathconst<double>::pi_over_4 * (jpll[hpc.f] + (hpc.x - hpc.y) / jr);
             return tloc{ z, s, phi };
         } else {
             double z = (2.0 - jr) * (2.0 / 3.0);
             double s = std::sqrt((1.0 + z) * (1.0 - z));
-            double phi = morph::mathconst<double>::pi_over_4 * (jpll[hpc.f] + hpc.x - hpc.y);
+            double phi = sm::mathconst<double>::pi_over_4 * (jpll[hpc.f] + hpc.x - hpc.y);
             return tloc{ z, s, phi };
         }
     }
@@ -139,7 +139,7 @@ namespace hp {
     static tloc ang2loc (t_ang ang)
     {
         double cth = std::cos (ang.theta), sth = std::sin (ang.theta);
-        if (sth < 0.0) { sth = -sth; ang.phi += morph::mathconst<double>::pi; }
+        if (sth < 0.0) { sth = -sth; ang.phi += sm::mathconst<double>::pi; }
         return tloc{ cth, sth, ang.phi };
     }
 

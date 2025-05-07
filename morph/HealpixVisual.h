@@ -1,12 +1,12 @@
 #pragma once
 
 #include <cstdint>
+#include <sm/scale>
+#include <sm/vec>
+#include <sm/vvec>
+#include <morph/healpix/healpix_bare.hpp>
 #include <morph/VisualModel.h>
 #include <morph/ColourMap.h>
-#include <morph/scale.h>
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/healpix/healpix_bare.hpp>
 
 namespace morph {
     /*
@@ -17,7 +17,7 @@ namespace morph {
     struct HealpixVisual : public morph::VisualModel<glver>
     {
     public:
-        HealpixVisual(const morph::vec<float> _offset) : morph::VisualModel<glver> (_offset)
+        HealpixVisual(const sm::vec<float> _offset) : morph::VisualModel<glver> (_offset)
         {
             this->colourScale.reset();
             this->colourScale.do_autoscale = true;
@@ -45,7 +45,7 @@ namespace morph {
 
             if (this->colourdata == nullptr) {
                 // Scale data
-                morph::vvec<float> scaled_data (this->pixeldata.size());
+                sm::vvec<float> scaled_data (this->pixeldata.size());
                 if (this->colourScale.do_autoscale == true) { this->colourScale.reset(); }
                 this->colourScale.transform (this->pixeldata, scaled_data);
 
@@ -78,10 +78,10 @@ namespace morph {
             int64_t p0 = 0;
             hp::t_ang ang = hp::ring2ang (this->nside, p0);
             hp::t_vec pv = hp::loc2vec (hp::ang2loc (ang));
-            morph::vec<float> vpf0 = morph::vec<double>({pv.x, pv.y, pv.z}).as_float();
+            sm::vec<float> vpf0 = sm::vec<double>({pv.x, pv.y, pv.z}).as_float();
             ang = hp::ring2ang (this->nside, p0+1);
             pv = hp::loc2vec (hp::ang2loc (ang));
-            morph::vec<float> vpf1 = morph::vec<double>({pv.x, pv.y, pv.z}).as_float();
+            sm::vec<float> vpf1 = sm::vec<double>({pv.x, pv.y, pv.z}).as_float();
             float vvdist = (vpf0-vpf1).length();
 
             for (int64_t p = 0; p < n_p; ++p) {
@@ -89,8 +89,8 @@ namespace morph {
                 hp::t_ang ang = hp::ring2ang (this->nside, p);
                 // Find the location of the pixel
                 hp::t_vec pv = hp::loc2vec (hp::ang2loc (ang));
-                // Convert it into a morph::vec
-                morph::vec<float> vpf = morph::vec<double>({pv.x, pv.y, pv.z}).as_float();
+                // Convert it into a sm::vec
+                sm::vec<float> vpf = sm::vec<double>({pv.x, pv.y, pv.z}).as_float();
 
                 this->computeSphere (vpf, morph::colour::black, vvdist * 0.05f, 18, 18);
             }
@@ -104,7 +104,7 @@ namespace morph {
                 // nest2ang and ring2ang return same angle for 12 faces in a zeroth order healpix
                 hp::t_ang ang = hp::nest2ang (this->nside, p);
                 hp::t_vec pv = hp::loc2vec (hp::ang2loc (ang));
-                morph::vec<float> vpf = (morph::vec<double>({pv.x, pv.y, pv.z}) * this->r).as_float();
+                sm::vec<float> vpf = (sm::vec<double>({pv.x, pv.y, pv.z}) * this->r).as_float();
                 std::array<float, 3> sc = this->cm.convert (this->pixeldata[p]);
                 this->computeSphere (vpf, sc, this->r/30.0f, 18, 18);
                 this->addLabel (std::string("face ") + std::to_string(f), (vpf  * this->r * 1.15f),
@@ -132,7 +132,7 @@ namespace morph {
          * \param i_nb output The two neighbours forwards or across
          */
         void find_quad_neighbour (const int64_t& x, const int64_t neighbxor,
-                                  const morph::vec<int64_t, 4>& i_up, morph::vec<int64_t, 2>& i_nb)
+                                  const sm::vec<int64_t, 4>& i_up, sm::vec<int64_t, 2>& i_nb)
         {
             if (i_up > -1LL == false) { return; }
             int64_t nside_down = 1LL << (this->k - 1);
@@ -176,20 +176,20 @@ namespace morph {
         // 1, 2, 4, 8 means NE, NW, SW, SE.
         // 1 | 2<<8 means the neighbour is face 1 and it joins on its NW edge.
         // 0 | 4<<8 means the neighbour is face 0 and it joins on its SW edge.
-        std::map<int32_t, morph::vec<int32_t, 4>> face_map{ {0,  {1 | 2<<8,  5  | 2<<8 }},
-                                                            {1,  {2 | 2<<8,  6  | 2<<8 }},
-                                                            {2,  {3 | 2<<8,  7  | 2<<8 }},
-                                                            {3,  {0 | 2<<8,  4  | 2<<8 }},
+        std::map<int32_t, sm::vec<int32_t, 4>> face_map{ {0,  {1 | 2<<8,  5  | 2<<8 }},
+                                                         {1,  {2 | 2<<8,  6  | 2<<8 }},
+                                                         {2,  {3 | 2<<8,  7  | 2<<8 }},
+                                                         {3,  {0 | 2<<8,  4  | 2<<8 }},
 
-                                                            {4,  {0 | 4<<8,  8  | 2<<8 }},
-                                                            {5,  {1 | 4<<8,  9  | 2<<8 }},
-                                                            {6,  {2 | 4<<8,  10 | 2<<8 }},
-                                                            {7,  {3 | 4<<8,  11 | 2<<8 }},
+                                                         {4,  {0 | 4<<8,  8  | 2<<8 }},
+                                                         {5,  {1 | 4<<8,  9  | 2<<8 }},
+                                                         {6,  {2 | 4<<8,  10 | 2<<8 }},
+                                                         {7,  {3 | 4<<8,  11 | 2<<8 }},
 
-                                                            {8,  {5 | 4<<8,  9  | 4<<8 }},
-                                                            {9,  {6 | 4<<8,  10 | 4<<8 }},
-                                                            {10, {7 | 4<<8,  11 | 4<<8 }},
-                                                            {11, {4 | 4<<8,  8  | 4<<8 }}  };
+                                                         {8,  {5 | 4<<8,  9  | 4<<8 }},
+                                                         {9,  {6 | 4<<8,  10 | 4<<8 }},
+                                                         {10, {7 | 4<<8,  11 | 4<<8 }},
+                                                         {11, {4 | 4<<8,  8  | 4<<8 }}  };
 
         // corners to be in rotated order
         void fill_square (const std::array<hp::t_hpd, 4>& corners)
@@ -212,7 +212,7 @@ namespace morph {
         }
 
         // corners to be in raster order
-        void fill_square (const morph::vec<int64_t, 4>& corners_nest)
+        void fill_square (const sm::vec<int64_t, 4>& corners_nest)
         {
             this->indices.push_back (this->idx + corners_nest[0]);
             this->indices.push_back (this->idx + corners_nest[1]);
@@ -353,10 +353,10 @@ namespace morph {
         void healpix_triangles_by_nest()
         {
             // For colours and relief, we scale data
-            morph::vvec<float> scaled_colours (this->pixeldata.size());
+            sm::vvec<float> scaled_colours (this->pixeldata.size());
             if (this->colourScale.do_autoscale == true) { this->colourScale.reset(); }
             this->colourScale.transform (this->pixeldata, scaled_colours);
-            morph::vvec<float> scaled_relief (this->pixeldata.size());
+            sm::vvec<float> scaled_relief (this->pixeldata.size());
             if (this->reliefScale.do_autoscale == true) { this->reliefScale.reset(); }
             this->reliefScale.transform (this->pixeldata, scaled_relief);
 
@@ -377,10 +377,10 @@ namespace morph {
 
                 // Find the location of the pixel
                 hp::t_vec pv = hp::loc2vec (hp::ang2loc (ang));
-                // Convert it into a morph::vec and modify according to radius and relief
+                // Convert it into a sm::vec and modify according to radius and relief
                 float _r = this->r;
                 if (this->relief == true) { _r += scaled_relief[p]; }
-                morph::vec<float> vpf = (morph::vec<double>({pv.x, pv.y, pv.z}) * _r).as_float();
+                sm::vec<float> vpf = (sm::vec<double>({pv.x, pv.y, pv.z}) * _r).as_float();
 
                 // Make a colour from the pixeldata
                 std::array<float, 3> sc = morph::colour::black;
@@ -413,7 +413,7 @@ namespace morph {
                 for (int64_t i = f * nside_down * nside_down; i < (f+1) * nside_down * nside_down; ++i) {
 
                     // i_up are the indices of the order up. Draw the first two triangles with these indices (the main quad)
-                    morph::vec<int64_t, 4> i_up = { i * 4, i * 4 + 1, i * 4 + 2, i * 4 + 3 };
+                    sm::vec<int64_t, 4> i_up = { i * 4, i * 4 + 1, i * 4 + 2, i * 4 + 3 };
                     this->fill_square (i_up);
 
                     // In the simplest case we draw just one triangle pair for each face before we
@@ -424,18 +424,18 @@ namespace morph {
                         hp::t_hpd xyf = hp::nest2hpd (nside_down, i);
 
                         // Find the neighbour quad 'forwards'
-                        morph::vec<int64_t, 2> i_fwd = { i_up[1], i_up[3] };
+                        sm::vec<int64_t, 2> i_fwd = { i_up[1], i_up[3] };
                         find_quad_neighbour (xyf.x, 0x5, i_up, i_fwd);
                         if (i_fwd[0] > -1) { this->fill_square (i_fwd[0], i_fwd[1], i_up[1], i_up[3]); }
 
                         // And neighbour 'across'
-                        morph::vec<int64_t, 2> i_across = { i_up[2], i_up[3] };
+                        sm::vec<int64_t, 2> i_across = { i_up[2], i_up[3] };
                         find_quad_neighbour (xyf.y, 0xa, i_up, i_across);
                         if (i_across[0] > -1) { this->fill_square (i_across[0], i_across[1], i_up[2], i_up[3]); }
 
                         // pass two elements in even though we only need one to use same find_quad_neighbour() function
-                        morph::vec<int64_t, 2> i_fwdagain = { i_across[1], i_across[1] };
-                        morph::vec<int64_t, 4> i_up2 = { i_across[1], i_across[0], 0, 0};
+                        sm::vec<int64_t, 2> i_fwdagain = { i_across[1], i_across[1] };
+                        sm::vec<int64_t, 4> i_up2 = { i_across[1], i_across[0], 0, 0};
                         find_quad_neighbour (xyf.x, 0x5, i_up2, i_fwdagain);
 
                         if (i_up[3] > -1 && i_fwd[1] > -1 && i_across[1] > -1 && i_fwdagain[0] > -1) {
@@ -469,7 +469,7 @@ namespace morph {
         // Draw a small set of coordinate arrows with origin at pixel 0
         void draw_coordaxes()
         {
-            morph::vec<float> vpf0 = {0, 0, this->r};
+            sm::vec<float> vpf0 = {0, 0, this->r};
 
             // draw tubes
             float tlen = this->r * 0.1f;
@@ -554,13 +554,13 @@ namespace morph {
         float r = 1.0f;
 
         // What data to show on the healpix? Indexed by NEST index
-        morph::vvec<T> pixeldata;
+        sm::vvec<T> pixeldata;
 
         // If this is non-null, it'll be used to colour the Fourpi instead of pixeldata.
         std::vector<std::array<float, 3>>* colourdata = nullptr;
 
         // A colour scaling
-        morph::scale<T> colourScale;
+        sm::scale<T> colourScale;
 
         // A colourmap to translate pixeldata into colours
         morph::ColourMap<T> cm;
@@ -569,7 +569,7 @@ namespace morph {
         bool relief = false;
 
         // A scaling for pixeldata -> additional radius for relief
-        morph::scale<T> reliefScale;
+        sm::scale<T> reliefScale;
 
         // Show spheres at vertex locations? (mainly for debug)
         bool show_spheres = false;

@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <morph/vec.h>
-#include <morph/vvec.h>
-#include <morph/hexgrid.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/hexgrid>
 
 #include <morph/qt/viswidget.h>
 #include <morph/GraphVisual.h>
@@ -31,7 +31,7 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::setupHexGridVisual()
 {
     // First set up the hexgrid
-    this->hg = std::make_unique<morph::hexgrid> (0.01f, 3.0f, 0.0f);
+    this->hg = std::make_unique<sm::hexgrid> (0.01f, 3.0f, 0.0f);
     this->hg->setCircularBoundary (0.6f);
 
     // Make some dummy data (with sine waves) to make a non-flat surface
@@ -41,7 +41,7 @@ void MainWindow::setupHexGridVisual()
     }
 
     // Now create the HexGridVisual
-    morph::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
+    sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
     auto hgv = std::make_unique<morph::HexGridVisual<float, morph::qt::gl_version>>(hg.get(), offset);
 
     // In general, you need to bindmodel before calling finalize() (esp. for
@@ -80,7 +80,7 @@ void MainWindow::on_pushButton_clicked()
     static_cast<morph::qt::viswidget*>(this->p_vw)->v.bindmodel (gv);
 
     gv->twodimensional = false;
-    morph::vvec<double> x;
+    sm::vvec<double> x;
     x.linspace (-1.5, 1.5, 25);
     gv->setdata (x, x.pow(2));
 
