@@ -4,10 +4,10 @@
 #include <vector>
 #include <fstream>
 
-#include <morph/bezcoord.h>
-#include <morph/bezcurvepath.h>
+#include <sm/bezcoord>
+#include <sm/bezcurvepath>
 
-#include "morph/ReadCurves.h"
+#include <morph/ReadCurves.h>
 
 int main()
 {
@@ -16,9 +16,9 @@ int main()
     try {
         morph::ReadCurves r("../../tests/whiskerbarrels_withcentres.svg");
         //r.save (0.001f);
-        morph::bezcurvepath<float> bcp = r.getCorticalPath();
+        sm::bezcurvepath<float> bcp = r.getCorticalPath();
         bcp.computePoints (0.01f);
-        std::vector<morph::bezcoord<float>> pts = bcp.getPoints();
+        std::vector<sm::bezcoord<float>> pts = bcp.getPoints();
         auto i = pts.begin();
         while (i != pts.end()) {
             std::cout << *i << std::endl;

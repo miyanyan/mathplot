@@ -2,13 +2,13 @@
 #include <iostream>
 #include <cmath>
 
-#include <morph/hexgrid.h>
-#include <morph/vec.h>
+#include <sm/hexgrid>
+#include <sm/vec>
 
-#include "morph/Visual.h"
-#include "morph/HexGridVisual.h"
-#include "morph/ColourMap.h"
-#include "morph/tools.h"
+#include <morph/Visual.h>
+#include <morph/HexGridVisual.h>
+#include <morph/ColourMap.h>
+#include <morph/tools.h>
 
 int main (int argc, char** argv)
 {
@@ -25,7 +25,7 @@ int main (int argc, char** argv)
     std::cout << "NB: Provide a cmd line arg (anything) to see the graphical window for this program" << std::endl;
 
     try {
-        morph::hexgrid hg(0.01, 3.0f, 0.0f);
+        sm::hexgrid hg(0.01, 3.0f, 0.0f);
         hg.setEllipticalBoundary (1, 0.7);
 
         std::cout << hg.extent() << std::endl;
@@ -44,7 +44,7 @@ int main (int argc, char** argv)
         }
         std::cout << "Created " << data.size() << " floats in data" << std::endl;
 
-        morph::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
+        sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
         v.bindmodel (hgv);
         hgv->setScalarData (&data);

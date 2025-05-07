@@ -18,7 +18,7 @@ int main()
         morph::ReadCurves r("../../tests/trial.svg");
         sm::bezcurvepath<float> bcp = r.getCorticalPath();
         bcp.computePoints (0.01f);
-        std::vector<morph::bezcoord<float>> pts = bcp.getPoints();
+        std::vector<sm::bezcoord<float>> pts = bcp.getPoints();
         std::cout << "Got " << pts.size() << " points with getPoints()" << std::endl;
         auto i = pts.begin();
         while (i != pts.end()) {

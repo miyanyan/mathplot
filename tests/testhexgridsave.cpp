@@ -1,53 +1,52 @@
+#include <iostream>
+
 // include HexGrid with the optional load() and save() methods
 #define HEXGRID_COMPILE_LOAD_AND_SAVE 1
-#include <morph/hexgrid.h>
+#include <sm/hexgrid>
+
+#include <sm/vec>
 
 #include <morph/ReadCurves.h>
 #include <morph/tools.h>
 #include <morph/ColourMap.h>
-#include <iostream>
 #include <morph/Visual.h>
-#include <morph/vec.h>
 #include <morph/HexGridVisual.h>
-
-using namespace morph;
-using namespace std;
 
 int main()
 {
     int rtn = 0;
     unsigned int hexnum = 0;
 
-    cout << "Start " << tools::timeNow() << endl;
+    std::cout << "Start " << morph::tools::timeNow() << std::endl;
     // Create and then write a hexgrid
     try {
-        string pwd = tools::getPwd();
-        string curvepath = "../../tests/trial.svg";
+        std::string pwd = morph::tools::getPwd();
+        std::string curvepath = "../../tests/trial.svg";
 
-        ReadCurves r(curvepath);
+        morph::ReadCurves r(curvepath);
 
-        hexgrid hg(0.01, 3, 0);
+        sm::hexgrid hg(0.01, 3, 0);
         hg.setBoundary (r.getCorticalPath());
 
-        cout << hg.extent() << endl;
+        std::cout << hg.extent() << std::endl;
 
         hexnum = hg.num();
-        cout << "Number of hexes in grid:" << hg.num() << endl;
-        cout << "Last vector index:" << hg.lastVectorIndex() << endl;
+        std::cout << "Number of hexes in grid:" << hg.num() << std::endl;
+        std::cout << "Last vector index:" << hg.lastVectorIndex() << std::endl;
 
         hg.save("../trialhexgrid.h5");
 
-    } catch (const exception& e) {
-        cerr << "Caught exception reading trial.svg: " << e.what() << endl;
-        cerr << "Current working directory: " << tools::getPwd() << endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Caught exception reading trial.svg: " << e.what() << std::endl;
+        std::cerr << "Current working directory: " << morph::tools::getPwd() << std::endl;
         rtn = -1;
     }
-    cout << "Generated " << tools::timeNow() << endl;
+    std::cout << "Generated " << morph::tools::timeNow() << std::endl;
     // Now read it back
     try {
-        hexgrid hg("../trialhexgrid.h5");
+        sm::hexgrid hg("../trialhexgrid.h5");
 
-        cout << "Read " << tools::timeNow() << endl;
+        std::cout << "Read " << morph::tools::timeNow() << std::endl;
 
         // Make sure read-in grid has same number of hexes as the generated one.
         if (hexnum != hg.num()) { rtn = -1; }
@@ -55,7 +54,7 @@ int main()
         // Create a hexgrid Visual
         morph::Visual v(1600, 1000, "hexgrid");
         v.lightingEffects();
-        morph::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
+        sm::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
         auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
         v.bindmodel (hgv);
         // Set up data for the HexGridVisual and colour hexes according to their state as being boundary/inside/domain, etc
@@ -98,9 +97,9 @@ int main()
             v.render();
         }
 
-    } catch (const exception& e) {
-        cerr << "Caught exception reading trial.svg: " << e.what() << endl;
-        cerr << "Current working directory: " << tools::getPwd() << endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Caught exception reading trial.svg: " << e.what() << std::endl;
+        std::cerr << "Current working directory: " << morph::tools::getPwd() << std::endl;
         rtn = -1;
     }
     return rtn;
