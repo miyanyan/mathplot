@@ -1,5 +1,5 @@
 {
-    "name": "morphologica",
+    "name": "mathplot",
     "dependencies": [
         "armadillo",
         {
