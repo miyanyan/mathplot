@@ -99,9 +99,6 @@ add_test(testTools testTools)
 add_executable(testloadpng testloadpng.cpp)
 add_test(testloadpng testloadpng)
 
-#add_executable(test_flags test_flags.cpp)
-#add_test(test_flags test_flags)
-
 add_executable(testgraphnumberformat testgraphnumberformat.cpp)
 add_test(testgraphnumberformat testgraphnumberformat)
 

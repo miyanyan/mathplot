@@ -12,12 +12,12 @@
 #include <limits>
 #include <list>
 #include <string>
-#include <morph/mathconst.h>
-#include <morph/hexgrid.h>
-#include <morph/hdfdata.h>
+#include <sm/mathconst>
+#include <sm/hexgrid>
+#include <sm/hdfdata>
 
-namespace morph {
-
+namespace morph
+{
     /*!
      * Dirichlet domain vertex class.
      *
@@ -29,24 +29,24 @@ namespace morph {
     class DirichVtx {
     public:
         //! The coordinate data for the main vertex represented.
-        morph::vec<Flt, 2> v = { Flt{0}, Flt{0} };
+        sm::vec<Flt, 2> v = { Flt{0}, Flt{0} };
 
         /*!
          * The series of points that make up the edge between the this vertex (v) and its vertex
          * neighbour (vn). Should order by size.
          */
-        std::list<morph::vec<Flt, 2> > pathto_neighbour;
+        std::list<sm::vec<Flt, 2> > pathto_neighbour;
 
         /*!
          * Series of points that make the edge between thsi vertex and the next one in the list.
          */
-        std::list<morph::vec<Flt, 2> > pathto_next;
+        std::list<sm::vec<Flt, 2> > pathto_next;
 
         /*! The location of the neighbouring vertex - necessary for computing a Dirichlet-ness
          * metric. Intended to be populated after a set of vertices has been created, in a "second
          * pass" of a program.
          */
-        morph::vec<Flt, 2>vn = { Flt{0}, Flt{0} };
+        sm::vec<Flt, 2>vn = { Flt{0}, Flt{0} };
 
         /*!
          * The value of the domain for which this vertex is a vertex. This is essentially the
@@ -74,7 +74,7 @@ namespace morph {
          * Dirichlet domain for which this vertex is a vertex, which is stored in @f. The other 2
          * domains are stored here. If one of the domains is "outside" the boundary set -1.0f.
          */
-        morph::vec<Flt, 2> neighb = { Flt{0}, Flt{0} };
+        sm::vec<Flt, 2> neighb = { Flt{0}, Flt{0} };
 
         /*!
          * An iterator into the accompanying list of hexes. Intended to be an iterator into
@@ -82,13 +82,13 @@ namespace morph {
          * DirichVtx. Important so that from one DirichVtx, we can find our way along an edge to
          * the next vertex.
          */
-        std::list<hex>::iterator hi;
+        std::list<sm::hex>::iterator hi;
 
         /*!
          * P_i is a point on the line. In this code, I project A_i+1 onto the line to find the
          * actual point P_i.
          */
-        morph::vec<Flt, 2> P_i = { Flt{0}, Flt{0} };
+        sm::vec<Flt, 2> P_i = { Flt{0}, Flt{0} };
 
         //! For marking vertices in a list as finsihed with, rather than erasing from that list.
         bool closed = false;
@@ -110,22 +110,22 @@ namespace morph {
          * Construct with passed in Flt coord, set the threshold on the basis of being passed in
          * the hex to hex distance d.
          */
-        DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d)
+        DirichVtx (const sm::vec<Flt, 2>& p, const Flt& d)
             : v(p)
         {
             // This is half of the shortest possible distance in the y direction between two
             // adjacent hex vertices.
-            this->threshold = d/(4.0f*morph::mathconst<float>::sqrt_of_3);
+            this->threshold = d/(4.0f*sm::mathconst<float>::sqrt_of_3);
         }
 
         /*!
          * Construct with passed in Flt pair; set the threshold on the basis of being passed in
          * the hex to hex distance d and also set the value of the vertex to be @id
          */
-        DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d, const Flt& id)
+        DirichVtx (const sm::vec<Flt, 2>& p, const Flt& d, const Flt& id)
             : v(p), f(id)
         {
-            this->threshold = d/(4.0f*morph::mathconst<float>::sqrt_of_3);
+            this->threshold = d/(4.0f*sm::mathconst<float>::sqrt_of_3);
         }
 
         /*!
@@ -133,10 +133,11 @@ namespace morph {
          * the hex to hex distance d, set the value of the vertex to be @id and finally, set
          * this->neighb (with @oth).
          */
-        DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d, const Flt& id, const morph::vec<Flt, 2>& oth)
+        DirichVtx (const sm::vec<Flt, 2>& p, const Flt& d, const Flt& id,
+                   const sm::vec<Flt, 2>& oth)
             : v(p), f(id), neighb(oth)
         {
-            this->threshold = d/(4.0f*morph::mathconst<float>::sqrt_of_3);
+            this->threshold = d/(4.0f*sm::mathconst<float>::sqrt_of_3);
         }
 
         /*!
@@ -144,14 +145,16 @@ namespace morph {
          * the hex to hex distance d, set the value of the vertex to be @id, set this->neighb
          * (with @oth) and finally, set the list<hex> iterator @hex.
          */
-        DirichVtx (const morph::vec<Flt, 2>& p, const Flt& d, const Flt& id,
-                   const morph::vec<Flt, 2>& oth, const std::list<hex>::iterator hex)
-            : v(p), f(id), neighb(oth), hi(hex) {
-            this->threshold = d/(4.0f*morph::mathconst<float>::sqrt_of_3);
+        DirichVtx (const sm::vec<Flt, 2>& p, const Flt& d, const Flt& id,
+                   const sm::vec<Flt, 2>& oth, const std::list<sm::hex>::iterator hex)
+            : v(p), f(id), neighb(oth), hi(hex)
+        {
+            this->threshold = d/(4.0f*sm::mathconst<float>::sqrt_of_3);
         }
 
         //! Comparison operation. Note: Ignores this->vn!
-        bool operator< (const DirichVtx<Flt>& rhs) const {
+        bool operator< (const DirichVtx<Flt>& rhs) const
+        {
             // Compare value:
             if (this->f < rhs.f) {
                 return true;
@@ -190,7 +193,8 @@ namespace morph {
         }
 
         //! Compare @other with this->v. Return true if they're the same.
-        bool compare (const morph::vec<Flt, 2>& other) {
+        bool compare (const sm::vec<Flt, 2>& other)
+        {
             // Equality too strong a test. Use this->threshold Is distance from v to other smaller
             // than threshold? If so return true.
             Flt distance = std::sqrt ( (other[0]-v[0])*(other[0]-v[0])
@@ -202,7 +206,8 @@ namespace morph {
         }
 
         //! Is this DirichVtx unset? If its this->v value is (max,max), then yes.
-        bool unset() {
+        bool unset()
+        {
             if (this->v[0] == std::numeric_limits<Flt>::max()
                 && this->v[1] == std::numeric_limits<Flt>::max()) {
                 return true;
@@ -213,8 +218,8 @@ namespace morph {
         /*!
          * Compute line length of the line between coordinates @coord0 and @coord1
          */
-        static Flt line_length (const morph::vec<Flt, 2>& coord0,
-                                const morph::vec<Flt, 2>& coord1) {
+        static Flt line_length (const sm::vec<Flt, 2>& coord0, const sm::vec<Flt, 2>& coord1)
+        {
             Flt c01 = std::sqrt ((coord0[0] - coord1[0]) * (coord0[0] - coord1[0])
                                  + (coord0[1] - coord1[1]) * (coord0[1] - coord1[1]));
             return c01;
@@ -224,12 +229,13 @@ namespace morph {
          * For the three coordinates c0, c1, c2, compute the angle at coordinate number @angleFor
          * (counting from 0).
          *
-         * Could go into morph::tools or morph::maths or something.
+         * Could go into sm::algo?
          */
-        static Flt compute_angle (const morph::vec<Flt, 2>& c0,
-                                  const morph::vec<Flt, 2>& c1,
-                                  const morph::vec<Flt, 2>& c2,
-                                  const unsigned int angleFor) {
+        static Flt compute_angle (const sm::vec<Flt, 2>& c0,
+                                  const sm::vec<Flt, 2>& c1,
+                                  const sm::vec<Flt, 2>& c2,
+                                  const unsigned int angleFor)
+        {
             Flt angle = -1.0f;
             if (angleFor == 0) {
                 angle = std::atan2 (c2[1] - c0[1], c2[0] - c0[0])
@@ -251,7 +257,8 @@ namespace morph {
          * Find the minimum distance from the point p to the Pi line defined in this object by P_i,
          * A_i (aka v).
          */
-        Flt compute_distance_to_line (const morph::vec<Flt, 2>& p) const {
+        Flt compute_distance_to_line (const sm::vec<Flt, 2>& p) const
+        {
             // Find angle between Ai--Pi and Ai--p
             Flt angle = DirichVtx<Flt>::compute_angle (p, this->v, this->P_i, 1);
             // And distance from p to Ai
@@ -268,14 +275,13 @@ namespace morph {
          * information, it's possible to compute the gradient of the line that emerges from A_i
          * and heads towards the Dirichlet domain centre.
          */
-        void compute_line_to_centre (const morph::vec<Flt, 2>& Aim1,
-                                     const morph::vec<Flt, 2>& Aip1) {
-
+        void compute_line_to_centre (const sm::vec<Flt, 2>& Aim1, const sm::vec<Flt, 2>& Aip1)
+        {
             /*
              * 1. Compute phi, the angle Bi Ai Ai-1 using law of cosines
              */
             Flt phi = this->compute_angle (vn, v, Aim1, 1);
-            Flt theta = morph::mathconst<float>::pi - phi;
+            Flt theta = sm::mathconst<float>::pi - phi;
 
             /*
              * 2. Compute the line P_i wrt to Ai and Ai+1
@@ -297,7 +303,7 @@ namespace morph {
         }
 
         //! Save data from the DirichVtx. Not saving ALL members of this class (e.g. omitting threshold)
-        void save (hdfdata& data, const std::string& pathroot) const
+        void save (sm::hdfdata& data, const std::string& pathroot) const
         {
             std::string p("");
             p = pathroot + "/v";

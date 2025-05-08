@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cmath>
 
-#include <morph/hexgrid.h>
-#include <morph/vec.h>
+#include <sm/hexgrid>
+#include <sm/vec>
 
 #include "morph/Visual.h"
 #include "morph/HexGridVisual.h"
@@ -25,7 +25,7 @@ int main (int argc, char** argv)
     std::cout << "NB: Provide a cmd line arg (anything) to see the graphical window for this program" << std::endl;
 
     try {
-        morph::hexgrid hg(0.01, 3, 0);
+        sm::hexgrid hg(0.01, 3, 0);
         hg.setCircularBoundary (1);
 
         std::cout << hg.extent() << std::endl;
@@ -44,7 +44,7 @@ int main (int argc, char** argv)
         }
         std::cout << "Created " << data.size() << " floats in data" << std::endl;
 
-        morph::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
+        sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
         auto hgv = std::make_unique<morph::HexGridVisual<float>> (&hg, offset);
         v.bindmodel (hgv);
         hgv->setScalarData (&data);

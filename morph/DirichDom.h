@@ -14,11 +14,13 @@
 #include <vector>
 #include <set>
 #include <sstream>
+
+#include <sm/optimization/nm_simplex>
+#include <sm/hdfdata>
+#include <sm/hex>
+#include <sm/hexgrid>
+
 #include <morph/DirichVtx.h>
-#include <morph/optimization/nm_simplex.h>
-#include <morph/hdfdata.h>
-#include <morph/hex.h>
-#include <morph/hexgrid.h>
 
 namespace morph {
 
@@ -48,7 +50,7 @@ namespace morph {
         Flt edge_deviation = 0.0;
 
         //! The best centre for the domain. Called P in Honda 1983.
-        morph::vec<Flt, 2> centre = { Flt{0}, Flt{0} };
+        sm::vec<Flt, 2> centre = { Flt{0}, Flt{0} };
 
         //! Return the number of vertices
         unsigned int numVertices() const { return this->vertices.size(); }
@@ -56,8 +58,8 @@ namespace morph {
         /*!
          * Compute the perpendicular distance from point p to the line defined by points a and b.
          */
-        static Flt compute_distance_to_line (const morph::vec<Flt, 2>& p,
-                                             const morph::vec<Flt, 2>& a, const morph::vec<Flt, 2>& b)
+        static Flt compute_distance_to_line (const sm::vec<Flt, 2>& p,
+                                             const sm::vec<Flt, 2>& a, const sm::vec<Flt, 2>& b)
         {
             // Find angle between Ai--Pi and Ai--p
             Flt angle = DirichVtx<Flt>::compute_angle (p, a, b, 1);
@@ -79,7 +81,7 @@ namespace morph {
             Flt dcount = 0.0;
             for (DirichVtx<Flt> vtx : this->vertices) {
                 // vtx.v is the current coord, lastvtx.v is the prev coord. These mark the two ends of the line.
-                for (morph::vec<Flt, 2> xi : vtx.pathto_next) {
+                for (sm::vec<Flt, 2> xi : vtx.pathto_next) {
                     // Find perp. distance from xi to x0-x1 line.
                     Flt dist = DirichDom<Flt>::compute_distance_to_line (xi, vtx.v, lastvtx.v);
                     dist *= dist;
@@ -104,7 +106,7 @@ namespace morph {
          * means we go around the boundary, marking hexes in straight lines in all possible inward
          * directions from each boundary hex. Simples.
          */
-        void compute_area (hexgrid* hg, const std::vector<Flt>& f)
+        void compute_area (sm::hexgrid* hg, const std::vector<Flt>& f)
         {
             // Start at one of the vertices. Follow the edge of one vertex, counting/marking hexes
             // as you go. Continue around the perimeter until you get back to the start. Now fill in
@@ -112,11 +114,11 @@ namespace morph {
 
             // Find a coordinate that is situated on the border of the domain
             typename std::list<DirichVtx<Flt>>::const_iterator dv = this->vertices.begin();
-            morph::vec<Flt, 2> firstborder = dv->pathto_next.front();
+            sm::vec<Flt, 2> firstborder = dv->pathto_next.front();
 
             // Now find a hex in hg that a) has this coordinate on it as a vertex and b) has the
             // correct ID. This will be the first hex on the boundary.
-            std::list<hex>::iterator firsthex = hg->hexen.begin();
+            std::list<sm::hex>::iterator firsthex = hg->hexen.begin();
             while (firsthex != hg->hexen.end()) {
                 if (firsthex->contains_vertex (firstborder) && f[firsthex->vi] == this->f) {
                     // This hex is on the border of this domain.
@@ -129,13 +131,13 @@ namespace morph {
             // and HEX_USER_FLAG_0 for every domain hex.
 
             // Boundary hex iterator
-            std::list<hex>::iterator bhi = firsthex;
+            std::list<sm::hex>::iterator bhi = firsthex;
             // Previous boundary hex iterator
-            std::list<hex>::iterator bhi_prev = firsthex;
+            std::list<sm::hex>::iterator bhi_prev = firsthex;
             // Neighbour hex iterator
-            std::list<hex>::iterator nhi = firsthex;
+            std::list<sm::hex>::iterator nhi = firsthex;
             // A vector of hex iterators to be filled with the hexes on the domain boundary
-            std::vector< std::list<hex>::iterator > domBoundary;
+            std::vector< std::list<sm::hex>::iterator > domBoundary;
 
             // Set flags on first hex and add it to domBoundary
             firsthex->setUserFlags(HEX_USER_FLAG_0 | HEX_USER_FLAG_1);
@@ -172,7 +174,7 @@ namespace morph {
                 gotnext = false;
                 for (unsigned int i = 0; i<6; ++i) {
                     if (bhi->has_neighbour(i)) {
-                        if constexpr (dbg) { std::cout << "neighbour in " << hex::neighbour_pos(i) << " dirn\n"; }
+                        if constexpr (dbg) { std::cout << "neighbour in " << sm::hex::neighbour_pos(i) << " dirn\n"; }
                         // Might be a boundary hex:
                         nhi = bhi->get_neighbour(i);
                         if (f[nhi->vi] == this->f) {
@@ -215,7 +217,7 @@ namespace morph {
             // each other which are both on the boundary and a third hex protruding out - a sort of
             // boundary pimple. So, run through domBoundary to catch these cases and ensure that the
             // area measurement is accurate.
-            for (std::list<hex>::iterator hi : domBoundary) {
+            for (std::list<sm::hex>::iterator hi : domBoundary) {
                 for (unsigned int i = 0; i<6; ++i) {
                     if (hi->has_neighbour(i)) {
                         nhi = hi->get_neighbour(i);
@@ -229,8 +231,8 @@ namespace morph {
 
             if constexpr (dbg) { std::cout << "foreach hex in domBoundary\n"; }
             // Now the domain boundary should have been found.
-            std::list<hex>::iterator innerhex = hg->hexen.end();
-            for (std::list<hex>::iterator hi : domBoundary) {
+            std::list<sm::hex>::iterator innerhex = hg->hexen.end();
+            for (std::list<sm::hex>::iterator hi : domBoundary) {
 
                 if constexpr (dbg) { std::cout << "boundary hex " << hi->outputRG(); }
                 // Mark inwards in all possible directions from nh.
@@ -299,7 +301,7 @@ namespace morph {
 
             // Now count the area up, resetting the flags as we go
             unsigned int hcount = 0;
-            for (hex& h : hg->hexen) {
+            for (sm::hex& h : hg->hexen) {
                 hcount += (h.getUserFlag(0) == true) ? 1 : 0;
                 h.resetUserFlags();
             }
@@ -313,7 +315,7 @@ namespace morph {
         {
             typename std::list<DirichVtx<Flt>>::const_iterator dv = this->vertices.begin();
             Flt sos = 0.0;
-            morph::vec<Flt, 2> xy = {x, y};
+            sm::vec<Flt, 2> xy = {x, y};
             while (dv != this->vertices.end()) {
                 // Compute sum of square distances to the lines.
                 Flt dist = dv->compute_distance_to_line (xy);
@@ -327,13 +329,13 @@ namespace morph {
          * Take a set of Dirichlet vertices defining exactly one Dirichlet domain and compute a
          * metric for the Dirichlet-ness of the vertices after Honda1983.
          */
-        Flt dirichlet_analyse_single_domain (morph::vec<Flt, 2>& P)
+        Flt dirichlet_analyse_single_domain (sm::vec<Flt, 2>& P)
         {
             typename std::list<DirichVtx<Flt>>::iterator dv = this->vertices.begin();
             typename std::list<DirichVtx<Flt>>::iterator dvnext = dv;
             typename std::list<DirichVtx<Flt>>::iterator dvprev = this->vertices.end();
 
-            morph::vec<Flt, 2> Pi_best;
+            sm::vec<Flt, 2> Pi_best;
 
             // Compute Pi lines for each vertex in the domain, and also (for later use) the mean
             // position of the vertices.
@@ -344,7 +346,7 @@ namespace morph {
                     dvnext = this->vertices.begin();
                 }
 
-                morph::vec<Flt, 2> Aim1;
+                sm::vec<Flt, 2> Aim1;
                 if (dvprev == this->vertices.end()) {
                     dvprev--;
                     Aim1 = dvprev->v;
@@ -371,33 +373,33 @@ namespace morph {
             // then two other vertices at the first domain vertex (v) and its neighbour (vn).
             Pi_best /= this->vertices.size();
 
-            morph::optimization::nm_simplex<Flt> simp (Pi_best, this->vertices.begin()->v, this->vertices.begin()->vn);
+            sm::optimization::nm_simplex<Flt> simp (Pi_best, this->vertices.begin()->v, this->vertices.begin()->vn);
             // Set a termination threshold for the SD of the vertices of the simplex
             simp.termination_threshold = 2.0 * std::numeric_limits<Flt>::epsilon();
             // Set a 10000 operation limit, in case the above threshold can't be reached
             simp.too_many_operations = 10000;
 
-            while (simp.state != morph::optimization::nm_simplex_state::ReadyToStop) {
+            while (simp.state != sm::optimization::nm_simplex_state::ReadyToStop) {
 
-                if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeThenOrder) {
+                if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeThenOrder) {
                     // 1. apply objective to each vertex
                     for (unsigned int i = 0; i <= simp.n; ++i) {
                         simp.values[i] = this->compute_sos (simp.vertices[i][0], simp.vertices[i][1]);
                     }
                     simp.order();
 
-                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToOrder) {
+                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToOrder) {
                     simp.order();
 
-                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeReflection) {
+                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeReflection) {
                     Flt val = this->compute_sos (simp.xr[0], simp.xr[1]);
                     simp.apply_reflection (val);
 
-                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeExpansion) {
+                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeExpansion) {
                     Flt val = this->compute_sos (simp.xe[0], simp.xe[1]);
                     simp.apply_expansion (val);
 
-                } else if (simp.state == morph::optimization::nm_simplex_state::NeedToComputeContraction) {
+                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeContraction) {
                     Flt val = this->compute_sos (simp.xc[0], simp.xc[1]);
                     simp.apply_contraction (val);
                 }
@@ -422,7 +424,7 @@ namespace morph {
         }
 
         //! Save this domain data in hdfdata& @data under path @pathroot
-        void save (hdfdata& data, const std::string& pathroot) const
+        void save (sm::hdfdata& data, const std::string& pathroot) const
         {
             std::string p("");
             p = pathroot + "/f";
