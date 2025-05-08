@@ -1,5 +1,6 @@
 #include <deque>
 #include <iostream>
+#include <sm/range>
 #include <morph/graphing.h>
 
 template<typename T>
@@ -18,7 +19,7 @@ int main()
     float a2 = 9.0f;
 
     for (unsigned int i = 2; i < 20; ++i) {
-        morph::range<float> nticks = {static_cast<float>(i), static_cast<float>(i)};
+        sm::range<float> nticks = {static_cast<float>(i), static_cast<float>(i)};
         std::deque<float> ticks = morph::graphing::maketicks (a1, a2, a1, a2, nticks);
         std::cout << "i ";
         print_ticks (ticks);
@@ -28,7 +29,7 @@ int main()
     std::cout << "\n\n";
 
     for (unsigned int i = 3; i < 30; ++i) {
-        morph::range<float> nticks = {static_cast<float>(i-1), static_cast<float>(i+1)};
+        sm::range<float> nticks = {static_cast<float>(i-1), static_cast<float>(i+1)};
         std::deque<float> ticks = morph::graphing::maketicks (a1, a2, a1, a2, nticks);
         std::cout << "i+-1 ";
         print_ticks (ticks);
@@ -38,7 +39,7 @@ int main()
     std::cout << "\n\n";
 
     for (unsigned int i = 4; i < 40; ++i) {
-        morph::range<float> nticks = {static_cast<float>(i-1), static_cast<float>(i+1)};
+        sm::range<float> nticks = {static_cast<float>(i-1), static_cast<float>(i+1)};
         std::deque<float> ticks = morph::graphing::maketicks (a1, a2, a1, a2, nticks);
         std::cout << "i+-2 ";
         print_ticks (ticks);
@@ -49,7 +50,7 @@ int main()
 
     for (float l = 4.0f; l < 12.0f; ++l) {
         // Asking for 0 or 1 ticks should give min 2
-        morph::range<float> nticks = { 0.0f, 1.0f };
+        sm::range<float> nticks = { 0.0f, 1.0f };
         std::deque<float> ticks = morph::graphing::maketicks (-l, l, -l, l, nticks);
         std::cout << "l " << l << ", [0,1]: ";
         print_ticks (ticks);
@@ -60,7 +61,7 @@ int main()
 
     for (float l = 4.0f; l < 12.0f; ++l) {
         // Asking for 0 or 1 ticks should give min 2
-        morph::range<float> nticks = { 0.0f, 1.0f };
+        sm::range<float> nticks = { 0.0f, 1.0f };
         std::deque<float> ticks = morph::graphing::maketicks (0.0f, l, 0.0f, l, nticks);
         std::cout << "l " << l << ", [0,1]: ";
         print_ticks (ticks);

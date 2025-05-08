@@ -1,3 +1,5 @@
+#include <sm/vec>
+#include <sm/vvec>
 #include <morph/loadpng.h>
 
 int main()
@@ -7,9 +9,9 @@ int main()
     // Load an image
     std::string fn = "../../examples/bike256_65.png";
 
-    morph::vvec<float> image_data;
+    sm::vvec<float> image_data;
     try {
-        morph::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
+        sm::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
         std::cout << "Image dims: " << dims << std::endl;
     } catch (const std::exception& e) {
         // Unexpected error
@@ -19,7 +21,7 @@ int main()
 
     fn = "examples/bad_name.png"; // known bad
     try {
-        morph::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
+        sm::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
         std::cout << "Image dims: " << dims << std::endl;
         // This should have failed
         --rtn;
