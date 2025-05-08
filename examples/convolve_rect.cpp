@@ -10,10 +10,10 @@
 #include <sm/vvec>
 #include <sm/cartgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/CartGridVisual.h>
-#include <morph/ReadCurves.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/CartGridVisual.h>
+#include <mplot/ReadCurves.h>
 
 int main()
 {
@@ -29,7 +29,7 @@ int main()
     float nonconvolvedSum = data.sum();
 
     // Create a small CartGrid to contain the convolution kernel
-    //morph::cartgrid kernel (0.01f, 0.01f, 0.05f, 0.05f);
+    //mplot::cartgrid kernel (0.01f, 0.01f, 0.05f, 0.05f);
     sm::cartgrid kernel (0.01f, 0.01f, 0.0f, 0.0f, 5*0.01f-0.01f, 5*0.01f-0.01f);
     kernel.setBoundaryOnOuterEdge();
 
@@ -66,41 +66,41 @@ int main()
     std::cout << "Unconvolved sum: " << nonconvolvedSum << ", convolved sum: " << convolvedSum << "\n";
 
     // Visualize the 3 maps
-    morph::Visual v(800,600,"Convolution window");
+    mplot::Visual v(800,600,"Convolution window");
 
     sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
-    auto cgv = std::make_unique<morph::CartGridVisual<float>>(&cg, offset);
+    auto cgv = std::make_unique<mplot::CartGridVisual<float>>(&cg, offset);
     v.bindmodel (cgv);
-    cgv->cartVisMode = morph::CartVisMode::RectInterp;
+    cgv->cartVisMode = mplot::CartVisMode::RectInterp;
     cgv->setScalarData (&data);
-    cgv->cm.setType (morph::ColourMapType::GreyscaleInv);
+    cgv->cm.setType (mplot::ColourMapType::GreyscaleInv);
     cgv->zScale.null_scaling();
     cgv->addLabel(std::string("Original"), sm::vec<float, 3>{0.0f,-0.13f,0.0f},
-                  morph::TextFeatures(0.1f, 48));
+                  mplot::TextFeatures(0.1f, 48));
     cgv->finalize();
     v.addVisualModel (cgv);
 
     offset = { 0.0f, -0.3f, 0.0f };
-    auto cgvk = std::make_unique<morph::CartGridVisual<float>>(&kernel, offset);
+    auto cgvk = std::make_unique<mplot::CartGridVisual<float>>(&kernel, offset);
     v.bindmodel (cgvk);
-    cgvk->cartVisMode = morph::CartVisMode::RectInterp;
+    cgvk->cartVisMode = mplot::CartVisMode::RectInterp;
     cgvk->setScalarData (&kdata);
-    cgvk->cm.setType (morph::ColourMapType::GreyscaleInv);
+    cgvk->cm.setType (mplot::ColourMapType::GreyscaleInv);
     cgvk->zScale.null_scaling();
     cgvk->addLabel(std::string("Kernel"), sm::vec<float, 3>{0.0f,-0.13f,0.0f},
-                   morph::TextFeatures(0.1f, 48));
+                   mplot::TextFeatures(0.1f, 48));
     cgvk->finalize();
     v.addVisualModel (cgvk);
 
     offset = { 0.0f, -1.3f, 0.0f };
-    auto cgvr = std::make_unique<morph::CartGridVisual<float>>(&cg, offset);
+    auto cgvr = std::make_unique<mplot::CartGridVisual<float>>(&cg, offset);
     v.bindmodel (cgvr);
-    cgvr->cartVisMode = morph::CartVisMode::RectInterp;
+    cgvr->cartVisMode = mplot::CartVisMode::RectInterp;
     cgvr->setScalarData (&convolved);
-    cgvr->cm.setType (morph::ColourMapType::GreyscaleInv);
+    cgvr->cm.setType (mplot::ColourMapType::GreyscaleInv);
     cgvr->zScale.null_scaling();
     cgvr->addLabel (std::string("Convolved"), sm::vec<float, 3>{0.0f,-0.13f,0.0f},
-                    morph::TextFeatures(0.1f, 48));
+                    mplot::TextFeatures(0.1f, 48));
     cgvr->finalize();
     v.addVisualModel (cgvr);
 

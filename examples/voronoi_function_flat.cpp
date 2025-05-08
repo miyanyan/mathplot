@@ -9,8 +9,8 @@
 #include <iostream>
 #include <sm/vec>
 #include <sm/random>
-#include <morph/Visual.h>
-#include <morph/VoronoiVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VoronoiVisual.h>
 
 static constexpr int n_points = 1000;
 
@@ -18,7 +18,7 @@ int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "VoronoiVisual");
+    mplot::Visual v(1024, 768, "VoronoiVisual");
 
     sm::rand_uniform<float> rngxy(-2.0f, 2.0f, 1000);
 
@@ -35,10 +35,10 @@ int main()
         data[i] = std::sin (k * r[i]) / k * r[i]; // colour function
     }
 
-    morph::ColourMapType cmap_t = morph::ColourMapType::Plasma;
+    mplot::ColourMapType cmap_t = mplot::ColourMapType::Plasma;
 
     sm::vec<float, 3> offset = { 0.0f };
-    auto vorv = std::make_unique<morph::VoronoiVisual<float>> (offset);
+    auto vorv = std::make_unique<mplot::VoronoiVisual<float>> (offset);
     v.bindmodel (vorv);
     vorv->show_voronoi2d = true; // true to show the 2D voronoi edges
     vorv->debug_dataCoords = false; // true to show coordinate spheres

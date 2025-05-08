@@ -1,14 +1,14 @@
 // Graph the logistic function
 #include <sm/vvec>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
-#include <morph/unicode.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
+#include <mplot/unicode.h>
 
 // Make an equation string for the legend
 std::string make_legend_str (double k, double x0)
 {
-    // We'll use morphologica's awesome unicode chars for the subscript 0 on x0
-    namespace uc = morph::unicode;
+    // We'll use mplotologica's awesome unicode chars for the subscript 0 on x0
+    namespace uc = mplot::unicode;
 
     std::stringstream ktxt;
     if (k != 1.0) { ktxt << k; }
@@ -30,10 +30,10 @@ std::string make_legend_str (double k, double x0)
 
 int main()
 {
-    // Set up a morph::Visual 'scene environment'.
-    morph::Visual v(1024, 768, "Logistic functions");
+    // Set up a mplot::Visual 'scene environment'.
+    mplot::Visual v(1024, 768, "Logistic functions");
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({-0.5f,-0.5f,0.0f}));
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({-0.5f,-0.5f,0.0f}));
     v.bindmodel (gv);
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
     sm::vvec<double> x;

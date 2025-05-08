@@ -10,15 +10,15 @@
 #include <sm/vec>
 #include <sm/vvec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/ScatterVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "morph::ScatterVisual");
+    mplot::Visual v(1024, 768, "mplot::ScatterVisual");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     v.coordArrowsInScene (true);
@@ -50,13 +50,13 @@ int main()
             }
         }
 
-        auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+        auto sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
         v.bindmodel (sv);
         sv->setDataCoords (&points);
         sv->setScalarData (&data);
         sv->radiusFixed = 0.03f;
         sv->colourScale = scale1;
-        sv->cm.setType (morph::ColourMapType::Plasma);
+        sv->cm.setType (mplot::ColourMapType::Plasma);
         sv->labelIndices = true;
         sv->finalize();
         v.addVisualModel (sv);

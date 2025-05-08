@@ -1,4 +1,4 @@
-#include "morph/Process.h"
+#include "mplot/Process.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -8,9 +8,9 @@
 
 using namespace std;
 
-using morph::Process;
-using morph::ProcessCallbacks;
-using morph::ProcessData;
+using mplot::Process;
+using mplot::ProcessCallbacks;
+using mplot::ProcessData;
 
 /*
  * Callbacks class extends ProcessCallbacks

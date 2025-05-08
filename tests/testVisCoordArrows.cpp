@@ -1,9 +1,9 @@
 /*
- * Visualize just the CoordArrows - i.e. an empty morph::Visual
+ * Visualize just the CoordArrows - i.e. an empty mplot::Visual
  */
 
-#include "morph/Visual.h"
-#include "morph/ColourMap.h"
+#include "mplot/Visual.h"
+#include "mplot/ColourMap.h"
 #include <iostream>
 #include <array>
 #include <stdexcept>
@@ -13,7 +13,7 @@ int main (int argc, char** argv)
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Title");
+    mplot::Visual v(1024, 768, "Title");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     v.showTitle (true);

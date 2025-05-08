@@ -9,21 +9,21 @@
 #include <sm/scale>
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
 #ifdef MESH
-#include <morph/PointRowsMeshVisual.h>
+#include <mplot/PointRowsMeshVisual.h>
 #else
-#include <morph/PointRowsVisual.h>
+#include <mplot/PointRowsVisual.h>
 #endif
 
 int main()
 {
     int rtn = -1;
 #ifdef MESH
-    morph::Visual v(1024, 768, "morph::PointRowsMeshVisual");
+    mplot::Visual v(1024, 768, "mplot::PointRowsMeshVisual");
 #else
-    morph::Visual v(1024, 768, "morph::PointRowsVisual");
+    mplot::Visual v(1024, 768, "mplot::PointRowsVisual");
 #endif
     v.zNear = 0.001;
     v.showCoordArrows (true);
@@ -52,13 +52,13 @@ int main()
         points.push_back ({ 2, 4,   0.1 }); data.push_back(points.back()[2]);
 
 #ifdef MESH
-        auto prmv = std::make_unique<morph::PointRowsMeshVisual<float>>(&points, offset, &data, scale, morph::ColourMapType::Twilight,
-                                                                        0.0f, 1.0f, 1.0f, 0.04f, morph::ColourMapType::Jet, 0.0f, 1.0f, 1.0f, 0.1f);
+        auto prmv = std::make_unique<mplot::PointRowsMeshVisual<float>>(&points, offset, &data, scale, mplot::ColourMapType::Twilight,
+                                                                        0.0f, 1.0f, 1.0f, 0.04f, mplot::ColourMapType::Jet, 0.0f, 1.0f, 1.0f, 0.1f);
         v.bindmodel (prmv);
         prmv->finalize();
         v.addVisualModel (prmv);
 #else
-        auto prv = std::make_unique<morph::PointRowsVisual<float>>(&points, offset, &data, scale, morph::ColourMapType::Twilight);
+        auto prv = std::make_unique<mplot::PointRowsVisual<float>>(&points, offset, &data, scale, mplot::ColourMapType::Twilight);
         v.bindmodel (prv);
         prv->finalize();
         v.addVisualModel (prv);

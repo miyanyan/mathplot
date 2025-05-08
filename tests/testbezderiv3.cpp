@@ -14,11 +14,11 @@
 #include <sm/bezcurve>
 #include <sm/bezcurvepath>
 
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 // Draw a bezcurve on the graph gv
-void draw (morph::GraphVisual<float>* gv,
+void draw (mplot::GraphVisual<float>* gv,
            sm::bezcurvepath<FLT>& bcp,
            sm::vvec<sm::vec<FLT, 2>>& v,
            std::array<float, 3> linecolfit,
@@ -39,17 +39,17 @@ void draw (morph::GraphVisual<float>* gv,
         normals[i] = sm::vec<double, 2>{norms[i].x(), norms[i].y()}.as_float();
     }
 
-    morph::DatasetStyle dsl(morph::stylepolicy::lines);
+    mplot::DatasetStyle dsl(mplot::stylepolicy::lines);
     dsl.linecolour = linecolfit;
     dsl.linewidth = sz/4.0f;
     gv->setdata (fitted, dsl);
 
-    morph::DatasetStyle dsm(morph::stylepolicy::markers);
+    mplot::DatasetStyle dsm(mplot::stylepolicy::markers);
     dsm.markercolour = linecolfit;
     dsm.markersize = sz;
-    dsm.markerstyle = morph::markerstyle::circle;
+    dsm.markerstyle = mplot::markerstyle::circle;
 
-    morph::DatasetStyle dsb(morph::stylepolicy::lines);
+    mplot::DatasetStyle dsb(mplot::stylepolicy::lines);
     dsb.markercolour = linecolfit;
     dsb.linecolour = linecolfit;
     dsb.linewidth = sz/6.0f;
@@ -82,7 +82,7 @@ void draw (morph::GraphVisual<float>* gv,
 
 int main (int argc, char** argv)
 {
-    namespace m = morph;
+    namespace m = mplot;
 
     bool holdVis = false;
     if (argc > 1) {
@@ -129,16 +129,16 @@ int main (int argc, char** argv)
 
     if (holdVis == true) {
         // Create a frame as the background for our drawing.
-        morph::Visual<> scene(1600, 1000, "Beziers");
+        mplot::Visual<> scene(1600, 1000, "Beziers");
         sm::vec<float> offset = {-1, -1, 0};
-        auto gv = std::make_unique<morph::GraphVisual<float>>(offset);
+        auto gv = std::make_unique<mplot::GraphVisual<float>>(offset);
         scene.bindmodel (gv);
         gv->setsize (2,2);
         gv->setlimits (sm::range<float>{200,1700}, sm::range<float>{0,1700});
 
         std::cout << "Draw the two analytical best-fit curves..." << std::endl;
-        draw (gv.get(), bcp1, v, morph::colour::blue, 0.024);
-        draw (gv.get(), bcp2, w, morph::colour::crimson, 0.024);
+        draw (gv.get(), bcp1, v, mplot::colour::blue, 0.024);
+        draw (gv.get(), bcp2, w, mplot::colour::crimson, 0.024);
 
         std::cout << "Do the control point-equalizing 0th order optimization..."<< std::endl;
         bool withopt = false;
@@ -152,7 +152,7 @@ int main (int argc, char** argv)
         sm::vvec<sm::vec<FLT, 2>> vw (v);
         vw.insert (vw.end(), w.begin(), w.end());
 
-        draw (gv.get(), bcp, vw, morph::colour::darkorchid2, 0.024, false);
+        draw (gv.get(), bcp, vw, mplot::colour::darkorchid2, 0.024, false);
 
         gv->finalize();
         scene.addVisualModel (gv);

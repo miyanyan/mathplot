@@ -1,14 +1,14 @@
 // Visualize a graph. Minimal example showing how a default graph appears
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 #include <sm/vvec>
 
 int main()
 {
-    // Set up a morph::Visual 'scene environment'.
-    morph::Visual v(1024, 768, "Made with morph::GraphVisual");
+    // Set up a mplot::Visual 'scene environment'.
+    mplot::Visual v(1024, 768, "Made with mplot::GraphVisual");
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     // This mandatory line of boilerplate code sets the parent pointer in GraphVisual and binds some functions
     v.bindmodel (gv);
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods

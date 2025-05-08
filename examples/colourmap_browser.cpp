@@ -1,5 +1,5 @@
 /*
- * Make a colourbar tester using a morph::Grid/GridVisual
+ * Make a colourbar tester using a mplot::Grid/GridVisual
  *
  * This shows a min to max gradient of a ColourMap, with a decaying sine wave added to
  * the signal. Poor colour maps like Jet show structure in the features that is not part
@@ -13,28 +13,28 @@
 #include <sm/vec>
 #include <sm/grid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/GridVisual.h>
-#include <morph/CyclicColourVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/GridVisual.h>
+#include <mplot/CyclicColourVisual.h>
 
-struct myvisual final : public morph::Visual<>
+struct myvisual final : public mplot::Visual<>
 {
-    myvisual (int width, int height, const std::string& title) : morph::Visual<> (width, height, title) {}
-    morph::ColourMapType curr_map_type = morph::ColourMapType::Plasma;
+    myvisual (int width, int height, const std::string& title) : mplot::Visual<> (width, height, title) {}
+    mplot::ColourMapType curr_map_type = mplot::ColourMapType::Plasma;
     bool forwards = true;
 protected:
     void key_callback_extra (int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) override
     {
-        if (key == morph::key::right && (action == morph::keyaction::press || action == morph::keyaction::repeat)) {
+        if (key == mplot::key::right && (action == mplot::keyaction::press || action == mplot::keyaction::repeat)) {
             ++this->curr_map_type;
             this->forwards = true;
         }
-        if (key == morph::key::left && (action == morph::keyaction::press || action == morph::keyaction::repeat)) {
+        if (key == mplot::key::left && (action == mplot::keyaction::press || action == mplot::keyaction::repeat)) {
             --this->curr_map_type;
             this->forwards = false;
         }
-        if (key == morph::key::h && action == morph::keyaction::press) { std::cout << "left/right switch maps\n"; }
+        if (key == mplot::key::h && action == mplot::keyaction::press) { std::cout << "left/right switch maps\n"; }
     }
 };
 
@@ -42,13 +42,13 @@ protected:
 static constexpr unsigned int Nside_w = 512;
 static constexpr unsigned int Nside_h = 256;
 
-morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type, const sm::grid<>& grid, const std::vector<float>& data)
+mplot::VisualModel<>* addmap (myvisual& v, mplot::ColourMapType display_map_type, const sm::grid<>& grid, const std::vector<float>& data)
 {
-    morph::VisualModel<>* vmp = nullptr;
-    morph::ColourMap<float> nextmap (display_map_type);
-    if (nextmap.flags.test(morph::ColourMapFlags::cyclic) == true) {
+    mplot::VisualModel<>* vmp = nullptr;
+    mplot::ColourMap<float> nextmap (display_map_type);
+    if (nextmap.flags.test(mplot::ColourMapFlags::cyclic) == true) {
         sm::vec<float, 3> offset = {0,0,0};
-        auto cv = std::make_unique<morph::CyclicColourVisual<float>>(offset);
+        auto cv = std::make_unique<mplot::CyclicColourVisual<float>>(offset);
         v.bindmodel (cv);
         cv->outer_radius = 0.6;
         cv->inner_radius = 0.2;
@@ -57,20 +57,20 @@ morph::VisualModel<>* addmap (myvisual& v, morph::ColourMapType display_map_type
         cv->cm = nextmap;
         cv->draw_ticks = false;
         cv->addLabel (cv->cm.getTypeStr() + std::string(" (") + cv->cm.getFlagsStr() + std::string(")"),
-                      sm::vec<float>({-1.3, -0.4, 0}), morph::TextFeatures(0.05f));
+                      sm::vec<float>({-1.3, -0.4, 0}), mplot::TextFeatures(0.05f));
         cv->finalize();
         vmp = v.addVisualModel (cv);
     } else {
         sm::vec<float, 3> offset = { -0.5f * grid.width(), -0.5f * grid.height(), 0.0f };
-        auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+        auto gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
         v.bindmodel (gv);
-        gv->gridVisMode = morph::GridVisMode::Triangles;
+        gv->gridVisMode = mplot::GridVisMode::Triangles;
         gv->twodimensional = true;
         gv->setScalarData (&data);
         gv->cm = nextmap;
         gv->zScale.null_scaling();
         gv->addLabel (gv->cm.getTypeStr() + std::string(" (") + gv->cm.getFlagsStr() + std::string(")"),
-                      sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05f));
+                      sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.05f));
         gv->finalize();
         vmp = v.addVisualModel (gv);
     }
@@ -96,16 +96,16 @@ int main()
         data[ri] = x / grid.width() + 0.1f * (y / grid.height()) * (y / grid.height()) * std::sin (120.0f * x);
     }
 
-    morph::ColourMapType display_map_type = v.curr_map_type;
-    morph::VisualModel<>* gvp = addmap (v, v.curr_map_type, grid, data);
+    mplot::ColourMapType display_map_type = v.curr_map_type;
+    mplot::VisualModel<>* gvp = addmap (v, v.curr_map_type, grid, data);
 
     while (v.readyToFinish() == false) {
         v.render();
         v.waitevents (0.017);
         if (v.curr_map_type != display_map_type) {
             // Change to v.curr_map_type
-            morph::ColourMap<float> nextmap(v.curr_map_type);
-            if (nextmap.flags.test (morph::ColourMapFlags::one_d) == true) {
+            mplot::ColourMap<float> nextmap(v.curr_map_type);
+            if (nextmap.flags.test (mplot::ColourMapFlags::one_d) == true) {
                 // Update the map
                 v.removeVisualModel (gvp);
                 gvp = addmap (v, v.curr_map_type, grid, data);

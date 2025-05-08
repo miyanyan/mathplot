@@ -9,18 +9,18 @@
 #include <sm/scale>
 #include <sm/vec>
 
-#include <morph/Visual.h>
+#include <mplot/Visual.h>
 #ifdef MESH
-# include <morph/QuadsMeshVisual.h>
+# include <mplot/QuadsMeshVisual.h>
 #else
-# include <morph/QuadsVisual.h>
+# include <mplot/QuadsVisual.h>
 #endif
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Visualization");
+    mplot::Visual v(1024, 768, "Visualization");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     v.lightingEffects (true);
@@ -60,12 +60,12 @@ int main()
         std::vector<float> data = {0.1, 0.2, 0.5, 0.95};
 
 #ifdef MESH
-        auto qmv = std::make_unique<morph::QuadsMeshVisual<float>> (&surfBoxes, offset, &data, scale1, morph::ColourMapType::Plasma);
+        auto qmv = std::make_unique<mplot::QuadsMeshVisual<float>> (&surfBoxes, offset, &data, scale1, mplot::ColourMapType::Plasma);
         v.bindmodel (qmv);
         qmv->finalize();
         v.addVisualModel (qmv);
 #else
-        auto qv = std::make_unique<morph::QuadsVisual<float>> (&surfBoxes, offset, &data, scale1, morph::ColourMapType::Monochrome);
+        auto qv = std::make_unique<mplot::QuadsVisual<float>> (&surfBoxes, offset, &data, scale1, mplot::ColourMapType::Monochrome);
         v.bindmodel (qv);
         qv->finalize();
         v.addVisualModel (qv);

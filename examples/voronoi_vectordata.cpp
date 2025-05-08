@@ -7,8 +7,8 @@
 #include <iostream>
 #include <sm/vec>
 #include <sm/random>
-#include <morph/Visual.h>
-#include <morph/VoronoiVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VoronoiVisual.h>
 
 static constexpr int n_points = 1000;
 
@@ -16,7 +16,7 @@ int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "VoronoiVisual vectorData");
+    mplot::Visual v(1024, 768, "VoronoiVisual vectorData");
 
     sm::rand_uniform<float> rngxy(-2.0f, 2.0f, 1000);
     sm::rand_uniform<float> rngz(0.8f, 1.0f, 1000);
@@ -34,7 +34,7 @@ int main()
     }
 
     sm::vec<float, 3> offset = { 0.0f };
-    auto vorv = std::make_unique<morph::VoronoiVisual<float>> (offset);
+    auto vorv = std::make_unique<mplot::VoronoiVisual<float>> (offset);
     v.bindmodel (vorv);
     vorv->show_voronoi2d = true; // true to show the 2D voronoi edges
     vorv->debug_dataCoords = false; // true to show coordinate spheres
@@ -42,14 +42,14 @@ int main()
     vorv->border_width  = length_scale;
 #if 1
     // With RGB, the input is passed in as RGB channels with each channel being in range [0, 1]
-    vorv->cm.setType (morph::ColourMapType::RGB);
+    vorv->cm.setType (mplot::ColourMapType::RGB);
 #else
 # if 0
     // You can alternatively specify a 2D map like DiscFourBlack...
-    vorv->cm.setType (morph::ColourMapType::DiscFourBlack);
+    vorv->cm.setType (mplot::ColourMapType::DiscFourBlack);
 # else
     // ...or a 1D map with 'act as if 2d' set true (which will desaturate the map with one dimension of the data):
-    vorv->cm.setType (morph::ColourMapType::Plasma);
+    vorv->cm.setType (mplot::ColourMapType::Plasma);
     vorv->cm.set_act_2d (true);
 # endif
 #endif

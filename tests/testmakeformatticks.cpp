@@ -1,14 +1,14 @@
 #include <deque>
 #include <iostream>
 #include <sm/range>
-#include <morph/graphing.h>
+#include <mplot/graphing.h>
 
 template<typename T>
 void print_ticks (const T& tcks)
 {
     std::cout << "ticks: ";
     for (size_t i = 0; i < tcks.size(); ++i) {
-        std::cout << morph::graphing::number_format (tcks[i], tcks[i==0?1:i-1]) << ", ";
+        std::cout << mplot::graphing::number_format (tcks[i], tcks[i==0?1:i-1]) << ", ";
     }
     std::cout << std::endl;
 }
@@ -22,7 +22,7 @@ int main()
 
     for (unsigned int i = 2; i < 20; ++i) {
         sm::range<float> nticks = {static_cast<float>(i), static_cast<float>(i)};
-        std::deque<float> ticks = morph::graphing::maketicks (a1, a2, a1, a2, nticks);
+        std::deque<float> ticks = mplot::graphing::maketicks (a1, a2, a1, a2, nticks);
         std::cout << "i ";
         print_ticks (ticks);
         if (ticks.size() != i) { --rtn; }
@@ -32,7 +32,7 @@ int main()
 
     for (unsigned int i = 3; i < 30; ++i) {
         sm::range<float> nticks = {static_cast<float>(i-1), static_cast<float>(i+1)};
-        std::deque<float> ticks = morph::graphing::maketicks (a1, a2, a1, a2, nticks);
+        std::deque<float> ticks = mplot::graphing::maketicks (a1, a2, a1, a2, nticks);
         std::cout << "i+-1 ";
         print_ticks (ticks);
         if (nticks.includes (ticks.size()) == false) { --rtn; }
@@ -42,7 +42,7 @@ int main()
 
     for (unsigned int i = 4; i < 40; ++i) {
         sm::range<float> nticks = {static_cast<float>(i-1), static_cast<float>(i+1)};
-        std::deque<float> ticks = morph::graphing::maketicks (a1, a2, a1, a2, nticks);
+        std::deque<float> ticks = mplot::graphing::maketicks (a1, a2, a1, a2, nticks);
         std::cout << "i+-2 ";
         print_ticks (ticks);
         if (nticks.includes (ticks.size()) == false) { --rtn; }
@@ -53,7 +53,7 @@ int main()
     for (unsigned int i = 2; i < 20; ++i) {
         sm::range<float> nticks = { 2, 12 };
         float f = 22.0f * static_cast<float>(i);
-        std::deque<float> ticks = morph::graphing::maketicks (a1, a2+f, a1, a2+f, nticks);
+        std::deque<float> ticks = mplot::graphing::maketicks (a1, a2+f, a1, a2+f, nticks);
         std::cout << "i ";
         print_ticks (ticks);
         if (nticks.includes (ticks.size()) == false) { --rtn; }
@@ -63,7 +63,7 @@ int main()
     for (float l = 1.0f; l < 20.0f; l += 1.0f) {
         for (unsigned int i = 3; i < 20; ++i) {
             sm::range<float> nticks = {static_cast<float>(i-1), static_cast<float>(i+1)};
-            std::deque<float> ticks = morph::graphing::maketicks (a1, l, a1, l, nticks);
+            std::deque<float> ticks = mplot::graphing::maketicks (a1, l, a1, l, nticks);
             std::cout << nticks << " ticks, data " << a1 << "-" << l << ": ";
             print_ticks (ticks);
             if (nticks.includes (ticks.size()) == false) { --rtn; }

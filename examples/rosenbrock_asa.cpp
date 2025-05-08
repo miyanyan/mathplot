@@ -9,12 +9,12 @@
 #include <sm/vvec>
 #include <sm/hexgrid>
 
-#include <morph/Anneal.h>
+#include <mplot/Anneal.h>
 
-#include <morph/Visual.h>
-#include <morph/TriFrameVisual.h>
-#include <morph/HexGridVisual.h>
-#include <morph/PolygonVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/TriFrameVisual.h>
+#include <mplot/HexGridVisual.h>
+#include <mplot/PolygonVisual.h>
 
 // Here's the Rosenbrock banana function
 FLT banana (sm::vvec<FLT> xy) {
@@ -39,7 +39,7 @@ int main()
 
 #ifdef VISUALISE
     // Set up a visual environment
-    morph::Visual v(2600, 1800, "Rosenbrock bananas");
+    mplot::Visual v(2600, 1800, "Rosenbrock bananas");
     v.zNear = 0.001;
     v.zFar = 100000;
     v.fov=60;
@@ -55,10 +55,10 @@ int main()
     }
     sm::range<FLT> mm = sm::range<FLT>::get_from (banana_vals);
     std::cout << "Banana surface range: " << mm << std::endl;
-    auto hgv = std::make_unique<morph::HexGridVisual<FLT>>(&hg, offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<FLT>>(&hg, offset);
     v.bindmodel (hgv);
-    hgv->hexVisMode = morph::HexVisMode::Triangles;
-    hgv->cm.setType (morph::ColourMapType::Viridis);
+    hgv->hexVisMode = mplot::HexVisMode::Triangles;
+    hgv->cm.setType (mplot::ColourMapType::Viridis);
     hgv->setScalarData (&banana_vals);
     hgv->zScale.setParams (0.001f, 0.0f);
     hgv->colourScale.compute_scaling (0.01f, 5.0f);
@@ -70,19 +70,19 @@ int main()
 
     // One object for the 'candidate' position
     std::array<float, 3> col = { 0, 1, 0 };
-    auto candup = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
+    auto candup = std::make_unique<mplot::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
     v.bindmodel (candup);
     candup->finalize();
 
     // A second object for the 'best' position
     col = { 1, 0, 0 };
-    auto bestup = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
+    auto bestup = std::make_unique<mplot::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
     v.bindmodel (bestup);
     bestup->finalize();
 
     // A third object for the currently accepted position
     col = { 1, 0, 0.7f };
-    auto currup = std::make_unique<morph::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
+    auto currup = std::make_unique<mplot::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
     v.bindmodel (currup);
     currup->finalize();
 
@@ -91,7 +91,7 @@ int main()
     auto currp = v.addVisualModel (currup);
 #endif
 
-    morph::Anneal<FLT> anneal(p, p_rng);
+    mplot::Anneal<FLT> anneal(p, p_rng);
 
     anneal.temperature_ratio_scale = FLT{1e-3};
     anneal.temperature_anneal_scale = FLT{200};
@@ -105,14 +105,14 @@ int main()
     anneal.init();
 
     // Now do the business
-    while (anneal.state != morph::Anneal_State::ReadyToStop) {
+    while (anneal.state != mplot::Anneal_State::ReadyToStop) {
 
         // ...and on each loop, compute the objectives that anneal asks you to:
-        if (anneal.state == morph::Anneal_State::NeedToCompute) {
+        if (anneal.state == mplot::Anneal_State::NeedToCompute) {
             // Compute the candidate objective value
             anneal.f_x_cand = banana (anneal.x_cand);
 
-        } else if (anneal.state == morph::Anneal_State::NeedToComputeSet) {
+        } else if (anneal.state == mplot::Anneal_State::NeedToComputeSet) {
             // Compute objective values for reannealing
             anneal.f_x_plusdelta = banana (anneal.x_plusdelta);
             //anneal.f_x = banana (anneal.x); // no need
@@ -139,7 +139,7 @@ int main()
         v.render();
 #endif
         anneal.step();
-        //if (anneal.steps > 10) { anneal.state = morph::Anneal_State::ReadyToStop; }
+        //if (anneal.steps > 10) { anneal.state = mplot::Anneal_State::ReadyToStop; }
     }
 
 #ifdef VISUALISE

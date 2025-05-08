@@ -5,13 +5,13 @@
 #include <sm/hexgrid>
 #include <sm/grid>
 
-#include <morph/loadpng.h>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
-#include <morph/HexGridVisual.h>
-#include <morph/GridVisual.h>
-#include <morph/TriaxesVisual.h>
-#include <morph/ScatterVisual.h>
+#include <mplot/loadpng.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
+#include <mplot/HexGridVisual.h>
+#include <mplot/GridVisual.h>
+#include <mplot/TriaxesVisual.h>
+#include <mplot/ScatterVisual.h>
 
 // A simple Izhikevich neuron model class used below
 struct izhi
@@ -82,9 +82,9 @@ struct izhi
 
 int main()
 {
-    namespace uc = morph::unicode;
+    namespace uc = mplot::unicode;
 
-    morph::Visual v(1920, 1080, "morphologica showcase");
+    mplot::Visual v(1920, 1080, "mplotologica showcase");
     v.setSceneTrans (sm::vec<float,3>({1.30124f, -0.730136f, -8.2f}));
     v.lightingEffects();
 
@@ -92,9 +92,9 @@ int main()
      * GraphVisual show-off
      */
     {
-        auto gv1 = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,1,0}));
+        auto gv1 = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,1,0}));
         v.bindmodel (gv1);
-        gv1->axisstyle = morph::axisstyle::twinax;
+        gv1->axisstyle = mplot::axisstyle::twinax;
         gv1->setsize (1.6, 1.6);
         sm::vvec<double> x;
         x.linspace (-0.5, 0.8, 14);
@@ -102,9 +102,9 @@ int main()
         gv1->setdata (x, x.pow(3), ds1legend);
         gv1->ylabel = uc::toUtf8 (uc::alpha);
         std::string ds2legend = uc::toUtf8 (uc::beta) + "(x) = 100x" + uc::toUtf8 (uc::ss2);
-        gv1->setdata (x, x.pow(2)*100, ds2legend, morph::axisside::right);
+        gv1->setdata (x, x.pow(2)*100, ds2legend, mplot::axisside::right);
         gv1->ylabel2 = uc::toUtf8 (uc::beta);
-        gv1->addLabel ("morph::GraphVisual with morph::axisstyle::twinax", sm::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
+        gv1->addLabel ("mplot::GraphVisual with mplot::axisstyle::twinax", sm::vec<float>({0,-0.25,0}), mplot::TextFeatures(0.05));
         gv1->finalize();
         v.addVisualModel (gv1);
     }
@@ -120,12 +120,12 @@ int main()
         for (unsigned int ri=0; ri<hg.num(); ++ri) {
             data[ri] = 0.05f + 0.15f*std::sin(10.0f*hg.d_x[ri]) * std::sin(1.8f*hg.d_y[ri]) ; // Range 0->1
         }
-        auto hgv = std::make_unique<morph::HexGridVisual<float,morph::gl::version_4_1>>(&hg, sm::vec<float>({-2,-0.5,0}));
+        auto hgv = std::make_unique<mplot::HexGridVisual<float,mplot::gl::version_4_1>>(&hg, sm::vec<float>({-2,-0.5,0}));
         v.bindmodel (hgv);
         hgv->setScalarData (&data);
-        hgv->cm.setType (morph::ColourMapType::Inferno);
-        hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or morph::HexVisMode::Triangles for a smoother surface plot
-        hgv->addLabel ("morph::HexGridVisual", sm::vec<float>({0,-0.7,0}), morph::TextFeatures(0.05));
+        hgv->cm.setType (mplot::ColourMapType::Inferno);
+        hgv->hexVisMode = mplot::HexVisMode::HexInterp; // Or mplot::HexVisMode::Triangles for a smoother surface plot
+        hgv->addLabel ("mplot::HexGridVisual", sm::vec<float>({0,-0.7,0}), mplot::TextFeatures(0.05));
         hgv->finalize();
         v.addVisualModel (hgv);
     }
@@ -147,12 +147,12 @@ int main()
             data[ri] = 0.02f * std::exp (x) * std::exp (2*(y));
         }
         sm::vec<float, 3> offset = { -1.1f, -1.0f, 0.0f };
-        auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+        auto gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
         v.bindmodel (gv);
-        gv->gridVisMode = morph::GridVisMode::Columns;
+        gv->gridVisMode = mplot::GridVisMode::Columns;
         gv->setScalarData (&data);
-        gv->cm.setType (morph::ColourMapType::Twilight);
-        gv->addLabel ("morph::GridVisual", sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
+        gv->cm.setType (mplot::ColourMapType::Twilight);
+        gv->addLabel ("mplot::GridVisual", sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.05));
         gv->finalize();
         v.addVisualModel (gv);
     }
@@ -168,26 +168,26 @@ int main()
         // Load an image
         std::string fn = "../examples/bike256_65.png";
         sm::vvec<float> image_data;
-        morph::loadpng (fn, image_data, sm::vec<bool, 2>({false,true}));
+        mplot::loadpng (fn, image_data, sm::vec<bool, 2>({false,true}));
 
         // Now visualise with a GridVisual
-        auto gv2 = std::make_unique<morph::GridVisual<float>>(&g2, sm::vec<float>({0.2,-0.5,0}));
+        auto gv2 = std::make_unique<mplot::GridVisual<float>>(&g2, sm::vec<float>({0.2,-0.5,0}));
         v.bindmodel (gv2);
-        gv2->gridVisMode = morph::GridVisMode::Pixels;
+        gv2->gridVisMode = mplot::GridVisMode::Pixels;
         gv2->setScalarData (&image_data);
-        gv2->cm.setType (morph::ColourMapType::GreyscaleInv);
+        gv2->cm.setType (mplot::ColourMapType::GreyscaleInv);
         gv2->zScale.null_scaling();
-        gv2->addLabel ("morph::GridVisual (flat, pixels)", sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
+        gv2->addLabel ("mplot::GridVisual (flat, pixels)", sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.05));
         gv2->finalize();
         v.addVisualModel (gv2);
-        auto gv3 = std::make_unique<morph::GridVisual<float>>(&g2, sm::vec<float>({0.2,-1,0}));
+        auto gv3 = std::make_unique<mplot::GridVisual<float>>(&g2, sm::vec<float>({0.2,-1,0}));
         v.bindmodel (gv3);
-        gv3->gridVisMode = morph::GridVisMode::Columns;
+        gv3->gridVisMode = mplot::GridVisMode::Columns;
         gv3->interpolate_colour_sides (true);
         gv3->setScalarData (&image_data);
-        gv3->cm.setType (morph::ColourMapType::Plasma);
+        gv3->cm.setType (mplot::ColourMapType::Plasma);
         gv3->zScale.setParams (0.1, 0); // Reduce height in 'z'
-        gv3->addLabel ("morph::GridVisual (columns)", sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.05));
+        gv3->addLabel ("mplot::GridVisual (columns)", sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.05));
         gv3->finalize();
         v.addVisualModel (gv3);
     }
@@ -201,9 +201,9 @@ int main()
      */
     // First the Triaxes:
     auto scat_offs = sm::vec<float>({-4,-1.0,0});
-    auto tav = std::make_unique<morph::TriaxesVisual<float>>(scat_offs);
+    auto tav = std::make_unique<mplot::TriaxesVisual<float>>(scat_offs);
     v.bindmodel (tav);
-    tav->axisstyle = morph::axisstyle::L;
+    tav->axisstyle = mplot::axisstyle::L;
     // Specify axes min and max with a min and max vector
     //                                         x      y       z
     tav->input_min = sm::vec<float, 3>({ -1.0f,  0.0f,   0.0f });
@@ -215,14 +215,14 @@ int main()
     tav->finalize();
     v.addVisualModel (tav);
     // Second the scatter vis:
-    auto sv = std::make_unique<morph::ScatterVisual<float>> (scat_offs);
+    auto sv = std::make_unique<mplot::ScatterVisual<float>> (scat_offs);
     v.bindmodel (sv);
     sm::vvec<sm::vec<float, 3>> points(20*20);
     sm::vvec<float> data(20*20);
     sv->setDataCoords (&points);
     sv->setScalarData (&data);
     sv->radiusFixed = 0.03f;
-    sv->cm.setType (morph::ColourMapType::Plasma);
+    sv->cm.setType (mplot::ColourMapType::Plasma);
     sv->finalize(); // no data yet
     auto svp = v.addVisualModel (sv); // We will use the pointer, svp to update the graph
 
@@ -271,74 +271,74 @@ int main()
     t.linspace (0.0f, N/100.0f, N);
 
     // Set default dataset graphing styles
-    morph::DatasetStyle ds;
+    mplot::DatasetStyle ds;
     ds.linewidth = 0.003f;
-    ds.linecolour = morph::colour::grey30;
+    ds.linecolour = mplot::colour::grey30;
     ds.markersize = 0.015f;
-    ds.markerstyle = morph::markerstyle::uphexagon;
+    ds.markerstyle = mplot::markerstyle::uphexagon;
 
     // Graph membrane voltage vs. time
     sm::vec<float> izoff = {-4, 1, 0};
-    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0})+izoff);
+    auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0})+izoff);
     v.bindmodel (gv);
     gv->twodimensional = twodee;
     gv->setsize (1,0.8);
     gv->xlabel = "t";
     gv->ylabel = "v";
     ds.datalabel = "v(t)";
-    ds.markerstyle = morph::markerstyle::diamond;
+    ds.markerstyle = mplot::markerstyle::diamond;
     gv->setdata (t, _v, ds);
     gv->finalize();
-    gv->addLabel ("using morph::stylepolicy::both\nand morph::markerstyle::diamond", sm::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
+    gv->addLabel ("using mplot::stylepolicy::both\nand mplot::markerstyle::diamond", sm::vec<float>({0,-0.25,0}), mplot::TextFeatures(0.05));
     v.addVisualModel (gv);
 
     // Graph u(t)
-    auto gu = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,1.1,0})+izoff);
+    auto gu = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,1.1,0})+izoff);
     v.bindmodel (gu);
     gu->twodimensional = twodee;
     gu->setsize (1,0.5);
     gu->xlabel = "t";
     gu->ylabel = "u";
     ds.datalabel = "u(t)";
-    ds.markercolour = morph::colour::crimson;
-    ds.linecolour = morph::colour::crimson;
-    ds.markerstyle = morph::markerstyle::uphexagon;
+    ds.markercolour = mplot::colour::crimson;
+    ds.linecolour = mplot::colour::crimson;
+    ds.markerstyle = mplot::markerstyle::uphexagon;
     gu->setdata (t, _u, ds);
-    gu->addLabel ("using morph::stylepolicy::both\nand morph::markerstyle::diamond", sm::vec<float>({0.3,0.6,0}), morph::TextFeatures(0.05));
+    gu->addLabel ("using mplot::stylepolicy::both\nand mplot::markerstyle::diamond", sm::vec<float>({0.3,0.6,0}), mplot::TextFeatures(0.05));
     gu->finalize();
     v.addVisualModel (gu);
 
     // Graph nullclines, u vs v and vector field
     ds.showlines = false;
-    auto gp = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({1.5,0,0})+izoff);
+    auto gp = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({1.5,0,0})+izoff);
     v.bindmodel (gp);
     gp->twodimensional = twodee;
     gp->setsize (1.6, 1.6);
     gp->xlabel = "v";
     gp->ylabel = "u";
     // nullcline for the u variable
-    ds.markercolour = morph::colour::crimson;
+    ds.markercolour = mplot::colour::crimson;
     ds.datalabel = "u nc";
     gp->setdata (vrng, u_nc, ds);
     // nullcline for the v variable
-    ds.markercolour = morph::colour::royalblue;
+    ds.markercolour = mplot::colour::royalblue;
     ds.datalabel = "v nc";
     gp->setdata (vrng, v_nc, ds);
     // The evolution of v and u wrt time
-    ds.markercolour = morph::colour::black;
+    ds.markercolour = mplot::colour::black;
     ds.datalabel = "u(v)";
     gp->setdata (_v, _u, ds);
     // Plot quivs within graphvisual
     ds.datalabel = "quivs";
     ds.quiver_gain = { 0.08f, 0.8f, 1.0f };
     gp->quiver_setlog();
-    ds.quiver_colourmap.setType (morph::ColourMapType::Jet);
+    ds.quiver_colourmap.setType (mplot::ColourMapType::Jet);
     ds.quiver_conewidth = 1.8f;
     //ds.quiver_thickness_gain = 0.6f; // make arrows a bit thinner
-    ds.markerstyle = morph::markerstyle::quiver;
+    ds.markerstyle = mplot::markerstyle::quiver;
     gp->setdata (grid, du_dv_vecfield, ds);
     gp->finalize();
-    gp->addLabel ("using morph::markerstyle::quiver", sm::vec<float>({0,-0.25,0}), morph::TextFeatures(0.05));
+    gp->addLabel ("using mplot::markerstyle::quiver", sm::vec<float>({0,-0.25,0}), mplot::TextFeatures(0.05));
     v.addVisualModel (gp);
 
     /*

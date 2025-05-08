@@ -8,9 +8,9 @@
 #include <sm/vvec>
 #include <sm/random>
 
-#include <morph/Visual.h>
-#include <morph/TriFrameVisual.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/TriFrameVisual.h>
+#include <mplot/HexGridVisual.h>
 #include <iostream>
 #include <chrono>
 
@@ -27,7 +27,7 @@ int main()
     int rtn = -1;
 
     // Set up a visual environment
-    morph::Visual v(2600, 1800, "Rosenbrock bananas");
+    mplot::Visual v(2600, 1800, "Rosenbrock bananas");
     v.zNear = 0.001;
     v.zFar = 100000;
     v.fov=60;
@@ -42,7 +42,7 @@ int main()
 
     // Add a 'triangle visual' to be visualised as three rods
     sm::vec<float> _offset = {0,0,0};
-    auto tfv = std::make_unique<morph::TriFrameVisual<FLT>>(_offset);
+    auto tfv = std::make_unique<mplot::TriFrameVisual<FLT>>(_offset);
     v.bindmodel (tfv);
     tfv->radius = 0.01f;
     tfv->sradius = 0.01f;
@@ -53,7 +53,7 @@ int main()
     tri_coords[2] = { v3[0], v3[1], 0.0 };
     tfv->setScalarData (&tri_values);
     tfv->setDataCoords (&tri_coords);
-    tfv->cm.setType (morph::ColourMapType::Cividis);
+    tfv->cm.setType (mplot::ColourMapType::Cividis);
     tfv->finalize();
     auto tfvp = v.addVisualModel (tfv);
 
@@ -70,10 +70,10 @@ int main()
     }
     sm::range<FLT> mm = sm::range<FLT>::get_from (banana_vals);
     std::cout << "Banana surface range: " << mm << std::endl;
-    auto hgv = std::make_unique<morph::HexGridVisual<FLT>>(&hg, _offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<FLT>>(&hg, _offset);
     v.bindmodel (hgv);
-    hgv->hexVisMode = morph::HexVisMode::Triangles;
-    hgv->cm.setType (morph::ColourMapType::Viridis);
+    hgv->hexVisMode = mplot::HexVisMode::Triangles;
+    hgv->cm.setType (mplot::ColourMapType::Viridis);
     hgv->setScalarData (&banana_vals);
     hgv->zScale.setParams (0.001f, 0.0f);
     hgv->colourScale.compute_scaling (0.01f, 5.0f);

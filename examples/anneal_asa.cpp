@@ -12,14 +12,14 @@
 #include <sm/hex>
 #include <sm/hexgrid>
 
-#include <morph/Anneal.h>
-#include <morph/Config.h>
+#include <mplot/Anneal.h>
+#include <mplot/Config.h>
 #ifdef VISUALISE
-# include <morph/Visual.h>
-# include <morph/VisualDataModel.h>
-# include <morph/HexGridVisual.h>
-# include <morph/PolygonVisual.h>
-# include <morph/GraphVisual.h>
+# include <mplot/Visual.h>
+# include <mplot/VisualDataModel.h>
+# include <mplot/HexGridVisual.h>
+# include <mplot/PolygonVisual.h>
+# include <mplot/GraphVisual.h>
 #endif
 
 // Choose double or float for the precision used in the Anneal algorithm
@@ -57,7 +57,7 @@ int main (int argc, char** argv)
     sm::vvec<sm::vec<F,2>> p_rng = {{ {-0.3, 0.3}, {-0.3, 0.3} }};
 
     // Set up the anneal algorithm object
-    morph::Anneal<F> anneal(p, p_rng);
+    mplot::Anneal<F> anneal(p, p_rng);
     // There are defaults hardcoded in Anneal.h, but these work for the cost function here:
     anneal.temperature_ratio_scale = F{1e-2};
     anneal.temperature_anneal_scale = F{200};
@@ -74,7 +74,7 @@ int main (int argc, char** argv)
 #endif
     // Optionally, modify ASA parameters from a JSON config specified on the command line.
     if (argc > 1) {
-        morph::Config conf(argv[1]);
+        mplot::Config conf(argv[1]);
         if (conf.ready) {
             anneal.temperature_ratio_scale = (F)conf.getDouble ("temperature_ratio_scale", 1e-2);
             anneal.temperature_anneal_scale = (F)conf.getDouble ("temperature_anneal_scale", 200.0);
@@ -93,13 +93,13 @@ int main (int argc, char** argv)
 
 #ifdef VISUALISE
     // Set up the visualisation
-    morph::Visual v (1920, 1080, "Adaptive Simulated Annealing Example");
+    mplot::Visual v (1920, 1080, "Adaptive Simulated Annealing Example");
     v.zNear = 0.001;
     v.setSceneTransZ (-3.0f);
     v.lightingEffects (true);
 
     sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
-    auto hgv = std::make_unique<morph::HexGridVisual<F>>(hg.get(), offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<F>>(hg.get(), offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&obj_f);
 #ifdef USE_BOHACHEVSKY_FUNCTION
@@ -114,25 +114,25 @@ int main (int argc, char** argv)
 
     // One object for the 'candidate' position
     std::array<float, 3> col = { 0, 1, 0 };
-    auto cand_up = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
+    auto cand_up = std::make_unique<mplot::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.4f, col, 20);
     v.bindmodel (cand_up);
     cand_up->finalize();
     // A second object for the 'best' position
     col = { 1, 0, 0 };
-    auto best_up = std::make_unique<morph::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
+    auto best_up = std::make_unique<mplot::PolygonVisual<>>(offset, polypos, sm::vec<float>({1,0,0}), 0.001f, 0.8f, col, 10);
     v.bindmodel (best_up);
     best_up->finalize();
 
     // A third object for the currently accepted position
     col = { 1, 0, 0.7f };
-    auto curr_up = std::make_unique<morph::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
+    auto curr_up = std::make_unique<mplot::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
     v.bindmodel (curr_up);
     curr_up->finalize();
 
     // Fourth object marks the starting place
     col = { .5f, .5f, .5f };
     polypos[2] = objective(p);
-    auto sp = std::make_unique<morph::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
+    auto sp = std::make_unique<mplot::PolygonVisual<>> (offset, polypos, sm::vec<float>({1,0,0}), 0.005f, 0.6f, col, 20);
     v.bindmodel (sp);
     sp->finalize();
 
@@ -143,11 +143,11 @@ int main (int argc, char** argv)
 
     // Add a graph to track T_i and T_cost
     sm::vec<float> spatOff = {1.2f, -0.5f, 0.0f};
-    auto graph1 = std::make_unique<morph::GraphVisual<F>> (spatOff);
+    auto graph1 = std::make_unique<mplot::GraphVisual<F>> (spatOff);
     v.bindmodel (graph1);
     graph1->twodimensional = true;
     graph1->setlimits (0, 1000, -10, 1);
-    graph1->policy = morph::stylepolicy::lines;
+    graph1->policy = mplot::stylepolicy::lines;
     graph1->ylabel = "log(T)";
     graph1->xlabel = "Anneal time";
     graph1->prepdata ("Tparam");
@@ -156,11 +156,11 @@ int main (int argc, char** argv)
     auto graph1p = v.addVisualModel (graph1);
 
     spatOff[0] += 1.1f;
-    auto graph2 = std::make_unique<morph::GraphVisual<F>> (spatOff);
+    auto graph2 = std::make_unique<mplot::GraphVisual<F>> (spatOff);
     v.bindmodel (graph2);
     graph2->twodimensional = true;
     graph2->setlimits (0, 1000, -1.0f, 1.0f);
-    graph2->policy = morph::stylepolicy::lines;
+    graph2->policy = mplot::stylepolicy::lines;
     graph2->ylabel = "obj value";
     graph2->xlabel = "Anneal time";
     graph2->prepdata ("f_x");
@@ -175,14 +175,14 @@ int main (int argc, char** argv)
     // The Optimization:
     //
     // Your job is to loop, calling anneal.step(), until anneal.state tells you to stop...
-    while (anneal.state != morph::Anneal_State::ReadyToStop) {
+    while (anneal.state != mplot::Anneal_State::ReadyToStop) {
 
         // ...and on each loop, compute the objectives that anneal asks you to:
-        if (anneal.state == morph::Anneal_State::NeedToCompute) {
+        if (anneal.state == mplot::Anneal_State::NeedToCompute) {
             // Compute the candidate objective value
             anneal.f_x_cand = objective (anneal.x_cand);
 
-        } else if (anneal.state == morph::Anneal_State::NeedToComputeSet) {
+        } else if (anneal.state == mplot::Anneal_State::NeedToComputeSet) {
             // Compute objective values for reannealing
             anneal.f_x_plusdelta = objective (anneal.x_plusdelta);
             // anneal.f_x is already computed. BUT could jump to the x_best on reanneal.

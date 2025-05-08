@@ -5,21 +5,21 @@
 #include <cstdlib>
 #include <sstream>
 #include <sm/vec>
-#include <morph/Visual.h>
-#include <morph/HealpixVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/HealpixVisual.h>
 
 int main (int argc, char** argv)
 {
     int ord = 7; // HEALPix order
     if (argc > 1) { ord = std::atoi (argv[1]); }
 
-    morph::Visual v(1024, 768, "Healpix");
+    mplot::Visual v(1024, 768, "Healpix");
 
-    auto hpv = std::make_unique<morph::HealpixVisual<float>> (sm::vec<float>{0,0,0});
+    auto hpv = std::make_unique<mplot::HealpixVisual<float>> (sm::vec<float>{0,0,0});
     v.bindmodel (hpv);
     hpv->indicate_axes = true;
     hpv->set_order (ord);
-    hpv->cm.setType (morph::ColourMapType::Plasma);
+    hpv->cm.setType (mplot::ColourMapType::Plasma);
 
     // The HealpixVisual has pixeldata, which is ordered with the NEST indexing
     // scheme. If we fill it with sequential values, then the colour map will show the
@@ -33,7 +33,7 @@ int main (int argc, char** argv)
     ss << ord << (ord == 1 ? "st" : (ord == 2 ? "nd" : (ord == 3 ? "rd" : "th")))
        << " order HEALPix with nside = " << hpv->get_nside()
        << " and " << hpv->n_pixels() << " pixels\n";
-    hpv->addLabel (ss.str(), {0.0f, -1.2f , 0.0f }, morph::TextFeatures{0.08f, centre_horz});
+    hpv->addLabel (ss.str(), {0.0f, -1.2f , 0.0f }, mplot::TextFeatures{0.08f, centre_horz});
 
     // Finalize and add
     hpv->finalize();

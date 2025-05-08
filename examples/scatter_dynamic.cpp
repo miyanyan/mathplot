@@ -11,14 +11,14 @@
 #include <sm/vec>
 #include <sm/vvec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/ScatterVisual.h>
 
 int main()
 {
     int rtn = -1;
-    morph::Visual v(848, 480, "Moving ScatterVisual");
+    mplot::Visual v(848, 480, "Moving ScatterVisual");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     // Set a blueish background:
@@ -27,23 +27,23 @@ int main()
     sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
 
     // Do the initial set up of the ScatterVisual object
-    auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+    auto sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
     v.bindmodel (sv);
     sm::vvec<sm::vec<float, 3>> points(20*20);
     sm::vvec<float> data(20*20);
     sv->setDataCoords (&points);
     sv->setScalarData (&data);
     sv->radiusFixed = 0.03f;
-    sv->cm.setType (morph::ColourMapType::Plasma);
+    sv->cm.setType (mplot::ColourMapType::Plasma);
     // Finalize (build the model and add to the Visual), even though there's no data or points to show yet
     sv->finalize();
     auto svp = v.addVisualModel (sv); // When you add the model to the Visual, it takes
                                       // ownership of the memory and returns a pointer
-                                      // that you can use (svp). svp is of type morph::ScatterVisual<float>*
+                                      // that you can use (svp). svp is of type mplot::ScatterVisual<float>*
 
     // Set a fixed scaling for the data value to colour conversion. This ensures that
     // the range of the data (which is about -0.42 to 0.42) maps to the range 0->1 which
-    // is then passed into the morph::ColourMap. With the right scaling, we get the full
+    // is then passed into the mplot::ColourMap. With the right scaling, we get the full
     // range of colours in the colour map. compute_scaling() is the easiest way to do
     // this - you just pass in the min and max of the expected range. colourScale is an
     // object of type sm::scale.

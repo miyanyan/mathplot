@@ -7,14 +7,14 @@
 #include <sm/bezcoord>
 #include <sm/bezcurvepath>
 
-#include <morph/ReadCurves.h>
+#include <mplot/ReadCurves.h>
 
 int main()
 {
     int rtn = -1;
 
     try {
-        morph::ReadCurves r("../../tests/whiskerbarrels_withcentres.svg");
+        mplot::ReadCurves r("../../tests/whiskerbarrels_withcentres.svg");
         //r.save (0.001f);
         sm::bezcurvepath<float> bcp = r.getCorticalPath();
         bcp.computePoints (0.01f);

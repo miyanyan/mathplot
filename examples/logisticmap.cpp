@@ -9,15 +9,15 @@
 #include <sm/vec>
 #include <sm/vvec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "The Logistic Map");
+    mplot::Visual v(1024, 768, "The Logistic Map");
     v.zNear = 0.001;
     v.backgroundWhite();
     v.lightingEffects();
@@ -25,7 +25,7 @@ int main()
     try {
         sm::vvec<double> absc;
         sm::vvec<double> ord;
-        auto gv = std::make_unique<morph::GraphVisual<double>>(sm::vec<float>({0,0,0}));
+        auto gv = std::make_unique<mplot::GraphVisual<double>>(sm::vec<float>({0,0,0}));
         v.bindmodel (gv);
 
         double x = 0.5;
@@ -66,21 +66,21 @@ int main()
         gv->setsize (1.33, 1);
         gv->setlimits (1,4,0,1);
 
-        morph::DatasetStyle ds;
-        ds.markerstyle = morph::markerstyle::diamond;
-        ds.markercolour = morph::colour::blue4;
+        mplot::DatasetStyle ds;
+        ds.markerstyle = mplot::markerstyle::diamond;
+        ds.markercolour = mplot::colour::blue4;
         ds.markersize = 0.001;
-        ds.policy =  morph::stylepolicy::markers; // markers, lines, both, allcolour
+        ds.policy =  mplot::stylepolicy::markers; // markers, lines, both, allcolour
         ds.showlines = false;
 
-        gv->policy = morph::stylepolicy::markers; // markers, lines, both, allcolour
+        gv->policy = mplot::stylepolicy::markers; // markers, lines, both, allcolour
         gv->xlabel = "r";
         gv->ylabel = "x";
         gv->setdata (absc, ord, ds);
         gv->twodimensional = false;
         gv->finalize();
 
-        // Add the GraphVisual to the morph::Visual scene
+        // Add the GraphVisual to the mplot::Visual scene
         v.addVisualModel (gv);
 
         // You can render the scene manually like this

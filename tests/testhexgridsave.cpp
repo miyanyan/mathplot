@@ -6,24 +6,24 @@
 
 #include <sm/vec>
 
-#include <morph/ReadCurves.h>
-#include <morph/tools.h>
-#include <morph/ColourMap.h>
-#include <morph/Visual.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/ReadCurves.h>
+#include <mplot/tools.h>
+#include <mplot/ColourMap.h>
+#include <mplot/Visual.h>
+#include <mplot/HexGridVisual.h>
 
 int main()
 {
     int rtn = 0;
     unsigned int hexnum = 0;
 
-    std::cout << "Start " << morph::tools::timeNow() << std::endl;
+    std::cout << "Start " << mplot::tools::timeNow() << std::endl;
     // Create and then write a hexgrid
     try {
-        std::string pwd = morph::tools::getPwd();
+        std::string pwd = mplot::tools::getPwd();
         std::string curvepath = "../../tests/trial.svg";
 
-        morph::ReadCurves r(curvepath);
+        mplot::ReadCurves r(curvepath);
 
         sm::hexgrid hg(0.01, 3, 0);
         hg.setBoundary (r.getCorticalPath());
@@ -38,24 +38,24 @@ int main()
 
     } catch (const std::exception& e) {
         std::cerr << "Caught exception reading trial.svg: " << e.what() << std::endl;
-        std::cerr << "Current working directory: " << morph::tools::getPwd() << std::endl;
+        std::cerr << "Current working directory: " << mplot::tools::getPwd() << std::endl;
         rtn = -1;
     }
-    std::cout << "Generated " << morph::tools::timeNow() << std::endl;
+    std::cout << "Generated " << mplot::tools::timeNow() << std::endl;
     // Now read it back
     try {
         sm::hexgrid hg("../trialhexgrid.h5");
 
-        std::cout << "Read " << morph::tools::timeNow() << std::endl;
+        std::cout << "Read " << mplot::tools::timeNow() << std::endl;
 
         // Make sure read-in grid has same number of hexes as the generated one.
         if (hexnum != hg.num()) { rtn = -1; }
 
         // Create a hexgrid Visual
-        morph::Visual v(1600, 1000, "hexgrid");
+        mplot::Visual v(1600, 1000, "hexgrid");
         v.lightingEffects();
         sm::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
-        auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
+        auto hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, offset);
         v.bindmodel (hgv);
         // Set up data for the HexGridVisual and colour hexes according to their state as being boundary/inside/domain, etc
         std::vector<float> colours (hg.num(), 0.0f);
@@ -81,10 +81,10 @@ int main()
                 colours[i] = cl_domain;
             }
         }
-        hgv->cm.setType (morph::ColourMapType::Jet);
+        hgv->cm.setType (mplot::ColourMapType::Jet);
         hgv->zScale.setParams (0,0); // makes the output flat in z direction, but you still get the colours
         hgv->setScalarData (&colours);
-        hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or morph::HexVisMode::Triangles for a smoother surface plot
+        hgv->hexVisMode = mplot::HexVisMode::HexInterp; // Or mplot::HexVisMode::Triangles for a smoother surface plot
         hgv->finalize();
         v.addVisualModel (hgv);
 
@@ -99,7 +99,7 @@ int main()
 
     } catch (const std::exception& e) {
         std::cerr << "Caught exception reading trial.svg: " << e.what() << std::endl;
-        std::cerr << "Current working directory: " << morph::tools::getPwd() << std::endl;
+        std::cerr << "Current working directory: " << mplot::tools::getPwd() << std::endl;
         rtn = -1;
     }
     return rtn;

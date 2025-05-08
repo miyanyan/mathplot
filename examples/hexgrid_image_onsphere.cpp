@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a HexGrid, onto which is sampled an image. Then
+ * An example mplot::Visual scene, containing a HexGrid, onto which is sampled an image. Then
  * projected onto a sphere.
  *
  * \author Seb James
@@ -14,10 +14,10 @@
 #include <sm/vvec>
 #include <sm/hexgrid>
 
-#include <morph/loadpng.h>
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/loadpng.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/HexGridVisual.h>
 
 enum class spherical_projection
 {
@@ -32,7 +32,7 @@ int main()
     using mc = sm::mathconst<float>;
     constexpr spherical_projection proj = spherical_projection::mercator;
 
-    morph::Visual v(1600, 1000, "Spherically transformed HexGrid");
+    mplot::Visual v(1600, 1000, "Spherically transformed HexGrid");
 
     // radius of sphere
     constexpr float r_sph = 1.0f;
@@ -48,10 +48,10 @@ int main()
         //hg.setRectangularBoundary (0.5f * mc::pi * r_sph, 0.5f * mc::pi * r_sph);
     }
 
-    // Load an image with morph::loadpng()
+    // Load an image with mplot::loadpng()
     std::string fn = "../examples/bike256.png";
     sm::vvec<float> image_data;
-    sm::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
+    sm::vec<unsigned int, 2> dims = mplot::loadpng (fn, image_data);
 
     // This controls how large the photo will be on the HexGrid
     sm::vec<float,2> image_scale = {3.2f, 3.2f};
@@ -123,28 +123,28 @@ int main()
     }
 
     // Now visualise with a HexGridVisual
-    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, sm::vec<float>{1.5,0,0});
+    auto hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, sm::vec<float>{1.5,0,0});
     v.bindmodel (hgv);
     // Set the image data as the scalar data for the HexGridVisual
     hgv->setScalarData (&hex_image_data);
     // This will make it a spherical projection (these coords will override the 2D coords in the hexgrid)
     hgv->setDataCoords (&sphere_coords);
     // The inverse greyscale map is appropriate for a monochrome image
-    hgv->cm.setType (morph::ColourMapType::Inferno);
-    hgv->addLabel (label, sm::vec<float>{ 0, -1.1f * r_sph, 0 }, morph::TextFeatures(0.05f));
+    hgv->cm.setType (mplot::ColourMapType::Inferno);
+    hgv->addLabel (label, sm::vec<float>{ 0, -1.1f * r_sph, 0 }, mplot::TextFeatures(0.05f));
     hgv->finalize();
     v.addVisualModel (hgv);
 
     // Let's have a flat one alongside for comparison
-    hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, sm::vec<float>{-1.5,0,-1});
+    hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, sm::vec<float>{-1.5,0,-1});
     v.bindmodel (hgv);
     hgv->setScalarData (&hex_image_data);
     // The only real difference is that this has no hgv->setDataCoords(&sphere_coords) call.
-    hgv->cm.setType (morph::ColourMapType::Inferno);
+    hgv->cm.setType (mplot::ColourMapType::Inferno);
     hgv->zScale.setParams (0, 1); // sets a z offset of 1 across the hexgrid
     hgv->addLabel (std::string("2D hexgrid"),
                    sm::vec<float>{1.2*r_sph, -1.2*r_sph, 1},
-                   morph::TextFeatures(0.05f));
+                   mplot::TextFeatures(0.05f));
     hgv->finalize();
     v.addVisualModel (hgv);
 

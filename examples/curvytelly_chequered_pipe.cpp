@@ -5,12 +5,12 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/grid>
-#include <morph/VisualCompoundRay.h>
-#include <morph/CurvyTellyVisual.h>
+#include <mplot/VisualCompoundRay.h>
+#include <mplot/CurvyTellyVisual.h>
 
 int main()
 {
-    morph::VisualCompoundRay<> v(1600, 1000, "CurvyTellyVisual as a stripey pipe");
+    mplot::VisualCompoundRay<> v(1600, 1000, "CurvyTellyVisual as a stripey pipe");
 
     // Make a Grid to display the stripes.
     // In x, make it as many wide as there will be facets on the tube.
@@ -35,14 +35,14 @@ int main()
     }
 
     sm::vec<float> offset = { 0, 0, -length/2 };
-    auto ctv = std::make_unique<morph::CurvyTellyVisual<float>>(&grid, offset);
+    auto ctv = std::make_unique<mplot::CurvyTellyVisual<float>>(&grid, offset);
     v.bindmodel (ctv);
     ctv->setScalarData (&stripe_data);
     ctv->radius = radius;
     ctv->angle_to_subtend = sm::mathconst<float>::two_pi; // 2pi is default
     ctv->tb_frames = false;
     ctv->lr_frames = false;
-    ctv->cm.setType (morph::ColourMapType::Plasma);
+    ctv->cm.setType (mplot::ColourMapType::Plasma);
     ctv->finalize();
     v.addVisualModel (ctv);
 

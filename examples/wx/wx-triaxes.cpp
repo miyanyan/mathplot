@@ -1,7 +1,7 @@
 #include <wx/wx.h>
 
 #define GLAD_GL_IMPLEMENTATION
-#include <morph/glad/gl.h> // must be included before glcanvas.h
+#include <mplot/glad/gl.h> // must be included before glcanvas.h
 
 #include <wx/glcanvas.h>
 
@@ -9,20 +9,20 @@
 
 #include <sm/vec>
 
-#include <morph/gl/version.h>
-#include <morph/wx/viswx.h>
-#include <morph/TriaxesVisual.h>
+#include <mplot/gl/version.h>
+#include <mplot/wx/viswx.h>
+#include <mplot/TriaxesVisual.h>
 
-constexpr int gl_version = morph::gl::version_4_1; // options in morph/gl/version.h
+constexpr int gl_version = mplot::gl::version_4_1; // options in mplot/gl/version.h
 
-// Your application-specific frame, deriving from morph::wx:Frame. In this frame, I'll set up VisualModels
-class MyFrame : public morph::wx::Frame<gl_version>
+// Your application-specific frame, deriving from mplot::wx:Frame. In this frame, I'll set up VisualModels
+class MyFrame : public mplot::wx::Frame<gl_version>
 {
 public:
-    MyFrame(const wxString &title) : morph::wx::Frame<gl_version>(title)
+    MyFrame(const wxString &title) : mplot::wx::Frame<gl_version>(title)
     {
         auto sizer = new wxBoxSizer(wxVERTICAL);
-        // Adding ONLY the GL canvas, where all the morphologica stuff will be drawn
+        // Adding ONLY the GL canvas, where all the mplotologica stuff will be drawn
         sizer->Add (this->canvas, 1, wxEXPAND);
         SetSizerAndFit(sizer);
     }
@@ -33,9 +33,9 @@ public:
     void setupVisualModels()
     {
         if (this->canvas->ready()) {
-            auto tav = std::make_unique<morph::TriaxesVisual<float, gl_version>> (sm::vec<float,3>({0,0,0}));
+            auto tav = std::make_unique<mplot::TriaxesVisual<float, gl_version>> (sm::vec<float,3>({0,0,0}));
             this->canvas->v.bindmodel (tav);
-            tav->axisstyle = morph::axisstyle::L;
+            tav->axisstyle = mplot::axisstyle::L;
             // Specify axes min and max with a min and max vector
             //                                         x      y       z
             tav->input_min = sm::vec<float, 3>({ -1.0f,  0.0f,   0.0f });
@@ -65,7 +65,7 @@ public:
 bool MyApp::OnInit()
 {
     if (!wxApp::OnInit()) { return false; }
-    MyFrame *frame = new MyFrame("morph::TriaxesVisual");
+    MyFrame *frame = new MyFrame("mplot::TriaxesVisual");
     frame->Show(true);
     frame->setupVisualModels(); // After calling Show()
     return true;

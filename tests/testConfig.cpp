@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include "morph/Config.h"
+#include "mplot/Config.h"
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
 
     int rtn = -1;
     {
-        morph::Config config(jsonfile);
+        mplot::Config config(jsonfile);
         if (config.ready) {
             const bool testbool = config.getBool ("testbool", false);
             std::cout << "testbool from JSON: " << (testbool ? "true" : "false") << " (expect: true)\n";

@@ -3,19 +3,19 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/random>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
-    morph::Visual v(1024, 768, "Coordinates in GraphVisual");
+    mplot::Visual v(1024, 768, "Coordinates in GraphVisual");
     v.setSceneTrans (sm::vec<float,3>{-0.458656f, -0.428112f, -2.5f});
 
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>{0,0,0});
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>{0,0,0});
     v.bindmodel (gv);
 
     // Choose marker policy for this graph
-    gv->policy = morph::stylepolicy::markers;
+    gv->policy = mplot::stylepolicy::markers;
     // And set the graph limits suitably
     gv->setlimits (0, 1, 0, 1);
 

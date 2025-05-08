@@ -1,9 +1,9 @@
 /*
  * Two windows example using non-multicontext guaranteed headers defining global GL function
- * aliases (i.e. using morph::VisualNoMX in place of morph::Visual).
+ * aliases (i.e. using mplot::VisualNoMX in place of mplot::Visual).
  *
  * It works in practice, but it is safer to use the multicontext-safe GLAD headers with
- * morph::Visual.
+ * mplot::Visual.
  */
 #include <iostream>
 #include <array>
@@ -13,10 +13,10 @@
 #include <sm/vec>
 #include <sm/vvec>
 
-#include <morph/VisualNoMX.h>
-#include <morph/ColourMap.h>
-#include <morph/QuiverVisual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/VisualNoMX.h>
+#include <mplot/ColourMap.h>
+#include <mplot/QuiverVisual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
@@ -25,7 +25,7 @@ int main()
     // Demonstrates use of offset (left at 0,0,0), lengths (3,2,1) and the 'thickness'
     // scaling factor (0.5) for the coordinate arrows. Defines, and makes current a new
     // window and OpenGL context.
-    morph::VisualNoMX v(1024, 768, "Window 1");
+    mplot::VisualNoMX v(1024, 768, "Window 1");
     v.showCoordArrows (true);
     v.showTitle (true);
     v.backgroundWhite();
@@ -33,7 +33,7 @@ int main()
 
     // If I define a second Visual here, then the OpenGL context will now be 'pointing'
     // at this Visual v2
-    morph::VisualNoMX v2(768, 768, "Graph on Window 2");
+    mplot::VisualNoMX v2(768, 768, "Graph on Window 2");
     v2.showCoordArrows (true);
     v2.showTitle (true);
     v2.backgroundWhite();
@@ -76,7 +76,7 @@ int main()
             }
         }
 
-        auto qvp = std::make_unique<morph::QuiverVisual<float>>(&coords, offset, &quivs, morph::ColourMapType::Jet);
+        auto qvp = std::make_unique<mplot::QuiverVisual<float>>(&coords, offset, &quivs, mplot::ColourMapType::Jet);
         v.bindmodel (qvp);
         qvp->quiver_length_gain = 1.0f; // Scale the length of the quivers on screen
         qvp->colourScale.compute_scaling(0, qlens.max());
@@ -85,7 +85,7 @@ int main()
         v.addVisualModel (qvp);
 
         // Set up v2 with a graph, switching to the Visual v2's context first:
-        auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
+        auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0}));
         v2.bindmodel (gv);
         sm::vvec<float> x =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
         sm::vvec<float> y = x.pow(3);

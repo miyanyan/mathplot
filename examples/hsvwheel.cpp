@@ -9,17 +9,17 @@
 #include <sm/mathconst>
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/HSVWheelVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/HSVWheelVisual.h>
 
-constexpr morph::ColourMapType disctype = morph::ColourMapType::DiscSixWhite; // or morph::ColourMapType::HSV
+constexpr mplot::ColourMapType disctype = mplot::ColourMapType::DiscSixWhite; // or mplot::ColourMapType::HSV
 
 // In this example, I'll create a special visual to show hsv colours.
-struct SquareGridVisual : public morph::VisualModel<>
+struct SquareGridVisual : public mplot::VisualModel<>
 {
     SquareGridVisual(const sm::vec<float> _offset, const float hue_rotn = 0.0f, const bool rev = false)
-        : morph::VisualModel<> (_offset)
+        : mplot::VisualModel<> (_offset)
     {
         // In the constructor set up the colour map
         this->colourMap.setType (disctype);
@@ -31,7 +31,7 @@ struct SquareGridVisual : public morph::VisualModel<>
     }
 
     // A colourMap member attribute
-    morph::ColourMap<float> colourMap;
+    mplot::ColourMap<float> colourMap;
 
     // initializeVertices is the standard function that we override when extending
     // VisualModel. Here, we're going to draw a grid of squares, with colour chosen
@@ -80,16 +80,16 @@ struct SquareGridVisual : public morph::VisualModel<>
 
 int main()
 {
-    // The main function is simple. Create a morph::Visual, add a single SquareGridVisual and then 'keep it open'
-    std::string titlestr = "The " + morph::ColourMap<float>::colourMapTypeToStr (disctype) + " colour map with 2D inputs";
-    morph::Visual v(1600, 1000, titlestr);
+    // The main function is simple. Create a mplot::Visual, add a single SquareGridVisual and then 'keep it open'
+    std::string titlestr = "The " + mplot::ColourMap<float>::colourMapTypeToStr (disctype) + " colour map with 2D inputs";
+    mplot::Visual v(1600, 1000, titlestr);
     v.backgroundBlack();
     v.setSceneTrans (-5.60868263,-5.17123413,-29.2000771); // numbers obtained by pressing 'z' and seeing stdout
 
     sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // TextFeatures is a nice way to specify font size, colour (and other things) for your addLabel() calls.
-    morph::TextFeatures tf (0.5f, morph::colour::white);
+    mplot::TextFeatures tf (0.5f, mplot::colour::white);
 
     // Grid 1
     float hue_rotn = 0.0f;
@@ -107,9 +107,9 @@ int main()
     sm::vec<float, 3> woffset = offset;
     woffset[0] += 5.5f;
     woffset[1] -= 6.0f;
-    auto hsvw_vis = std::make_unique<morph::HSVWheelVisual<float>>(woffset);
+    auto hsvw_vis = std::make_unique<mplot::HSVWheelVisual<float>>(woffset);
     v.bindmodel (hsvw_vis);
-    hsvw_vis->setColour (morph::colour::white);
+    hsvw_vis->setColour (mplot::colour::white);
     hsvw_vis->radius = 3.5f;
     hsvw_vis->tf.fontsize = 0.4f;
     hsvw_vis->twodimensional = false;
@@ -122,7 +122,7 @@ int main()
     auto hsv_vis2 = std::make_unique<SquareGridVisual>(offset, hue_rotn);
     v.bindmodel (hsv_vis2);
     //
-    namespace uc = morph::unicode;
+    namespace uc = mplot::unicode;
     std::string lbl2("hue rotation = ");
     lbl2 += std::to_string (hue_rotn/sm::mathconst<float>::pi) + uc::toUtf8(uc::pi);
     hsv_vis2->addLabel (lbl2, sm::vec<float>({0,-1,0}), tf);
@@ -134,10 +134,10 @@ int main()
     woffset = offset;
     woffset[0] += 5.5f;
     woffset[1] -= 6.0f;
-    hsvw_vis = std::make_unique<morph::HSVWheelVisual<float>>(woffset);
+    hsvw_vis = std::make_unique<mplot::HSVWheelVisual<float>>(woffset);
     v.bindmodel (hsvw_vis);
-    hsvw_vis->setFrameColour (morph::colour::teal);
-    hsvw_vis->setTextColour (morph::colour::white);
+    hsvw_vis->setFrameColour (mplot::colour::teal);
+    hsvw_vis->setTextColour (mplot::colour::white);
     hsvw_vis->framelinewidth = 0.1f;
     hsvw_vis->radius = 3.5f;
     hsvw_vis->tf.fontsize = 0.4f;
@@ -161,9 +161,9 @@ int main()
     woffset = offset;
     woffset[0] += 5.5f;
     woffset[1] -= 6.0f;
-    hsvw_vis = std::make_unique<morph::HSVWheelVisual<float>>(woffset);
+    hsvw_vis = std::make_unique<mplot::HSVWheelVisual<float>>(woffset);
     v.bindmodel (hsvw_vis);
-    hsvw_vis->setColour (morph::colour::white);
+    hsvw_vis->setColour (mplot::colour::white);
     hsvw_vis->labels = {"Fwds", "FL", "Left", "BL", "Back", "BR", "Right", "FR"};
     hsvw_vis->framelinewidth = 0.2f;
     hsvw_vis->radius = 3.5f;

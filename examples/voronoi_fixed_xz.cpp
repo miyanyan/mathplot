@@ -4,15 +4,15 @@
  */
 #include <iostream>
 #include <sm/vec>
-#include <morph/Visual.h>
-#include <morph/VoronoiVisual.h>
-#include <morph/VectorVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VoronoiVisual.h>
+#include <mplot/VectorVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "VoronoiVisual");
+    mplot::Visual v(1024, 768, "VoronoiVisual");
 
     std::vector<sm::vec<float>> points = {
         {0,1,0},
@@ -24,7 +24,7 @@ int main()
     std::vector<float> data = {1,2,3,4,5};
 
     sm::vec<float, 3> offset = { 0.0f };
-    auto vorv = std::make_unique<morph::VoronoiVisual<float>> (offset);
+    auto vorv = std::make_unique<mplot::VoronoiVisual<float>> (offset);
     v.bindmodel (vorv);
     vorv->show_voronoi2d = true;
     vorv->debug_edges = true;
@@ -36,13 +36,13 @@ int main()
     auto p_vorv = v.addVisualModel (vorv);
 
     offset[0] -= 0.5f;
-    auto vvm = std::make_unique<morph::VectorVisual<float, 3>>(offset);
+    auto vvm = std::make_unique<mplot::VectorVisual<float, 3>>(offset);
     v.bindmodel (vvm);
     vvm->thevec = p_vorv->data_z_direction;
     vvm->fixed_colour = true;
     vvm->thickness = 0.03f;
-    vvm->single_colour = morph::colour::dodgerblue2;
-    vvm->addLabel ("Arrow gives data direction", {-0.8, -0.3, 0.2}, morph::TextFeatures(0.1f));
+    vvm->single_colour = mplot::colour::dodgerblue2;
+    vvm->addLabel ("Arrow gives data direction", {-0.8, -0.3, 0.2}, mplot::TextFeatures(0.1f));
     vvm->finalize();
     v.addVisualModel (vvm);
 

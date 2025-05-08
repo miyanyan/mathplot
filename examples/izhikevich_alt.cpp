@@ -7,9 +7,9 @@
 #include <sm/range>
 #include <sm/grid>
 
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
-#include <morph/Config.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
+#include <mplot/Config.h>
 
 // A simple Izhikevich neuron model class
 struct izhi
@@ -102,7 +102,7 @@ int main (int argc, char** argv)
     }
 
     std::string title = "Izhikevich Neuron Model";
-    morph::Config config(jsonfile);
+    mplot::Config config(jsonfile);
     if (config.ready) {
         // Parameters
         iz.a = config.getFloat ("a", iz.a);
@@ -174,7 +174,7 @@ int main (int argc, char** argv)
      * Visualize results
      */
 
-    morph::Visual vis(1280, 768, title);
+    mplot::Visual vis(1280, 768, title);
     vis.setSceneTrans (sm::vec<float,3>({-0.877793f, -0.281277f, -3.9f}));
     vis.lightingEffects();
 
@@ -183,14 +183,14 @@ int main (int argc, char** argv)
     t.linspace (0.0f, N-1, N);
 
     // Set default dataset graphing styles
-    morph::DatasetStyle ds;
+    mplot::DatasetStyle ds;
     ds.linewidth = 0.003f;
-    ds.linecolour = morph::colour::grey30;
+    ds.linecolour = mplot::colour::grey30;
     ds.markersize = 0.015f;
-    ds.markerstyle = morph::markerstyle::uphexagon;
+    ds.markerstyle = mplot::markerstyle::uphexagon;
 
     // Graph membrane voltage vs. time
-    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({-0.5,-0.5,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({-0.5,-0.5,0}));
     vis.bindmodel (gv);
     gv->twodimensional = twodee;
     gv->setsize (1,0.8);
@@ -202,21 +202,21 @@ int main (int argc, char** argv)
     vis.addVisualModel (gv);
 
     // Graph u(t)
-    auto gu = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({-0.5,0.6,0}));
+    auto gu = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({-0.5,0.6,0}));
     vis.bindmodel (gu);
     gu->twodimensional = twodee;
     gu->setsize (1,0.5);
     gu->xlabel = "t";
     gu->ylabel = "u";
     ds.datalabel = "u(t)";
-    ds.markercolour = morph::colour::crimson;
+    ds.markercolour = mplot::colour::crimson;
     gu->setdata (t, u, ds);
     gu->finalize();
     vis.addVisualModel (gu);
 
     // Graph nullclines, u vs v and vector field
     ds.showlines = false;
-    auto gp = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0.9,-0.5,0}));
+    auto gp = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0.9,-0.5,0}));
     vis.bindmodel (gp);
     gp->twodimensional = twodee;
     gp->setsize (1.6,1.6);
@@ -227,17 +227,17 @@ int main (int argc, char** argv)
     gp->ylabel = "u";
 
     // nullcline for the u variable
-    ds.markercolour = morph::colour::crimson;
+    ds.markercolour = mplot::colour::crimson;
     ds.datalabel = "u nc";
     gp->setdata (vrng, u_nc, ds);
 
     // nullcline for the v variable
-    ds.markercolour = morph::colour::royalblue;
+    ds.markercolour = mplot::colour::royalblue;
     ds.datalabel = "v nc";
     gp->setdata (vrng, v_nc, ds);
 
     // The evolution of v and u wrt time
-    ds.markercolour = morph::colour::black;
+    ds.markercolour = mplot::colour::black;
     ds.datalabel = "u(v)";
     gp->setdata (v, u, ds);
 
@@ -247,13 +247,13 @@ int main (int argc, char** argv)
     ds.quiver_gain = { 0.01f, 0.1f, 1.0f };
     // ...and then if the lengths should be log-scaled, call quiver_setlog()
     gp->quiver_setlog();
-    ds.quiver_colourmap.setType (morph::ColourMapType::Jet);
+    ds.quiver_colourmap.setType (mplot::ColourMapType::Jet);
     ds.quiver_conewidth = 1.8f;
     ds.quiver_arrowhead_prop = 0.35f;
     ds.quiver_thickness_gain = 1.5f;
-    ds.markerstyle = morph::markerstyle::quiver;
-    //ds.quiver_flagset.set (static_cast<unsigned int>(morph::quiver_flags::show_zeros));
-    //ds.quiver_flagset.set (static_cast<unsigned int>(morph::quiver_flags::marker_sphere));
+    ds.markerstyle = mplot::markerstyle::quiver;
+    //ds.quiver_flagset.set (static_cast<unsigned int>(mplot::quiver_flags::show_zeros));
+    //ds.quiver_flagset.set (static_cast<unsigned int>(mplot::quiver_flags::marker_sphere));
     gp->setdata (grid, du_dv_vecfield, ds);
 
     gp->finalize();

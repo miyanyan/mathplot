@@ -10,34 +10,34 @@
 #include <sm/quaternion>
 #include <sm/mat44>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/VectorVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/VectorVisual.h>
 
 int main()
 {
-    morph::Visual v(1024, 768, "morph::VectorVisual");
+    mplot::Visual v(1024, 768, "mplot::VectorVisual");
     v.lightingEffects();
     v.showCoordArrows (true);
     v.coordArrowsInScene (true);
 
     sm::vec<float> offset = {1,0,0};
 
-    auto vvm = std::make_unique<morph::VectorVisual<float, 3>>(offset);
+    auto vvm = std::make_unique<mplot::VectorVisual<float, 3>>(offset);
     v.bindmodel (vvm);
     vvm->thevec = {1,1,1};
     vvm->fixed_colour = true;
-    vvm->single_colour = morph::colour::crimson;
-    vvm->addLabel ("Rotn by quaternion", {-0.8, -0.5, 0}, morph::TextFeatures(0.1f));
+    vvm->single_colour = mplot::colour::crimson;
+    vvm->addLabel ("Rotn by quaternion", {-0.8, -0.5, 0}, mplot::TextFeatures(0.1f));
     vvm->finalize();
     auto ptr = v.addVisualModel (vvm);
 
-    vvm = std::make_unique<morph::VectorVisual<float, 3>>(-offset);
+    vvm = std::make_unique<mplot::VectorVisual<float, 3>>(-offset);
     v.bindmodel (vvm);
     vvm->thevec = {1,1,1};
     vvm->fixed_colour = true;
-    vvm->single_colour = morph::colour::royalblue;
-    vvm->addLabel ("Rotn by mat44", {-0.8, -0.5, 0}, morph::TextFeatures(0.1f));
+    vvm->single_colour = mplot::colour::royalblue;
+    vvm->addLabel ("Rotn by mat44", {-0.8, -0.5, 0}, mplot::TextFeatures(0.1f));
     vvm->finalize();
     auto ptr2 = v.addVisualModel (vvm);
 

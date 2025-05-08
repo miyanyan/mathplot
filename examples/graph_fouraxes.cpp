@@ -9,17 +9,17 @@
 #include <sm/vec>
 #include <sm/vvec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
-    namespace uc = morph::unicode;
+    namespace uc = mplot::unicode;
 
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Graph");
+    mplot::Visual v(1024, 768, "Graph");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     v.backgroundWhite();
@@ -31,9 +31,9 @@ int main()
         float step = 1.4f;
         float row2 = 1.2f;
 
-        morph::DatasetStyle ds;
+        mplot::DatasetStyle ds;
 
-        auto gv = std::make_unique<morph::GraphVisual<float>>(sm::vec<float>({0,0,0}));
+        auto gv = std::make_unique<mplot::GraphVisual<float>>(sm::vec<float>({0,0,0}));
         v.bindmodel (gv);
         sm::vvec<float> data = absc.pow(3);
         sm::vec<float, 14> ardata;
@@ -41,11 +41,11 @@ int main()
 
         ds.linecolour =  {1.0, 0.0, 0.0};
         ds.linewidth = 0.015f;
-        ds.markerstyle = morph::markerstyle::triangle;
+        ds.markerstyle = mplot::markerstyle::triangle;
         ds.markercolour = {0.0, 0.0, 1.0};
         gv->setdata (absc, ardata, ds);
 
-        gv->axisstyle = morph::axisstyle::L;
+        gv->axisstyle = mplot::axisstyle::L;
 
         // Set xlabel to include the greek character alpha:
         gv->xlabel = "Include unicode symbols like this: " + uc::toUtf8 (uc::alpha);
@@ -56,39 +56,39 @@ int main()
         gv->finalize();
         v.addVisualModel (gv);
 
-        gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({step,0,0}));
+        gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({step,0,0}));
         v.bindmodel (gv);
         sm::vvec<float> data2 = absc.pow(2);
         ds.linecolour = {0.0, 0.0, 1.0};
-        ds.markerstyle = morph::markerstyle::hexagon;
+        ds.markerstyle = mplot::markerstyle::hexagon;
         ds.markercolour = {0.0, 0.0, 0.0};
         gv->setdata (absc, data2, ds);
-        gv->axisstyle = morph::axisstyle::box;
+        gv->axisstyle = mplot::axisstyle::box;
         gv->ylabel = "mm";
         gv->xlabel = "Abscissa (notice that mm is not rotated)";
         gv->setthickness (0.005f);
         gv->finalize();
         v.addVisualModel (gv);
 
-        gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,-row2,0}));
+        gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,-row2,0}));
         v.bindmodel (gv);
         sm::vvec<float> data3 = absc.pow(4);
         gv->setsize (1,0.8);
         ds.linecolour = {0.0, 1.0, 0.0};
-        ds.markerstyle = morph::markerstyle::circle;
+        ds.markerstyle = mplot::markerstyle::circle;
         ds.markercolour = {0.0, 0.0, 1.0};
         ds.markersize = 0.02f;
         ds.markergap = 0.0f;
         gv->setdata (absc, data3, ds);
-        gv->axisstyle = morph::axisstyle::boxfullticks;
-        gv->tickstyle = morph::tickstyle::ticksin;
+        gv->axisstyle = mplot::axisstyle::boxfullticks;
+        gv->tickstyle = mplot::tickstyle::ticksin;
         gv->ylabel = "mmi";
         gv->xlabel = "mmi is just long enough to be rotated";
         gv->setthickness (0.001f);
         gv->finalize();
         v.addVisualModel (gv);
 
-        gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({step,-row2,0}));
+        gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({step,-row2,0}));
         v.bindmodel (gv);
         absc.resize(1000, 0.0f);
         for (int i = 0; i < 1000; ++i) {
@@ -97,10 +97,10 @@ int main()
         sm::vvec<float> data4 = absc.pow(5);
         gv->setsize (1,0.8);
         ds.linecolour = {0.0, 0.0, 1.0};
-        ds.markerstyle = morph::markerstyle::none;
+        ds.markerstyle = mplot::markerstyle::none;
         ds.markergap = 0.0f;
         gv->setdata (absc, data4, ds);
-        gv->axisstyle = morph::axisstyle::cross;
+        gv->axisstyle = mplot::axisstyle::cross;
         gv->setthickness (0.002f);
         gv->finalize();
         gv->twodimensional = false;

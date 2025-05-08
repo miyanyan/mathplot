@@ -5,11 +5,11 @@
 #include <sm/vvec>
 #include <sm/hexgrid>
 
-#include <morph/qt/viswidget.h>
-#include <morph/GraphVisual.h>
-#include <morph/TriangleVisual.h>
-#include <morph/HexGridVisual.h>
-#include <morph/ScatterVisual.h>
+#include <mplot/qt/viswidget.h>
+#include <mplot/GraphVisual.h>
+#include <mplot/TriangleVisual.h>
+#include <mplot/HexGridVisual.h>
+#include <mplot/ScatterVisual.h>
 
 #include <QVBoxLayout>
 #include <QFrame>
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
                                          // reinitialization. When paintGL is called (and a GL
                                          // context is available) the mathplot OpenGL model will
                                          // be rebuilt.
-                                         static_cast<morph::qt::viswidget*>(this->p_vw)->set_model_needs_reinit (0);
+                                         static_cast<mplot::qt::viswidget*>(this->p_vw)->set_model_needs_reinit (0);
                                          // Call the OpenGLWidget's update method. This will cause a
                                          // call to viswidget::paintGL()
                                          this->p_vw->update();
@@ -67,27 +67,27 @@ void MainWindow::setupHexGridVisual()
 
     // Now create the HexGridVisual
     sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
-    auto hgv = std::make_unique<morph::HexGridVisual<float, morph::qt::gl_version>>(hg.get(), offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<float, mplot::qt::gl_version>>(hg.get(), offset);
 
     // In general, you need to bindmodel before calling finalize() (esp. for
     // VisualModels that do text, like a GraphVisual). This gives the VisualModel access
     // to shader progs from the Visual environment, and allows the VisualModel to know
     // its parent Visual.
-    static_cast<morph::qt::viswidget*>(this->p_vw)->v.bindmodel (hgv);
+    static_cast<mplot::qt::viswidget*>(this->p_vw)->v.bindmodel (hgv);
 
     // Give the HexGridVisual access to the scalar data for the surface
     hgv->setScalarData (&this->data);
 
-    // Now add the HexGridVisual model to newvisualmodels. It has to be cast to a plain morph::VisualModel first:
-    std::unique_ptr<morph::VisualModel<morph::qt::gl_version>> vmp = std::move (hgv);
+    // Now add the HexGridVisual model to newvisualmodels. It has to be cast to a plain mplot::VisualModel first:
+    std::unique_ptr<mplot::VisualModel<mplot::qt::gl_version>> vmp = std::move (hgv);
     // The vector of VisualModels lives in viswidget, accessible via p_vw:
-    static_cast<morph::qt::viswidget*>(this->p_vw)->newvisualmodels.push_back (std::move(vmp));
+    static_cast<mplot::qt::viswidget*>(this->p_vw)->newvisualmodels.push_back (std::move(vmp));
 }
 
 void MainWindow::viswidget_init()
 {
     // Create widget. Seems to open in its own window with a new context.
-    morph::qt::viswidget* vw = new morph::qt::viswidget (this->parentWidget());
+    mplot::qt::viswidget* vw = new mplot::qt::viswidget (this->parentWidget());
     // Choose lighting effects if you want
     vw->v.lightingEffects();
     // Add the OpenGL widget to the UI.

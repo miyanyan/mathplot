@@ -11,14 +11,14 @@
 #include <sm/vvec>
 #include <sm/hexgrid>
 
-#include <morph/Visual.h>
-#include <morph/ScatterVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ScatterVisual.h>
 
 int main()
 {
     using mc = sm::mathconst<float>;
 
-    morph::Visual v(1024, 768, "Inverse Mercator hexgrid");
+    mplot::Visual v(1024, 768, "Inverse Mercator hexgrid");
     v.showCoordArrows (true);
     v.lightingEffects();
 
@@ -52,13 +52,13 @@ int main()
     sm::vvec<float> data;
     data.linspace (0, 1, hg.num());
 
-    auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+    auto sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
     v.bindmodel (sv);
     sv->setDataCoords (&sphere_coords);
     sv->setScalarData (&data);
     sv->radiusFixed = 0.005f;
     sv->colourScale = scale;
-    sv->cm.setType (morph::ColourMapType::Jet);
+    sv->cm.setType (mplot::ColourMapType::Jet);
     sv->finalize();
     v.addVisualModel (sv);
 

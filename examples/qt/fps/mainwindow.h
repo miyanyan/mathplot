@@ -27,7 +27,7 @@ private slots:
     void on_actionQuit_triggered();
 
 private:
-    // Initialise your morph::viswidget. In this example, one widget is created and added to the UI.
+    // Initialise your mplot::viswidget. In this example, one widget is created and added to the UI.
     void viswidget_init();
 
     // A function which creates a HexGridVisual and adds it to viswidget's newvisualmodels stack.
@@ -35,7 +35,7 @@ private:
 
     // A pointer into your MainWindow UI
     Ui::MainWindow* ui = nullptr;
-    // A pointer to your morph::qt::viswidget, which is a part of your overall Qt Window
+    // A pointer to your mplot::qt::viswidget, which is a part of your overall Qt Window
     QOpenGLWidget* p_vw = nullptr;
 
     // The data you add to VisualModels has to be maintained in memory after you use

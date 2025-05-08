@@ -2,7 +2,7 @@
  * Read the given svg file (first argument on command line), then
  * create a HexGrid and show the boundary.
  *
- * Useful to demonstrate that the morphologica code can read your
+ * Useful to demonstrate that the mplotologica code can read your
  * Adobe Illustrator or Inkscape generated SVG file.
  *
  * Author: Seb James <seb.james@sheffield.ac.uk>
@@ -19,11 +19,11 @@
 #include <sm/bezcoord>
 #include <sm/hexgrid>
 
-#include <morph/ReadCurves.h>
-#include <morph/tools.h>
-#include <morph/ColourMap.h>
-#include <morph/Visual.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/ReadCurves.h>
+#include <mplot/tools.h>
+#include <mplot/ColourMap.h>
+#include <mplot/Visual.h>
+#include <mplot/HexGridVisual.h>
 
 int main(int argc, char** argv)
 {
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
     try {
         // Read the curves
-        morph::ReadCurves r(argv[1]);
+        mplot::ReadCurves r(argv[1]);
         // Create a HexGrid
         sm::hexgrid hg(hexdia, gridspan, 0);
         // Apply the curves as a boundary
@@ -64,11 +64,11 @@ int main(int argc, char** argv)
                   << r.getScale_svgpermm() << " units/mm" << std::endl;
         std::cout << "Number of hexes within the boundary: " << hg.num() << std::endl;
 
-        // Display with morph::Visual
-        morph::Visual v(1600, 1000, "Your SVG defined boundary");
+        // Display with mplot::Visual
+        mplot::Visual v(1600, 1000, "Your SVG defined boundary");
         v.lightingEffects();
         sm::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
-        auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
+        auto hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, offset);
         v.bindmodel (hgv);
         // Set up data for the HexGridVisual and colour hexes according to their state as being boundary/inside/domain, etc
         std::vector<float> colours (hg.num(), 0.0f);
@@ -91,10 +91,10 @@ int main(int argc, char** argv)
                 colours[h.vi] = cl_domain;
             }
         }
-        hgv->cm.setType (morph::ColourMapType::Jet);
+        hgv->cm.setType (mplot::ColourMapType::Jet);
         hgv->zScale.null_scaling(); // makes the output flat in z direction, but you still get the colours
         hgv->setScalarData (&colours);
-        hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or morph::HexVisMode::Triangles for a smoother surface plot
+        hgv->hexVisMode = mplot::HexVisMode::HexInterp; // Or mplot::HexVisMode::Triangles for a smoother surface plot
         hgv->finalize();
         v.addVisualModel (hgv);
         v.keepOpen();

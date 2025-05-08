@@ -2,8 +2,8 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/mathconst>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
@@ -24,8 +24,8 @@ int main()
     sm::vvec<double> y2 = y.convolve<wrapdata::wrap> (filter);
 
     // Graph x and y
-    morph::Visual v(1024, 768, "1D convolutions with sm::vvec");
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
+    mplot::Visual v(1024, 768, "1D convolutions with sm::vvec");
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
     gv->setdata (x, y, "raw");
     gv->setdata (x, y2, "smth");

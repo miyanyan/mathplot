@@ -10,14 +10,14 @@
 
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GratingVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/GratingVisual.h>
 
-struct myvisual final : public morph::Visual<>
+struct myvisual final : public mplot::Visual<>
 {
     // Boilerplate constructor (just copy this):
-    myvisual (int width, int height, const std::string& title) : morph::Visual<> (width, height, title) {}
+    myvisual (int width, int height, const std::string& title) : mplot::Visual<> (width, height, title) {}
 
     // Angle of the bands
     float angle = 0.0f;
@@ -33,31 +33,31 @@ struct myvisual final : public morph::Visual<>
 protected:
     void key_callback_extra (int key, [[maybe_unused]]int scancode, int action, [[maybe_unused]]int mods) override
     {
-        if (action == morph::keyaction::press || action == morph::keyaction::repeat) {
-            if (key == morph::key::w) {
+        if (action == mplot::keyaction::press || action == mplot::keyaction::repeat) {
+            if (key == mplot::key::w) {
                 this->angle += this->angle <= 179.0f ? 1.0f : 0.0f;
                 this->needs_reinit = true;
-            } else if (key == morph::key::s) {
+            } else if (key == mplot::key::s) {
                 this->angle -= this->angle >= 1.0f ? 1.0f : 0.0f;
                 this->needs_reinit = true;
-            } else if (key == morph::key::a) {
+            } else if (key == mplot::key::a) {
                 this->t = this->t > 0 ? this->t - 1 : 0;
                 this->needs_reinit = true;
-            } else if (key == morph::key::d) {
+            } else if (key == mplot::key::d) {
                 this->t = this->t + 1;
                 this->needs_reinit = true;
-            } else if (key == morph::key::p) {
+            } else if (key == mplot::key::p) {
                 this->lambda += 0.05f;
                 this->needs_reinit = true;
-            } else if (key == morph::key::l) {
+            } else if (key == mplot::key::l) {
                 this->lambda -= 0.05f;
                 this->lambda = this->lambda < 0.05f ? 0.05f : this->lambda;
                 this->needs_reinit = true;
             }
             if (this->needs_reinit) {
-                std::cout << "\nKeyboard update: " << morph::unicode::toUtf8(morph::unicode::alpha) <<  " = " << angle
+                std::cout << "\nKeyboard update: " << mplot::unicode::toUtf8(mplot::unicode::alpha) <<  " = " << angle
                           << ", time point is " << this->t
-                          << ", " << morph::unicode::toUtf8(morph::unicode::lambda) << " = " << lambda << std::endl;
+                          << ", " << mplot::unicode::toUtf8(mplot::unicode::lambda) << " = " << lambda << std::endl;
             }
         }
     }
@@ -78,7 +78,7 @@ int main (int ac, char** av)
     try {
         sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
-        auto rvm = std::make_unique<morph::GratingVisual<>> (offset);
+        auto rvm = std::make_unique<mplot::GratingVisual<>> (offset);
         v.bindmodel (rvm);
         rvm->v_front = { -0.01f, 0.0173f };
         rvm->t = v.t;

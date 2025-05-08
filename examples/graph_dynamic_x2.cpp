@@ -6,17 +6,17 @@
 #include <cmath>
 #include <array>
 #include <sm/vvec>
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
-    namespace uc = morph::unicode;
+    namespace uc = mplot::unicode;
 
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Graph");
+    mplot::Visual v(1024, 768, "Graph");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     v.backgroundWhite();
@@ -36,7 +36,7 @@ int main()
         sm::vvec<float> data = _absc.pow(3);
         std::deque<float> absc (_absc.size());
         std::copy (_absc.begin(), _absc.end(), absc.begin());
-        auto gvup = std::make_unique<morph::GraphVisual<float>> (sm::vec<float, 3>{0.0f});
+        auto gvup = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float, 3>{0.0f});
         v.bindmodel (gvup);
 
         // Here, we change the size of the graph and range of the axes (this is optional
@@ -47,20 +47,20 @@ int main()
         }
 
         if constexpr (modify_graph_features) {
-            morph::DatasetStyle ds;
+            mplot::DatasetStyle ds;
             ds.linewidth = 0.005;
             ds.linecolour = {1.0, 0.0, 0.0};
-            ds.markerstyle = morph::markerstyle::triangle;
+            ds.markerstyle = mplot::markerstyle::triangle;
             ds.markersize = 0.02;
             ds.markercolour = {0.0, 0.0, 1.0};
             ds.markergap = 0.02;
             // For each dataset added there should be a set of 'datastyles' - linestyle, markerstyle, etc
             gvup->setdata (absc, data, ds);
-            ds.markerstyle = morph::markerstyle::square;
+            ds.markerstyle = mplot::markerstyle::square;
             ds.setcolour ({0.0, 1.0, 0.0});
             gvup->setdata (absc, _absc.pow(4), ds);
         } else {
-            gvup->policy = morph::stylepolicy::allcolour; // markers, lines, both, allcolour
+            gvup->policy = mplot::stylepolicy::allcolour; // markers, lines, both, allcolour
             // The code here demonstrates how to include unicode characters (ss2 is "superscript 2")
             gvup->setdata (absc, absc, "y=x");
             gvup->setdata (absc, _absc.pow(2)+0.05f, "y=x" + uc::toUtf8(uc::ss2));
@@ -72,7 +72,7 @@ int main()
         if constexpr (setup_axes) {
             gvup->axiscolour = {0.5, 0.5, 0.5};
             gvup->axislinewidth = 0.01f;
-            gvup->axisstyle = morph::axisstyle::box;
+            gvup->axisstyle = mplot::axisstyle::box;
             gvup->setthickness (0.001f);
         }
 

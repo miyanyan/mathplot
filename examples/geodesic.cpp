@@ -10,15 +10,15 @@
 
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GeodesicVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/GeodesicVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Geodesic Polyhedra (ordered vertices/faces)");
+    mplot::Visual v(1024, 768, "Geodesic Polyhedra (ordered vertices/faces)");
     v.showCoordArrows (true);
 
     try {
@@ -27,12 +27,12 @@ int main()
 
         int imax = 4;
         for (int i = 0; i < imax; ++i) {
-            auto gv1 = std::make_unique<morph::GeodesicVisual<float>> (offset + step * i, 0.9f);
+            auto gv1 = std::make_unique<mplot::GeodesicVisual<float>> (offset + step * i, 0.9f);
             v.bindmodel (gv1);
             gv1->iterations = i;
             std::string lbl = std::string("iterations = ") + std::to_string(i);
-            gv1->addLabel (lbl, {0, -1, 0}, morph::TextFeatures(0.06f));
-            gv1->cm.setType (morph::ColourMapType::Jet);
+            gv1->addLabel (lbl, {0, -1, 0}, mplot::TextFeatures(0.06f));
+            gv1->cm.setType (mplot::ColourMapType::Jet);
             gv1->finalize();
 
             // re-colour after construction

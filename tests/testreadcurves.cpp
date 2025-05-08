@@ -8,14 +8,14 @@
 #include <sm/bezcoord>
 #include <sm/bezcurvepath>
 
-#include <morph/ReadCurves.h>
+#include <mplot/ReadCurves.h>
 
 int main()
 {
     int rtn = -1;
 
     try {
-        morph::ReadCurves r("../../tests/trial.svg");
+        mplot::ReadCurves r("../../tests/trial.svg");
         sm::bezcurvepath<float> bcp = r.getCorticalPath();
         bcp.computePoints (0.01f);
         std::vector<sm::bezcoord<float>> pts = bcp.getPoints();

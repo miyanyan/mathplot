@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a HexGrid, onto which is sampled an image.
+ * An example mplot::Visual scene, containing a HexGrid, onto which is sampled an image.
  */
 
 #include <iostream>
@@ -10,22 +10,22 @@
 #include <sm/vvec>
 #include <sm/hexgrid>
 
-#include <morph/loadpng.h>
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/loadpng.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/HexGridVisual.h>
 
 int main()
 {
-    morph::Visual v(1600, 1000, "Demo of HexGrid::resampleImage");
+    mplot::Visual v(1600, 1000, "Demo of HexGrid::resampleImage");
 
     sm::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (1.2f);
 
-    // Load an image with the help of morph::loadpng().
+    // Load an image with the help of mplot::loadpng().
     std::string fn = "../examples/bike256.png";
     sm::vvec<float> image_data;
-    sm::vec<unsigned int, 2> dims = morph::loadpng (fn, image_data);
+    sm::vec<unsigned int, 2> dims = mplot::loadpng (fn, image_data);
 
     // This controls how large the photo will be on the HexGrid
     sm::vec<float,2> image_scale = {1.8f, 1.8f};
@@ -36,13 +36,13 @@ int main()
     sm::vvec<float> hex_image_data = hg.resampleImage (image_data, dims[1], image_scale, image_offset);
 
     // Now visualise with a HexGridVisual
-    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, sm::vec<float>({0,0,0}));
+    auto hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, sm::vec<float>({0,0,0}));
     v.bindmodel (hgv);
 
     // Set the image data as the scalar data for the HexGridVisual
     hgv->setScalarData (&hex_image_data);
     // The inverse greyscale map is appropriate for a monochrome image
-    hgv->cm.setType (morph::ColourMapType::GreyscaleInv);
+    hgv->cm.setType (mplot::ColourMapType::GreyscaleInv);
     // As it's an image, we don't want relief, so set the zScale to have a zero gradient
     hgv->zScale.setParams (0, 1);
 

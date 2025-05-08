@@ -1,7 +1,7 @@
 #include <wx/wx.h>
 
 #define GLAD_GL_IMPLEMENTATION
-#include <morph/glad/gl.h> // must be included before glcanvas.h
+#include <mplot/glad/gl.h> // must be included before glcanvas.h
 
 #include <wx/glcanvas.h>
 
@@ -10,22 +10,22 @@
 #include <sm/mathconst>
 #include <sm/vvec>
 
-#include <morph/wx/viswx.h>
+#include <mplot/wx/viswx.h>
 
-#include <morph/GraphVisual.h>
+#include <mplot/GraphVisual.h>
 
 // Choose your OpenGL version for your app here
-constexpr int gl_version = morph::gl::version_4_1; // options in morph/gl/version.h
+constexpr int gl_version = mplot::gl::version_4_1; // options in mplot/gl/version.h
 
-// Your application-specific frame, deriving from morph::wx:Frame. In this frame, I'll set up VisualModels
-class MyFrame : public morph::wx::Frame<gl_version>
+// Your application-specific frame, deriving from mplot::wx:Frame. In this frame, I'll set up VisualModels
+class MyFrame : public mplot::wx::Frame<gl_version>
 {
 public:
-    MyFrame(const wxString &title) : morph::wx::Frame<gl_version>(title)
+    MyFrame(const wxString &title) : mplot::wx::Frame<gl_version>(title)
     {
         auto sizer = new wxBoxSizer(wxVERTICAL);
 
-        // Adding the GL canvas, where all the morphologica stuff will be drawn
+        // Adding the GL canvas, where all the mplotologica stuff will be drawn
         sizer->Add (this->canvas, 1, wxEXPAND);
 
         auto bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -52,7 +52,7 @@ public:
     // Member variable used to update GraphVisual
     double dx = 0.0;
     // A pointer to our GraphVisual
-    morph::GraphVisual<double, gl_version>* graph_ptr = nullptr;
+    mplot::GraphVisual<double, gl_version>* graph_ptr = nullptr;
 
     // A function to make a dynamic update to the model
     void updateModel()
@@ -73,7 +73,7 @@ public:
             // We can now add VisualModels to the Visual inside the Widget. Create a GraphVisual
             // object (obtaining a unique_ptr to the object) with a spatial offset within the
             // scene of 0,0,0
-            auto gv = std::make_unique<morph::GraphVisual<double, gl_version>> (sm::vec<float>({0,0,0}));
+            auto gv = std::make_unique<mplot::GraphVisual<double, gl_version>> (sm::vec<float>({0,0,0}));
             // This mandatory line of boilerplate code sets the parent pointer in GraphVisual and binds some functions
             this->canvas->v.bindmodel (gv);
             // Allow 3D
@@ -88,7 +88,7 @@ public:
             gv->finalize(); // Requires opengl context
 
             // Add the GraphVisual OpenGL model to the Visual scene, transferring ownership of the unique_ptr
-            std::cout << "add visualmodel to morph::wx::Canvas" << std::endl;
+            std::cout << "add visualmodel to mplot::wx::Canvas" << std::endl;
 
             this->graph_ptr = this->canvas->v.addVisualModel (gv);
 

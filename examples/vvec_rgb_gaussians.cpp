@@ -1,8 +1,8 @@
 // Compute a Gaussian with a vvec
 #include <sm/vec>
 #include <sm/vvec>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
@@ -21,20 +21,20 @@ int main()
     x.linspace (0.0f, 359.0f, 360);
 
     // Graph x and y
-    morph::Visual v(1024, 768, "RGB");
-    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
+    mplot::Visual v(1024, 768, "RGB");
+    auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
-    morph::DatasetStyle ds(morph::stylepolicy::markers);
+    mplot::DatasetStyle ds(mplot::stylepolicy::markers);
     ds.datalabel = "R";
-    ds.markercolour = morph::colour::crimson;
+    ds.markercolour = mplot::colour::crimson;
     gv->setdata (x, rgauss, ds);
 
     ds.datalabel = "G";
-    ds.markercolour = morph::colour::springgreen;
+    ds.markercolour = mplot::colour::springgreen;
     gv->setdata (x, ggauss, ds);
 
     ds.datalabel = "B";
-    ds.markercolour = morph::colour::royalblue;
+    ds.markercolour = mplot::colour::royalblue;
     gv->setdata (x, bgauss, ds);
 
     gv->finalize();

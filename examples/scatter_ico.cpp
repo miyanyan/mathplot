@@ -14,16 +14,16 @@
 #include <sm/vvec>
 #include <sm/geometry>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
-#include <morph/TriangleVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/ScatterVisual.h>
+#include <mplot/TriangleVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "morph::ScatterVisual");
+    mplot::Visual v(1024, 768, "mplot::ScatterVisual");
     v.showCoordArrows (true);
     v.lightingEffects();
 
@@ -42,34 +42,34 @@ int main()
         sm::vvec<float> data(12, 0.06f);
         sm::vvec<float> data2(20, 0.95f);
 
-        auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+        auto sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
         v.bindmodel (sv);
         sv->setDataCoords (&ico.vertices);
         sv->setScalarData (&data);
         sv->radiusFixed = 0.01f;
         sv->colourScale = scale;
-        sv->cm.setType (morph::ColourMapType::Plasma);
+        sv->cm.setType (mplot::ColourMapType::Plasma);
         sv->labelIndices = true;
         sv->finalize();
         v.addVisualModel (sv);
 
         // Use a second scatter visual to show the centre of each face, numbered in a different colour
-        sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+        sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
         v.bindmodel (sv);
         sv->setDataCoords (&fcentres);
         sv->setScalarData (&data2);
         sv->radiusFixed = 0.01f;
         sv->colourScale = scale;
-        sv->cm.setType (morph::ColourMapType::Plasma);
+        sv->cm.setType (mplot::ColourMapType::Plasma);
         sv->labelIndices = true;
         sv->finalize();
         v.addVisualModel (sv);
 
         // Triangle visuals for the faces
-        morph::ColourMap<float> cm(morph::ColourMapType::Jet);
+        mplot::ColourMap<float> cm(mplot::ColourMapType::Jet);
         for (unsigned int i = 0; i < 20; ++i) {
             std::array<float, 3> colr = cm.convert (i/20.0f);
-            auto tv = std::make_unique<morph::TriangleVisual<>> (offset,
+            auto tv = std::make_unique<mplot::TriangleVisual<>> (offset,
                                                                  ico.vertices[ico.faces[i][0]],
                                                                  ico.vertices[ico.faces[i][1]],
                                                                  ico.vertices[ico.faces[i][2]],

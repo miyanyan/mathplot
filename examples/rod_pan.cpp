@@ -11,15 +11,15 @@
 #include <sm/mathconst>
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/RodVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/RodVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Visualization");
+    mplot::Visual v(1024, 768, "Visualization");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     v.coordArrowsInScene (true);
@@ -37,7 +37,7 @@ int main()
         sm::vec<float, 3> colour1 = { 1.0, 0.0, 0.0 };
         sm::vec<float, 3> colour2 = { 0.0, 0.9, 0.4 };
 
-        std::unique_ptr<morph::VisualModel<>> rvm = std::make_unique<morph::RodVisual<>> (offset, start, end, 0.1f, colour1, colour2);
+        std::unique_ptr<mplot::VisualModel<>> rvm = std::make_unique<mplot::RodVisual<>> (offset, start, end, 0.1f, colour1, colour2);
         v.bindmodel (rvm);
         rvm->finalize();
         v.addVisualModel (rvm);
@@ -45,7 +45,7 @@ int main()
         sm::vec<float, 3> start2 = { -0.1, 0.2, 0.6 };
         sm::vec<float, 3> end2 = { 0.2, 0.4, 0.6 };
         // You can reuse the unique_ptr rvm, once you've transferred ownership with v.addVisualModel (rvm)
-        rvm = std::make_unique<morph::RodVisual<>>(offset, start2, end2, 0.05f, colour2);
+        rvm = std::make_unique<mplot::RodVisual<>>(offset, start2, end2, 0.05f, colour2);
         v.bindmodel (rvm);
         rvm->finalize();
         v.addVisualModel (rvm);

@@ -1,19 +1,19 @@
 /*
- * How to create your own morph::Visual to either add additional keypress actions, or to
+ * How to create your own mplot::Visual to either add additional keypress actions, or to
  * override the default actions.
  */
 
-#include <morph/gl/version.h>
-#include <morph/Visual.h>
+#include <mplot/gl/version.h>
+#include <mplot/Visual.h>
 
-// You can choose an OpenGL version to pass as template arg to morph::Visual
-constexpr int my_gl_version = morph::gl::version_4_1;
+// You can choose an OpenGL version to pass as template arg to mplot::Visual
+constexpr int my_gl_version = mplot::gl::version_4_1;
 
-struct myvisual final : public morph::Visual<my_gl_version>
+struct myvisual final : public mplot::Visual<my_gl_version>
 {
     // Boilerplate constructor (just copy this):
     myvisual (int width, int height, const std::string& title)
-        : morph::Visual<my_gl_version> (width, height, title) {}
+        : mplot::Visual<my_gl_version> (width, height, title) {}
     // Some attributes that you might need in your myvisual scene:
     bool moving = false;
 protected:
@@ -22,11 +22,11 @@ protected:
     {
         // Here, I've omitted all the normal keypress actions in Visual::key_callback,
         // except for one to close the program and one for help output:
-        if (key == morph::key::x && action == morph::keyaction::press) {
+        if (key == mplot::key::x && action == mplot::keyaction::press) {
             std::cout << "User requested exit.\n";
-            this->state.set (morph::visual_state::readyToFinish);
+            this->state.set (mplot::visual_state::readyToFinish);
         }
-        if (key == morph::key::h && action == morph::keyaction::press) {
+        if (key == mplot::key::h && action == mplot::keyaction::press) {
             std::cout << "Help:\n";
             std::cout << "x: Exit program\n";
             std::cout << "h: This help\n";
@@ -45,9 +45,9 @@ protected:
                       << scancode << " action=" << action << " and mods=" << mods << std::endl;
         }
         // 'f' key means toggle the 'moving' attribute
-        if (key == morph::key::f && action == morph::keyaction::press) { this->moving = this->moving ? false : true; }
+        if (key == mplot::key::f && action == mplot::keyaction::press) { this->moving = this->moving ? false : true; }
 
-        if (key == morph::key::h && action == morph::keyaction::press) {
+        if (key == mplot::key::h && action == mplot::keyaction::press) {
             std::cout << "myvisual extra help:\n";
             std::cout << "m: Start moving\n";
         }

@@ -8,14 +8,14 @@
 #include <format>
 #include <sm/scale>
 #include <sm/vec>
-#include <morph/Visual.h>
-#include <morph/ColourBarVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourBarVisual.h>
 
 int main()
 {
     // Contructor args are width, height, title
     std::string title_str = "ColourMaps";
-    morph::Visual v(1000, 1200, title_str);
+    mplot::Visual v(1000, 1200, title_str);
     v.setSceneTrans (sm::vec<float,3>{ float{-1.11157}, float{0.762484}, float{-5.7} });
 
     sm::scale<float> scale1;
@@ -24,43 +24,43 @@ int main()
     sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // Hue-variable 1D maps
-    std::vector<morph::ColourMapType> cmap_types;
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
-    cmap_types.push_back (morph::ColourMapType::HSV1D);
-    cmap_types.push_back (morph::ColourMapType::HSV1D);
-    cmap_types.push_back (morph::ColourMapType::HSV1D);
-    cmap_types.push_back (morph::ColourMapType::HSV1D);
-    cmap_types.push_back (morph::ColourMapType::HSV1D);
-    cmap_types.push_back (morph::ColourMapType::HSV1D);
+    std::vector<mplot::ColourMapType> cmap_types;
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::HSV1D);
+    cmap_types.push_back (mplot::ColourMapType::HSV1D);
+    cmap_types.push_back (mplot::ColourMapType::HSV1D);
+    cmap_types.push_back (mplot::ColourMapType::HSV1D);
+    cmap_types.push_back (mplot::ColourMapType::HSV1D);
+    cmap_types.push_back (mplot::ColourMapType::HSV1D);
 
-    morph::ColourMap<float> cm1;
+    mplot::ColourMap<float> cm1;
 
     // Display 1D colour maps
     int i = 0;
     for (auto cmap_type : cmap_types) {
         ++i;
         cm1.setType (cmap_type);
-        auto cbv =  std::make_unique<morph::ColourBarVisual<float>>(offset);
+        auto cbv =  std::make_unique<mplot::ColourBarVisual<float>>(offset);
         v.bindmodel (cbv);
-        cbv->orientation = morph::colourbar_orientation::vertical;
-        cbv->tickside = morph::colourbar_tickside::right_or_below;
+        cbv->orientation = mplot::colourbar_orientation::vertical;
+        cbv->tickside = mplot::colourbar_tickside::right_or_below;
         cbv->cm = cm1;
         float hue = offset[1]*(-0.05555555555f) + offset[0] / 2.4f; // Use x value to set hue
         cbv->cm.setHue (hue);
         cbv->scale = scale1;
-        // morph::ColourMap<float>::colourMapTypeToStr (cmap_type)
-        cbv->addLabel (std::format("hue={:.2f}", hue), {0, -0.1, 0}, morph::TextFeatures(0.05f));
+        // mplot::ColourMap<float>::colourMapTypeToStr (cmap_type)
+        cbv->addLabel (std::format("hue={:.2f}", hue), {0, -0.1, 0}, mplot::TextFeatures(0.05f));
         cbv->finalize();
         v.addVisualModel (cbv);
         // Update location
@@ -72,12 +72,12 @@ int main()
     }
 
     cmap_types.clear();
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monochrome);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
-    cmap_types.push_back (morph::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monochrome);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
+    cmap_types.push_back (mplot::ColourMapType::Monoval);
 
     std::array<float, 3> purple = sm::vec<int, 3>({0x68, 0x31, 0x92}).as_float()/255.0f;
     std::array<float, 3> orange = sm::vec<int, 3>({0xdf, 0x5e, 0x26}).as_float()/255.0f;
@@ -99,14 +99,14 @@ int main()
         ++i;
         cm1.setType (cmap_type);
         cm1.setRGB (clrs[j++]);
-        auto cbv =  std::make_unique<morph::ColourBarVisual<float>>(offset);
+        auto cbv =  std::make_unique<mplot::ColourBarVisual<float>>(offset);
         v.bindmodel (cbv);
-        cbv->orientation = morph::colourbar_orientation::vertical;
-        cbv->tickside = morph::colourbar_tickside::right_or_below;
+        cbv->orientation = mplot::colourbar_orientation::vertical;
+        cbv->tickside = mplot::colourbar_tickside::right_or_below;
         cbv->cm = cm1;
         cbv->scale = scale1;
-        // morph::ColourMap<float>::colourMapTypeToStr (cmap_type)
-        cbv->addLabel (std::format("hue={:.2f}", cbv->cm.getHue()), {0, -0.1, 0}, morph::TextFeatures(0.05f));
+        // mplot::ColourMap<float>::colourMapTypeToStr (cmap_type)
+        cbv->addLabel (std::format("hue={:.2f}", cbv->cm.getHue()), {0, -0.1, 0}, mplot::TextFeatures(0.05f));
         cbv->finalize();
         v.addVisualModel (cbv);
         // Update location

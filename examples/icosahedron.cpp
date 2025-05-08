@@ -10,15 +10,15 @@
 
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/IcosaVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/IcosaVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Icosahedron");
+    mplot::Visual v(1024, 768, "Icosahedron");
     v.showCoordArrows (true);
     // Switch on a mix of diffuse/ambient lighting
     v.lightingEffects(true);
@@ -27,7 +27,7 @@ int main()
         sm::vec<float, 3> offset = { 0.0, 0.0, 0.0 };
         sm::vec<float, 3> colour1 = { 1.0, 0.0, 0.0 };
 
-        auto iv = std::make_unique<morph::IcosaVisual<>> (offset, 0.9f, colour1);
+        auto iv = std::make_unique<mplot::IcosaVisual<>> (offset, 0.9f, colour1);
         v.bindmodel (iv);
         iv->finalize();
         v.addVisualModel (iv);

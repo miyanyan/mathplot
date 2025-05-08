@@ -13,17 +13,17 @@
 #include <sm/vvec>
 #include <sm/geometry>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
-#include <morph/QuiverVisual.h>
-#include <morph/TriangleVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/ScatterVisual.h>
+#include <mplot/QuiverVisual.h>
+#include <mplot/TriangleVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Geodesic vertices");
+    mplot::Visual v(1024, 768, "Geodesic vertices");
     v.showCoordArrows (true);
     v.lightingEffects();
 
@@ -70,13 +70,13 @@ int main()
         sm::vvec<float> data2(geo.poly.faces.size(), 0.95f);
 
         if constexpr (show_vertices == true) {
-            auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+            auto sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
             v.bindmodel (sv);
             sv->setDataCoords (&geo.poly.vertices);
             sv->setScalarData (&data);
             sv->radiusFixed = 0.005f;
             sv->colourScale = scale;
-            sv->cm.setType (morph::ColourMapType::Plasma);
+            sv->cm.setType (mplot::ColourMapType::Plasma);
             sv->labelIndices = show_vertex_labels;
             sv->labelOffset = { 0.015f, 0.0f, 0.0f };
             sv->finalize();
@@ -85,13 +85,13 @@ int main()
 
         if constexpr (show_face_centres == true) {
             // Use a second scatter visual to show the centre of each face, numbered in a different colour
-            auto sv2 = std::make_unique<morph::ScatterVisual<float>> (offset);
+            auto sv2 = std::make_unique<mplot::ScatterVisual<float>> (offset);
             v.bindmodel (sv2);
             sv2->setDataCoords (&fcentres);
             sv2->setScalarData (&data2);
             sv2->radiusFixed = 0.006f;
             sv2->colourScale = scale;
-            sv2->cm.setType (morph::ColourMapType::Plasma);
+            sv2->cm.setType (mplot::ColourMapType::Plasma);
             sv2->labelIndices = show_face_centre_labels;
             sv2->labelOffset = { 0.01f, 0.0f, 0.0f };
             sv2->labelSize = 0.02f;
@@ -101,11 +101,11 @@ int main()
 
         if constexpr (show_faces == true) {
             // Triangle visuals for the faces
-            morph::ColourMap<float> cm(morph::ColourMapType::Greyscale);
+            mplot::ColourMap<float> cm(mplot::ColourMapType::Greyscale);
             for (unsigned int i = 0; i < geo.poly.faces.size(); ++i) {
                 std::array<float, 3> colr = cm.convert (i/static_cast<float>(geo.poly.faces.size()));
                 //std::cout << "Draw triangle with vertices: " << geo.faces[i] << std::endl;
-                auto tv = std::make_unique<morph::TriangleVisual<>> (offset,
+                auto tv = std::make_unique<mplot::TriangleVisual<>> (offset,
                                                                      geo.poly.vertices[geo.poly.faces[i][0]],
                                                                      geo.poly.vertices[geo.poly.faces[i][1]],
                                                                      geo.poly.vertices[geo.poly.faces[i][2]],
@@ -122,8 +122,8 @@ int main()
             sm::vvec<float> clrs;
             for (unsigned int i = 0; i < vneighb_vertices.size(); ++i) {
                 sm::vvec<sm::vec<float, 3>> coords (vneighb_vertices[i].size(), geo.poly.vertices[i]);
-                auto vmp = std::make_unique<morph::QuiverVisual<float>>(&coords, offset, &vneighb_vertices[i],
-                                                                        morph::ColourMapType::Rainbow);
+                auto vmp = std::make_unique<mplot::QuiverVisual<float>>(&coords, offset, &vneighb_vertices[i],
+                                                                        mplot::ColourMapType::Rainbow);
                 v.bindmodel (vmp);
                 clrs.linspace (0, 0.66, vneighb_vertices[i].size());
                 vmp->scalarData = &clrs;

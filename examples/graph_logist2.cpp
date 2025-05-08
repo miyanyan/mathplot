@@ -1,25 +1,25 @@
 // Graph the logistic function
 #include <sstream>
 #include <sm/vvec>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
-#include <morph/Config.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
+#include <mplot/Config.h>
 
 int main()
 {
-    // We'll use morphologica's awesome unicode chars
-    namespace uc = morph::unicode;
-    // Set up a morph::Visual 'scene environment'.
-    morph::Visual v(1024, 768, "Logistic functions");
+    // We'll use mplotologica's awesome unicode chars
+    namespace uc = mplot::unicode;
+    // Set up a mplot::Visual 'scene environment'.
+    mplot::Visual v(1024, 768, "Logistic functions");
     v.addLabel ("Change logistic function parameters in ../examples/graph_logist2.json (live updates)", sm::vec<float>({0,0,0}));
     v.setSceneTrans (sm::vec<float,3>({-0.732852f, 0.0348977f, -5.0f}));
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>{-0.5f,-0.5f,0.0f});
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>{-0.5f,-0.5f,0.0f});
     v.bindmodel (gv);
     // Params are read from a JSON file
     double x0=0, k=0, g1x0=0, g1x1=0;
     {
-        morph::Config conf ("../examples/graph_logist2.json");
+        mplot::Config conf ("../examples/graph_logist2.json");
         k = conf.get<double> ("k", 10.0);
         x0 = conf.get<double> ("x0", 4.0);
         g1x0 = conf.get<double> ("g1x0", -10.0);
@@ -39,9 +39,9 @@ int main()
     gv->finalize();
     // Add the GraphVisual OpenGL model to the Visual scene, transferring ownership of the
     // unique_ptr (and returning a regular pointer)
-    morph::GraphVisual<double>* gvptr = v.addVisualModel (gv);
+    mplot::GraphVisual<double>* gvptr = v.addVisualModel (gv);
 
-    auto gv2 = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>{1.0f,-0.5f,0.0f});
+    auto gv2 = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>{1.0f,-0.5f,0.0f});
     v.bindmodel (gv2);
     sm::vvec<double> x2;
     x2.linspace (0, 1, 100);
@@ -50,7 +50,7 @@ int main()
     gv2->ylabel = "f(x)";
 
     gv2->finalize();
-    morph::GraphVisual<double>* gv2ptr = v.addVisualModel (gv2);
+    mplot::GraphVisual<double>* gv2ptr = v.addVisualModel (gv2);
 
     bool shown_error = false; // A flag to avoid showing an error 60 times a second
 
@@ -60,7 +60,7 @@ int main()
         v.waitevents (0.018);
         // Update from config file with every render so that changes in the file are immediately reflected in the graph.
         try {
-            morph::Config conf ("../examples/graph_logist2.json");
+            mplot::Config conf ("../examples/graph_logist2.json");
             k = conf.get<double> ("k", 10.0);
             x0 = conf.get<double> ("x0", 4.0);
 
@@ -74,7 +74,7 @@ int main()
             // Show the general eqn by adding a label below the first graph
             std::stringstream eqngen;
             eqngen << "f(x) = 1 / [1 + exp (-k(x - x"<< uc::toUtf8(uc::subs0) << ")]";
-            gvptr->addLabel (eqngen.str(), sm::vec<float>({0.1f, -0.3f, 0.0f}), morph::TextFeatures(0.05f));
+            gvptr->addLabel (eqngen.str(), sm::vec<float>({0.1f, -0.3f, 0.0f}), mplot::TextFeatures(0.05f));
 
             gv2ptr->clearTexts();
             // Update legend
@@ -95,7 +95,7 @@ int main()
             // Show the specific equation on the second graph
             std::stringstream eqn;
             eqn << "f(x) = 1 / [1 + exp (-"<< ktxt.str() << brtxt.str() << "x" << ostxt.str() << ")]";
-            gv2ptr->addLabel (eqn.str(), sm::vec<float>{0.1f, -0.3f, 0.0f}, morph::TextFeatures(0.05f));
+            gv2ptr->addLabel (eqn.str(), sm::vec<float>{0.1f, -0.3f, 0.0f}, mplot::TextFeatures(0.05f));
 
             if (shown_error) {
                 std::cout << "JSON parsed successfully\n";

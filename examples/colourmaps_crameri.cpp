@@ -7,14 +7,14 @@
 #include <string>
 #include <sm/scale>
 #include <sm/vec>
-#include <morph/Visual.h>
-#include <morph/ColourBarVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourBarVisual.h>
 
 int main()
 {
     // Contructor args are width, height, title
     std::string title_str = "ColourMaps from Fabio Crameri";
-    morph::Visual v(1000, 1400, title_str);
+    mplot::Visual v(1000, 1400, title_str);
     v.setSceneTrans (sm::vec<float,3>{ float{-1.52137}, float{1.74665}, float{-9.60001} });
 
     sm::scale<float> scale1;
@@ -23,62 +23,62 @@ int main()
     sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
 
     // 1D maps
-    std::vector<morph::ColourMapType> cmap_types;
-    cmap_types.push_back (morph::ColourMapType::Devon);
-    cmap_types.push_back (morph::ColourMapType::NaviaW);
-    cmap_types.push_back (morph::ColourMapType::BrocO);
-    cmap_types.push_back (morph::ColourMapType::Acton);
-    cmap_types.push_back (morph::ColourMapType::Batlow);
-    cmap_types.push_back (morph::ColourMapType::Berlin);
-    cmap_types.push_back (morph::ColourMapType::Tofino);
-    cmap_types.push_back (morph::ColourMapType::Broc);
-    cmap_types.push_back (morph::ColourMapType::CorkO);
-    cmap_types.push_back (morph::ColourMapType::Lapaz);
-    cmap_types.push_back (morph::ColourMapType::BamO);
-    cmap_types.push_back (morph::ColourMapType::Vanimo);
-    cmap_types.push_back (morph::ColourMapType::Lajolla);
-    cmap_types.push_back (morph::ColourMapType::Lisbon);
-    cmap_types.push_back (morph::ColourMapType::GrayC);
-    cmap_types.push_back (morph::ColourMapType::Roma);
-    cmap_types.push_back (morph::ColourMapType::Vik);
-    cmap_types.push_back (morph::ColourMapType::Navia);
-    cmap_types.push_back (morph::ColourMapType::Bilbao);
-    cmap_types.push_back (morph::ColourMapType::Turku);
-    cmap_types.push_back (morph::ColourMapType::Lipari);
-    cmap_types.push_back (morph::ColourMapType::VikO);
-    cmap_types.push_back (morph::ColourMapType::BatlowK);
-    cmap_types.push_back (morph::ColourMapType::Oslo);
-    cmap_types.push_back (morph::ColourMapType::Oleron);
-    cmap_types.push_back (morph::ColourMapType::Davos);
-    cmap_types.push_back (morph::ColourMapType::Fes);
-    cmap_types.push_back (morph::ColourMapType::Managua);
-    cmap_types.push_back (morph::ColourMapType::Glasgow);
-    cmap_types.push_back (morph::ColourMapType::Tokyo);
-    cmap_types.push_back (morph::ColourMapType::Bukavu);
-    cmap_types.push_back (morph::ColourMapType::Bamako);
-    cmap_types.push_back (morph::ColourMapType::BatlowW);
-    cmap_types.push_back (morph::ColourMapType::Nuuk);
-    cmap_types.push_back (morph::ColourMapType::Cork);
-    cmap_types.push_back (morph::ColourMapType::Hawaii);
-    cmap_types.push_back (morph::ColourMapType::Bam);
-    cmap_types.push_back (morph::ColourMapType::Imola);
-    cmap_types.push_back (morph::ColourMapType::RomaO);
-    cmap_types.push_back (morph::ColourMapType::Buda);
+    std::vector<mplot::ColourMapType> cmap_types;
+    cmap_types.push_back (mplot::ColourMapType::Devon);
+    cmap_types.push_back (mplot::ColourMapType::NaviaW);
+    cmap_types.push_back (mplot::ColourMapType::BrocO);
+    cmap_types.push_back (mplot::ColourMapType::Acton);
+    cmap_types.push_back (mplot::ColourMapType::Batlow);
+    cmap_types.push_back (mplot::ColourMapType::Berlin);
+    cmap_types.push_back (mplot::ColourMapType::Tofino);
+    cmap_types.push_back (mplot::ColourMapType::Broc);
+    cmap_types.push_back (mplot::ColourMapType::CorkO);
+    cmap_types.push_back (mplot::ColourMapType::Lapaz);
+    cmap_types.push_back (mplot::ColourMapType::BamO);
+    cmap_types.push_back (mplot::ColourMapType::Vanimo);
+    cmap_types.push_back (mplot::ColourMapType::Lajolla);
+    cmap_types.push_back (mplot::ColourMapType::Lisbon);
+    cmap_types.push_back (mplot::ColourMapType::GrayC);
+    cmap_types.push_back (mplot::ColourMapType::Roma);
+    cmap_types.push_back (mplot::ColourMapType::Vik);
+    cmap_types.push_back (mplot::ColourMapType::Navia);
+    cmap_types.push_back (mplot::ColourMapType::Bilbao);
+    cmap_types.push_back (mplot::ColourMapType::Turku);
+    cmap_types.push_back (mplot::ColourMapType::Lipari);
+    cmap_types.push_back (mplot::ColourMapType::VikO);
+    cmap_types.push_back (mplot::ColourMapType::BatlowK);
+    cmap_types.push_back (mplot::ColourMapType::Oslo);
+    cmap_types.push_back (mplot::ColourMapType::Oleron);
+    cmap_types.push_back (mplot::ColourMapType::Davos);
+    cmap_types.push_back (mplot::ColourMapType::Fes);
+    cmap_types.push_back (mplot::ColourMapType::Managua);
+    cmap_types.push_back (mplot::ColourMapType::Glasgow);
+    cmap_types.push_back (mplot::ColourMapType::Tokyo);
+    cmap_types.push_back (mplot::ColourMapType::Bukavu);
+    cmap_types.push_back (mplot::ColourMapType::Bamako);
+    cmap_types.push_back (mplot::ColourMapType::BatlowW);
+    cmap_types.push_back (mplot::ColourMapType::Nuuk);
+    cmap_types.push_back (mplot::ColourMapType::Cork);
+    cmap_types.push_back (mplot::ColourMapType::Hawaii);
+    cmap_types.push_back (mplot::ColourMapType::Bam);
+    cmap_types.push_back (mplot::ColourMapType::Imola);
+    cmap_types.push_back (mplot::ColourMapType::RomaO);
+    cmap_types.push_back (mplot::ColourMapType::Buda);
 
-    morph::ColourMap<float> cm1(morph::ColourMapType::Acton);
+    mplot::ColourMap<float> cm1(mplot::ColourMapType::Acton);
 
     // Display 1D colour maps
     int i = 0;
     for (auto cmap_type : cmap_types) {
         ++i;
         cm1.setType (cmap_type);
-        auto cbv =  std::make_unique<morph::ColourBarVisual<float>>(offset);
+        auto cbv =  std::make_unique<mplot::ColourBarVisual<float>>(offset);
         v.bindmodel (cbv);
-        cbv->orientation = morph::colourbar_orientation::vertical;
-        cbv->tickside = morph::colourbar_tickside::right_or_below;
+        cbv->orientation = mplot::colourbar_orientation::vertical;
+        cbv->tickside = mplot::colourbar_tickside::right_or_below;
         cbv->cm = cm1;
         cbv->scale = scale1;
-        cbv->addLabel (morph::ColourMap<float>::colourMapTypeToStr (cmap_type), {0, -0.1, 0}, morph::TextFeatures(0.05f));
+        cbv->addLabel (mplot::ColourMap<float>::colourMapTypeToStr (cmap_type), {0, -0.1, 0}, mplot::TextFeatures(0.05f));
         cbv->finalize();
         v.addVisualModel (cbv);
         // Update location

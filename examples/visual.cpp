@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a HexGrid.
+ * An example mplot::Visual scene, containing a HexGrid.
  */
 
 #include <iostream>
@@ -9,13 +9,13 @@
 #include <sm/vec>
 #include <sm/hexgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/HexGridVisual.h>
 
 int main()
 {
-    morph::Visual v(1600, 1000, "morph::Visual");
+    mplot::Visual v(1600, 1000, "mplot::Visual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // Should the scene be 'locked' so that movements and rotations are prevented?
@@ -37,9 +37,9 @@ int main()
     // You can switch on the "lighting shader" which puts diffuse light into the scene
     v.lightingEffects();
     // Add some text labels to the scene
-    v.addLabel ("Each object is derived from morph::VisualModel", {0.005f, -0.02f, 0.0f});
-    v.addLabel ("This is a morph::CoordArrows object", {0.03f, -0.23f, 0.0f});
-    v.addLabel ("This is a\nmorph::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
+    v.addLabel ("Each object is derived from mplot::VisualModel", {0.005f, -0.02f, 0.0f});
+    v.addLabel ("This is a mplot::CoordArrows object", {0.03f, -0.23f, 0.0f});
+    v.addLabel ("This is a\nmplot::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a hexgrid to show in the scene
     sm::hexgrid hg(0.01, 3, 0);
@@ -52,9 +52,9 @@ int main()
         data[hi] = 0.05 + 0.05*std::sin(10*hg.d_x[hi]); // Range 0->1
     }
 
-    // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
+    // Add a HexGridVisual to display the hexgrid within the mplot::Visual scene
     sm::vec<float, 3> offset = { 0.0, -0.05, 0.0 };
-    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);
     hgv->finalize();

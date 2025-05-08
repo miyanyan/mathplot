@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a HexGrid.
+ * An example mplot::Visual scene, containing a HexGrid.
  */
 
 #include <iostream>
@@ -9,14 +9,14 @@
 #include <sm/vec>
 #include <sm/hexgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/HexGridVisual.h>
 
 int main()
 {
     // Contructor args are width, height, title
-    morph::Visual<morph::gl::version_3_1_es> v(1600, 1000, "morph::HexGridVisual");
+    mplot::Visual<mplot::gl::version_3_1_es> v(1600, 1000, "mplot::HexGridVisual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // Should the scene be 'locked' so that movements and rotations are prevented?
@@ -32,7 +32,7 @@ int main()
     // You can switch on the "lighting shader" which puts diffuse light into the scene
     v.lightingEffects();
     // Add some text labels to the scene
-    v.addLabel ("This is a\nmorph::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
+    v.addLabel ("This is a\nmplot::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a hexgrid to show in the scene. Hexes outside the circular boundary will
     // all be discarded.
@@ -47,12 +47,12 @@ int main()
         data[ri] = 0.05f + 0.05f*std::sin(20.0f*hg.d_x[ri]) * std::sin(10.0f*hg.d_y[ri]) ; // Range 0->1
     }
 
-    // Add a HexGridVisual to display the hexgrid within the morph::Visual scene
+    // Add a HexGridVisual to display the hexgrid within the mplot::Visual scene
     sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
-    auto hgv = std::make_unique<morph::HexGridVisual<float,morph::gl::version_3_1_es>>(&hg, offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<float,mplot::gl::version_3_1_es>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);
-    hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or morph::HexVisMode::Triangles for a smoother surface plot
+    hgv->hexVisMode = mplot::HexVisMode::HexInterp; // Or mplot::HexVisMode::Triangles for a smoother surface plot
     hgv->finalize();
     v.addVisualModel (hgv);
 

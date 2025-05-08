@@ -6,8 +6,8 @@
 #include <sm/vvec>
 #include <sm/algo>
 
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
@@ -22,24 +22,24 @@ int main()
     sm::vvec<float> fit = (absc * mc[0]) + mc[1];
 
     // Visualise data and linear fit
-    morph::Visual v(1024, 768, "Linear regression");
-    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
+    mplot::Visual v(1024, 768, "Linear regression");
+    auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
 
     // The first dataset shows the data points
-    morph::DatasetStyle ds(morph::stylepolicy::markers);
-    ds.markercolour = morph::colour::blue3;
+    mplot::DatasetStyle ds(mplot::stylepolicy::markers);
+    ds.markercolour = mplot::colour::blue3;
     ds.markersize = 0.05;
     ds.datalabel = "data";
     gv->setdata (absc, ord, ds);
 
     // The second dataset is for the fit
-    morph::DatasetStyle ds2(morph::stylepolicy::lines);
-    ds2.linecolour = morph::colour::lightsteelblue2;
+    mplot::DatasetStyle ds2(mplot::stylepolicy::lines);
+    ds2.linecolour = mplot::colour::lightsteelblue2;
     ds2.datalabel = "fit";
     gv->setdata (absc, fit, ds2);
 
-    // Add axis labels, finalize and add to our morph::Visual:
+    // Add axis labels, finalize and add to our mplot::Visual:
     gv->xlabel = "x";
     gv->ylabel = "y";
     gv->finalize();

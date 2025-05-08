@@ -10,16 +10,16 @@
 #include <sm/random>
 #include <sm/histo>
 
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
-#include <morph/Config.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
+#include <mplot/Config.h>
 
 int main()
 {
     int rtn = -1;
 
     // Test bootstrap computation of standard error of the mean for a distribution.
-    morph::Config conf ("../examples/bootstrap.json");
+    mplot::Config conf ("../examples/bootstrap.json");
 
     // First, generate numbers from a normal distribution. Args of rand_normal constructor are mean, sigma.
     double dist1_mean = conf.get<double>("dist1_mean", 5.0);
@@ -40,12 +40,12 @@ int main()
     std::cout << "The bootstrapped, standard error of the mean is " << eom << std::endl;
 
     // Graph the distribution, with labels
-    morph::Visual v(1400, 768, "Bootstrap");
+    mplot::Visual v(1400, 768, "Bootstrap");
     // You can leave the second 'float' template argument out, as it's the default, but
     // being explicit demonstrates the link to the GraphVisual, which must be
     // GraphVisual<float> to display histo<T, float>
     sm::histo<double, float> h(dist, 100);
-    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({-2,0,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({-2,0,0}));
     v.bindmodel (gv);
     gv->setdata (h);
     gv->xlabel = "Value";
@@ -53,18 +53,18 @@ int main()
     {
         std::string mlbl = "mean ";
         mlbl += std::to_string(dist.mean());
-        gv->addLabel (mlbl, sm::vec<float>({1.1, 0.66, 0}), morph::TextFeatures(0.05f));
+        gv->addLabel (mlbl, sm::vec<float>({1.1, 0.66, 0}), mplot::TextFeatures(0.05f));
         std::string sdlbl = "SD ";
         sdlbl += std::to_string(dist.std());
-        gv->addLabel (sdlbl, sm::vec<float>({1.1, 0.58, 0}), morph::TextFeatures(0.05f));
+        gv->addLabel (sdlbl, sm::vec<float>({1.1, 0.58, 0}), mplot::TextFeatures(0.05f));
         std::string sdlbl2 = "SD/";
-        sdlbl2 += morph::unicode::toUtf8 (morph::unicode::sqrt);
+        sdlbl2 += mplot::unicode::toUtf8 (mplot::unicode::sqrt);
         sdlbl2 += std::to_string(dist.size()) + std::string (" = ");
         sdlbl2 += std::to_string((dist.std()/std::sqrt(dist.size())));
-        gv->addLabel (sdlbl2, sm::vec<float>({1.1, 0.5, 0}), morph::TextFeatures(0.05f));
+        gv->addLabel (sdlbl2, sm::vec<float>({1.1, 0.5, 0}), mplot::TextFeatures(0.05f));
         std::string bslbl = "BS stderr: ";
         bslbl += std::to_string(eom);
-        gv->addLabel (bslbl, sm::vec<float>({1.1, 0.42, 0}), morph::TextFeatures(0.05f));
+        gv->addLabel (bslbl, sm::vec<float>({1.1, 0.42, 0}), mplot::TextFeatures(0.05f));
     }
 
     // Bootstrapped t-test
@@ -81,7 +81,7 @@ int main()
     std::cout << "Achieved significance level: " << asl[0] << " (with minasl: " << asl[1] << ")\n";
 
     sm::histo<double, float> h2(dist2, 100);
-    auto gv2 = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
+    auto gv2 = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv2);
     gv2->setdata(h); // Add both to second graph
     gv2->setdata (h2);
@@ -90,19 +90,19 @@ int main()
     {
         std::string mlbl = "mean ";
         mlbl += std::to_string(dist2.mean());
-        gv2->addLabel (mlbl, sm::vec<float>({1.1, 0.66, 0}), morph::TextFeatures(0.05f));
+        gv2->addLabel (mlbl, sm::vec<float>({1.1, 0.66, 0}), mplot::TextFeatures(0.05f));
         std::string sdlbl = "SD2 ";
         sdlbl += std::to_string(dist2.std());
-        gv2->addLabel (sdlbl, sm::vec<float>({1.1, 0.58, 0}), morph::TextFeatures(0.05f));
+        gv2->addLabel (sdlbl, sm::vec<float>({1.1, 0.58, 0}), mplot::TextFeatures(0.05f));
         std::string sdlbl2 = "SD2/";
-        sdlbl2 += morph::unicode::toUtf8 (morph::unicode::sqrt);
+        sdlbl2 += mplot::unicode::toUtf8 (mplot::unicode::sqrt);
         sdlbl2 += std::to_string(dist2.size()) + std::string (" = ");
         sdlbl2 += std::to_string((dist2.std()/std::sqrt(dist.size())));
-        gv2->addLabel (sdlbl2, sm::vec<float>({1.1, 0.5, 0}), morph::TextFeatures(0.05f));
+        gv2->addLabel (sdlbl2, sm::vec<float>({1.1, 0.5, 0}), mplot::TextFeatures(0.05f));
         std::string bslbl = "BS stderr2: ";
         bslbl += std::to_string(eom2);
-        gv2->addLabel (bslbl, sm::vec<float>({1.1, 0.42, 0}), morph::TextFeatures(0.05f));
-        gv2->addLabel (std::string("ASL: ") + asl.str(), sm::vec<float>({1.1, 0.34, 0}), morph::TextFeatures(0.05f));
+        gv2->addLabel (bslbl, sm::vec<float>({1.1, 0.42, 0}), mplot::TextFeatures(0.05f));
+        gv2->addLabel (std::string("ASL: ") + asl.str(), sm::vec<float>({1.1, 0.34, 0}), mplot::TextFeatures(0.05f));
         // A significance statement label
         double sig_level = conf.get<double>("chosen_significance_level", 0.01);
         std::stringstream signif;
@@ -117,7 +117,7 @@ int main()
             signif << "Can't discard the null hypothesis that the distributions have the same mean.\n"
                    << "Significance level: " << sig_level << ", ASL: " << asl[0] << std::endl;;
         }
-        gv2->addLabel (signif.str(), sm::vec<float>({0.0, -0.27, 0}), morph::TextFeatures(0.05f));
+        gv2->addLabel (signif.str(), sm::vec<float>({0.0, -0.27, 0}), mplot::TextFeatures(0.05f));
     }
 
     // Finalize/add

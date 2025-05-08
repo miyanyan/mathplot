@@ -9,15 +9,15 @@
 #include <sm/scale>
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/ScatterVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/ScatterVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "ScatterVisual with duochrome colourmap");
+    mplot::Visual v(1024, 768, "ScatterVisual with duochrome colourmap");
     v.zNear = 0.001f;
 
     static constexpr int slen = 20;
@@ -43,7 +43,7 @@ int main()
             }
         }
 
-        auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+        auto sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
         v.bindmodel (sv);
         sv->setDataCoords (&points);
         sv->setScalarData (&data);
@@ -52,11 +52,11 @@ int main()
         sv->radiusFixed = 0.035f;
         sv->colourScale = scale;
 #if 1
-        sv->cm.setType (morph::ColourMapType::Duochrome);
+        sv->cm.setType (mplot::ColourMapType::Duochrome);
         sv->cm.setHueGB();
 #else
         // You can alternatively use a 1D colour map like Plasma with the map set to "act 2D"
-        sv->cm.setType (morph::ColourMapType::Plasma);
+        sv->cm.setType (mplot::ColourMapType::Plasma);
         sv->cm.set_act_2d (true);
 #endif
         sv->finalize();

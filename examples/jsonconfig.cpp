@@ -1,6 +1,6 @@
 /*
  * This example shows you how to read configuration information stored in a JSON file
- * using morph::Config.
+ * using mplot::Config.
  *
  * Author: Seb James
  * Date: May 2021
@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-#include "morph/Config.h"
+#include "mplot/Config.h"
 
 int main()
 {
@@ -33,7 +33,7 @@ int main()
     f.close();
 
     // Now read from the example
-    morph::Config config(jsonfile);
+    mplot::Config config(jsonfile);
     if (config.ready) {
 
         // Single values are easy to read. The first arg matches the name in the example

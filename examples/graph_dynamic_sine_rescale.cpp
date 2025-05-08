@@ -3,14 +3,14 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/mathconst>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
-    morph::Visual v(1024, 768, "Continuous redrawing of GraphVisual");
+    mplot::Visual v(1024, 768, "Continuous redrawing of GraphVisual");
 
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
 
     sm::vvec<double> x;
@@ -18,19 +18,19 @@ int main()
 
     double dx = 0.0;
 
-    morph::DatasetStyle ds_left;
+    mplot::DatasetStyle ds_left;
     ds_left.datalabel = "sine left";
     gv->setdata (x, (x+dx).sin(), ds_left);
 
-    morph::DatasetStyle ds_right;
-    ds_right.axisside = morph::axisside::right;
-    ds_right.linecolour = morph::colour::red2;
-    ds_right.markercolour = morph::colour::red2;
+    mplot::DatasetStyle ds_right;
+    ds_right.axisside = mplot::axisside::right;
+    ds_right.linecolour = mplot::colour::red2;
+    ds_right.markercolour = mplot::colour::red2;
     ds_right.datalabel = "sine right";
     gv->setdata (x, (x+dx).sin() -0.5, ds_right);
 
     // set style of the axis
-    gv->axisstyle = morph::axisstyle::twinax;
+    gv->axisstyle = mplot::axisstyle::twinax;
 
     // Enable auto-rescaling of the x axis
     gv->auto_rescale_x = true;

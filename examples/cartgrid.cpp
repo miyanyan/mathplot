@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a CartGrid.
+ * An example mplot::Visual scene, containing a CartGrid.
  */
 
 #include <iostream>
@@ -9,14 +9,14 @@
 #include <sm/vec>
 #include <sm/cartgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/CartGridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/CartGridVisual.h>
 
 int main()
 {
     // Contructor args are width, height, title
-    morph::Visual v(1600, 1000, "morph::CartGridVisual");
+    mplot::Visual v(1600, 1000, "mplot::CartGridVisual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // Make this larger to "scroll in and out of the image" faster
@@ -28,7 +28,7 @@ int main()
     // You can switch on the "lighting shader" which puts diffuse light into the scene
     v.lightingEffects();
     // Add some text labels to the scene
-    v.addLabel ("This is a\nmorph::CartGridVisual\nobject", {0.26f, -0.16f, 0.0f});
+    v.addLabel ("This is a\nmplot::CartGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a HexGrid to show in the scene
     sm::cartgrid cg(0.01, 0.01, 1, 1);
@@ -46,13 +46,13 @@ int main()
         data[ri] = 0.05f + 0.05f*std::sin(20.0f*cg.d_x[ri]) * std::sin(10.0f*cg.d_y[ri]) ; // Range 0->1
     }
 
-    // Add a CartGridVisual to display the CartGrid within the morph::Visual scene
+    // Add a CartGridVisual to display the CartGrid within the mplot::Visual scene
     sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
-    auto cgv = std::make_unique<morph::CartGridVisual<float>>(&cg, offset);
+    auto cgv = std::make_unique<mplot::CartGridVisual<float>>(&cg, offset);
     v.bindmodel (cgv);
-    cgv->cartVisMode = morph::CartVisMode::RectInterp;
+    cgv->cartVisMode = mplot::CartVisMode::RectInterp;
     cgv->setScalarData (&data);
-    cgv->cm.setType (morph::ColourMapType::Twilight);
+    cgv->cm.setType (mplot::ColourMapType::Twilight);
     cgv->finalize();
     v.addVisualModel (cgv);
 

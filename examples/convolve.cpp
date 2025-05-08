@@ -11,16 +11,16 @@
 #include <sm/vec>
 #include <sm/hexgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
-#include <morph/ReadCurves.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/HexGridVisual.h>
+#include <mplot/ReadCurves.h>
 
 int main()
 {
     int rtn = 0;
 
-    morph::Visual v(800,600,"Convolution window");
+    mplot::Visual v(800,600,"Convolution window");
     v.zNear = 0.001;
     v.backgroundBlack();
     v.setSceneTransZ (-3.0f);
@@ -31,7 +31,7 @@ int main()
 
     // Populate a vector of floats with data
     std::vector<float> data (hg.num(), 0.0f);
-    //morph::rand_normal<float> rng (0.1f, 0.05f);
+    //mplot::rand_normal<float> rng (0.1f, 0.05f);
     sm::rand_uniform<float> rng;
     float nonconvolvedSum = 0.0f;
     for (float& d : data) {
@@ -73,34 +73,34 @@ int main()
 
     // Visualize the 3 maps
     sm::vec<float, 3> offset = { -0.5, 0.0, 0.0 };
-    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);
-    hgv->cm.setType(morph::ColourMapType::Viridis);
-    hgv->addLabel ("Input", { -0.3f, -0.45f, 0.01f }, morph::TextFeatures(0.1f, morph::colour::white));
+    hgv->cm.setType(mplot::ColourMapType::Viridis);
+    hgv->addLabel ("Input", { -0.3f, -0.45f, 0.01f }, mplot::TextFeatures(0.1f, mplot::colour::white));
     hgv->finalize();
     // Get the non-owning pointer to hgv from the addVisualModel call
     auto hgvp = v.addVisualModel (hgv);
 
     offset[1] += 0.6f;
-    auto kgv = std::make_unique<morph::HexGridVisual<float>>(&kernel, offset);
+    auto kgv = std::make_unique<mplot::HexGridVisual<float>>(&kernel, offset);
     v.bindmodel (kgv);
     kgv->setScalarData (&kerneldata);
-    kgv->cm.setType(morph::ColourMapType::Viridis);
+    kgv->cm.setType(mplot::ColourMapType::Viridis);
     kgv->finalize();
     auto kgvp = v.addVisualModel (kgv);
 
     // Labels can be added after finalize() and after addVisualModel
-    kgvp->addLabel ("Kernel", { 0.1f, 0.14f, 0.01f }, morph::TextFeatures(0.1f, morph::colour::white));
+    kgvp->addLabel ("Kernel", { 0.1f, 0.14f, 0.01f }, mplot::TextFeatures(0.1f, mplot::colour::white));
 
     offset[1] -= 0.6f;
     offset[0] += 1.0f;
-    auto rgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
+    auto rgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (rgv);
     rgv->setScalarData (&convolved);
-    rgv->cm.setType(morph::ColourMapType::Viridis);
+    rgv->cm.setType(mplot::ColourMapType::Viridis);
     rgv->finalize();
-    rgv->addLabel ("Output", { -0.3f, -0.45f, 0.01f }, morph::TextFeatures(0.1f, morph::colour::white));
+    rgv->addLabel ("Output", { -0.3f, -0.45f, 0.01f }, mplot::TextFeatures(0.1f, mplot::colour::white));
     rgv->finalize();
     auto rgvp = v.addVisualModel (rgv);
 

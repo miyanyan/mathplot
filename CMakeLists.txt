@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(mathplot)
-# Note that the project version is encoded in morph/version.h and not in this CMakeLists.txt
+# Note that the project version is encoded in mplot/version.h and not in this CMakeLists.txt
 
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  (This can be changed with `cmake -DCMAKE_INSTALL_PREFIX=/some/place`")
@@ -14,7 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CheckIncludeFileCXX) # CHECK_INCLUDE_FILE_CXX will be used in later scripts
 
-# If I *require* std::format, I can start using it across morph. That
+# If I *require* std::format, I can start using it across mathplot. That
 # limits us to gcc-13 on Ubuntu (though it's the libc++ that contains
 # <format>). For now, test and use it only in examples.
 check_include_file_cxx(format HAVE_STD_FORMAT)
@@ -62,7 +62,7 @@ endif()
 
 # If you tell the code you have std::format, then it may use it
 if(HAVE_STD_FORMAT)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMORPH_HAVE_STD_FORMAT")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMPLOT_HAVE_STD_FORMAT")
 endif()
 
 # In Visual Studio, if CMAKE_BUILD_TYPE is "Debug", some programs will run very slowly
@@ -98,12 +98,12 @@ if(OpenMP_CXX_FOUND)
 endif()
 
 # The code in VisualFace which builds the Vera family truetype fonts
-# into the program binary needs to have a define of MORPH_FONTS_DIR,
+# into the program binary needs to have a define of MPLOT_FONTS_DIR,
 # so set it up here:
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMORPH_FONTS_DIR=\"\\\"${PROJECT_SOURCE_DIR}/fonts\\\"\"")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMPLOT_FONTS_DIR=\"\\\"${PROJECT_SOURCE_DIR}/fonts\\\"\"")
 # Note that in client code you may have to do something similar. For
 # example, if you're compiling with mathplot in a subdirectory, you may need:
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMORPH_FONTS_DIR=\"\\\"${PROJECT_SOURCE_DIR}/mathplot/fonts\\\"\"")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMPLOT_FONTS_DIR=\"\\\"${PROJECT_SOURCE_DIR}/mathplot/fonts\\\"\"")
 
 # Lib finding
 
@@ -171,7 +171,7 @@ if (NOT HAVE_RAPIDXML)
 endif() # else we have it in a directory included by default in the path
 
 # All the mathplot headers are here
-add_subdirectory(morph)
+add_subdirectory(mplot)
 
 # Unit testing using the ctest framework
 option(BUILD_TESTS "Build tests" OFF)

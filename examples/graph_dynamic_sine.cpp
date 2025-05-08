@@ -3,14 +3,14 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/mathconst>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
-    morph::Visual v(1024, 768, "Continuous redrawing of GraphVisual");
+    mplot::Visual v(1024, 768, "Continuous redrawing of GraphVisual");
 
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
 
     sm::vvec<double> x;

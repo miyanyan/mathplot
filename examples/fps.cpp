@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a HexGrid.
+ * An example mplot::Visual scene, containing a HexGrid.
  */
 
 #include <iostream>
@@ -11,18 +11,18 @@
 #include <sm/vec>
 #include <sm/hexgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/VisualTextModel.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/VisualTextModel.h>
+#include <mplot/HexGridVisual.h>
 
 int main()
 {
-    morph::Visual v(1600, 1000, "morph::Visual");
+    mplot::Visual v(1600, 1000, "mplot::Visual");
     v.fov = 15.0f;
     v.zFar = 200.0f;
     v.lightingEffects();
-    morph::VisualTextModel<>* fps_tm;
+    mplot::VisualTextModel<>* fps_tm;
     v.addLabel ("0 FPS", {0.13f, -0.23f, 0.0f}, fps_tm); // With fps_tm can update the VisualTextModel with fps_tm->setupText("new text")
 
     // Create a hexgrid to show in the scene
@@ -45,12 +45,12 @@ int main()
         data[hi] = std::sin (k * r[hi]) / k * r[hi];
     }
 
-    // Add a HexGridVisual to display the HexGrid within the morph::Visual scene
+    // Add a HexGridVisual to display the HexGrid within the mplot::Visual scene
     sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
-    auto hgv = std::make_unique<morph::HexGridVisual<float>>(&hg, offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<float>>(&hg, offset);
     v.bindmodel (hgv);
     hgv->setScalarData (&data);
-    hgv->hexVisMode = morph::HexVisMode::Triangles;
+    hgv->hexVisMode = mplot::HexVisMode::Triangles;
     hgv->finalize();
     auto hgvp = v.addVisualModel (hgv);
 

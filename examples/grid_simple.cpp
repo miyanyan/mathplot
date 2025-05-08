@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a Gridv, and using GridvVisual
+ * An example mplot::Visual scene, containing a Gridv, and using GridvVisual
  */
 
 #include <iostream>
@@ -9,17 +9,17 @@
 #include <sm/vec>
 #include <sm/grid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/GridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/GridVisual.h>
 
 int main()
 {
-    morph::Visual v(1600, 1000, "morph::GridVisual");
+    mplot::Visual v(1600, 1000, "mplot::GridVisual");
 
 #ifdef ORTHOGRAPHIC
     // Here's how to set your Visual to do an orthographic projection rather than perspective
-    v.ptype = morph::perspective_type::orthographic;
+    v.ptype = mplot::perspective_type::orthographic;
 #endif
 
     // Create a grid to show in the scene
@@ -42,22 +42,22 @@ int main()
     }
 
     float step = 0.6f;
-    // Add a GridVisual to display the Grid within the morph::Visual scene
+    // Add a GridVisual to display the Grid within the mplot::Visual scene
     sm::vec<float, 3> offset = { -step * grid.width(), -step * grid.width(), 0.0f };
 
-    auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+    auto gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
-    gv->gridVisMode = morph::GridVisMode::Triangles;
+    gv->gridVisMode = mplot::GridVisMode::Triangles;
     gv->setScalarData (&data);
-    gv->cm.setType (morph::ColourMapType::Cork);
-    gv->addLabel (std::string("GridVisMode::Triangles, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03f));
+    gv->cm.setType (mplot::ColourMapType::Cork);
+    gv->addLabel (std::string("GridVisMode::Triangles, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.03f));
     gv->finalize();
     v.addVisualModel (gv);
 
     offset = { step * grid.width(), -step * grid.width(), 0.0f };
-    gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+    gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
-    gv->gridVisMode = morph::GridVisMode::RectInterp;
+    gv->gridVisMode = mplot::GridVisMode::RectInterp;
     gv->setScalarData (&data);
 
     // To show a grid first set the scaling so that the whole image is flat
@@ -67,52 +67,52 @@ int main()
     // Choose the thickness. This is a proportion of the pixel dimensions
     //gv->grid_thickness = 0.1f;
 
-    gv->cm.setType (morph::ColourMapType::Buda);
-    gv->addLabel (std::string("GridVisMode::RectInterp, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03f));
+    gv->cm.setType (mplot::ColourMapType::Buda);
+    gv->addLabel (std::string("GridVisMode::RectInterp, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.03f));
     gv->finalize();
     v.addVisualModel (gv);
 
     offset = { -step * grid.width(), step * grid.width(), 0.0f };
-    gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+    gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
-    gv->gridVisMode = morph::GridVisMode::Columns;
+    gv->gridVisMode = mplot::GridVisMode::Columns;
     gv->interpolate_colour_sides (true);
     gv->setScalarData (&data);
-    gv->cm.setType (morph::ColourMapType::Imola);
-    gv->addLabel (std::string("GridVisMode::Columns, interpolated sides, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03f));
+    gv->cm.setType (mplot::ColourMapType::Imola);
+    gv->addLabel (std::string("GridVisMode::Columns, interpolated sides, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.03f));
     gv->finalize();
     v.addVisualModel (gv);
 
     offset = { step * grid.width(), step * grid.width(), 0.0f };
-    gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+    gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
-    gv->gridVisMode = morph::GridVisMode::Columns;
+    gv->gridVisMode = mplot::GridVisMode::Columns;
     //gv->interpolate_colour_sides = false; // default
-    //gv->clr_east_column = morph::colour::black; // These are defaults but you can change them
-    //gv->clr_north_column = morph::colour::black;
+    //gv->clr_east_column = mplot::colour::black; // These are defaults but you can change them
+    //gv->clr_north_column = mplot::colour::black;
     gv->setScalarData (&data);
-    gv->cm.setType (morph::ColourMapType::Managua);
-    gv->addLabel (std::string("GridVisMode::Columns, black sides, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03));
+    gv->cm.setType (mplot::ColourMapType::Managua);
+    gv->addLabel (std::string("GridVisMode::Columns, black sides, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.03));
     gv->finalize();
     v.addVisualModel (gv);
 
     offset = { 3 * step * grid.width(), step * grid.width(), 0.0f };
-    gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+    gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
-    gv->gridVisMode = morph::GridVisMode::Pixels;
+    gv->gridVisMode = mplot::GridVisMode::Pixels;
     gv->setScalarData (&data);
-    gv->cm.setType (morph::ColourMapType::Navia);
-    gv->addLabel (std::string("GridVisMode::Pixels, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03));
+    gv->cm.setType (mplot::ColourMapType::Navia);
+    gv->addLabel (std::string("GridVisMode::Pixels, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.03));
     gv->finalize();
     v.addVisualModel (gv);
 
     offset = { 3 * step * grid.width(), -step * grid.width(), 0.0f };
-    gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+    gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
-    gv->gridVisMode = morph::GridVisMode::RectInterp;
+    gv->gridVisMode = mplot::GridVisMode::RectInterp;
     gv->setScalarData (&data);
-    gv->cm.setType (morph::ColourMapType::Navia);
-    gv->addLabel (std::string("GridVisMode::RectInterp, implygrid=true, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03));
+    gv->cm.setType (mplot::ColourMapType::Navia);
+    gv->addLabel (std::string("GridVisMode::RectInterp, implygrid=true, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.03));
     gv->implygrid (true);
     gv->grid_thickness = 0.18f; // of a pixel
     gv->finalize();

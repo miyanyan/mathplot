@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a Grid, and using GridVisual. The function shown
+ * An example mplot::Visual scene, containing a Grid, and using GridVisual. The function shown
  * changes and is updated with reinitColours() and reinit() and each is profiled.
  */
 
@@ -11,17 +11,17 @@
 #include <sm/vec>
 #include <sm/grid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/GridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/GridVisual.h>
 
 int main()
 {
-    morph::Visual v(1600, 1000, "morph::GridVisual");
+    mplot::Visual v(1600, 1000, "mplot::GridVisual");
 
-    morph::VisualTextModel<>* fps_tm;
+    mplot::VisualTextModel<>* fps_tm;
     v.addLabel ("0 FPS", {0.53f, -0.23f, 0.0f}, fps_tm); // With fps_tm can update the VisualTextModel with fps_tm->setupText("new text")
-    morph::VisualTextModel<>* mode_tm;
+    mplot::VisualTextModel<>* mode_tm;
     v.addLabel ("Unknown", {0.23f, -0.03f, 0.0f}, mode_tm); // With fps_tm can update the VisualTextModel with fps_tm->setupText("new text")
 
     // Create a grid to show in the scene
@@ -34,19 +34,19 @@ int main()
     std::vector<float> data(grid.n(), 0.0);
 
     float step = 0.6f;
-    // Add a GridVisual to display the Grid within the morph::Visual scene
+    // Add a GridVisual to display the Grid within the mplot::Visual scene
     sm::vec<float, 3> offset = { -step * grid.width(), -step * grid.width(), 0.0f };
 
-    auto gv = std::make_unique<morph::GridVisual<float>>(&grid, offset);
+    auto gv = std::make_unique<mplot::GridVisual<float>>(&grid, offset);
     v.bindmodel (gv);
-    gv->gridVisMode = morph::GridVisMode::Triangles; // Choose [fastest-->] Triangles, Pixels, RectInterp or Columns [-->slowest]
+    gv->gridVisMode = mplot::GridVisMode::Triangles; // Choose [fastest-->] Triangles, Pixels, RectInterp or Columns [-->slowest]
     gv->setScalarData (&data);
-    gv->cm.setType (morph::ColourMapType::Cork);
+    gv->cm.setType (mplot::ColourMapType::Cork);
     gv->zScale.do_autoscale = false;
     gv->zScale.null_scaling();
     gv->colourScale.do_autoscale = false;
     gv->colourScale.compute_scaling (-1, 1);
-    gv->addLabel (std::string("GridVisMode::Triangles, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), morph::TextFeatures(0.03f));
+    gv->addLabel (std::string("GridVisMode::Triangles, cm: ") + gv->cm.getTypeStr(), sm::vec<float>({0,-0.1,0}), mplot::TextFeatures(0.03f));
     gv->finalize();
     auto gvp = v.addVisualModel (gv);
 
@@ -70,10 +70,10 @@ int main()
         v.poll();
 
         if (incrementer %500 == 0) { // change colourmap
-            if (gvp->cm.getType() == morph::ColourMapType::Cork) {
-                gvp->cm.setType (morph::ColourMapType::Jet);
+            if (gvp->cm.getType() == mplot::ColourMapType::Cork) {
+                gvp->cm.setType (mplot::ColourMapType::Jet);
             } else {
-                gvp->cm.setType (morph::ColourMapType::Cork);
+                gvp->cm.setType (mplot::ColourMapType::Cork);
             }
         }
 
@@ -88,11 +88,11 @@ int main()
             fcount = 0;
             std::stringstream ss;
             std::string gvmode = "Pixels";
-            if (gvp->gridVisMode == morph::GridVisMode::RectInterp) {
+            if (gvp->gridVisMode == mplot::GridVisMode::RectInterp) {
                 gvmode = "RectInterp";
-            } else if (gvp->gridVisMode == morph::GridVisMode::Triangles) {
+            } else if (gvp->gridVisMode == mplot::GridVisMode::Triangles) {
                 gvmode = "Triangles";
-            } else if (gvp->gridVisMode == morph::GridVisMode::Columns) {
+            } else if (gvp->gridVisMode == mplot::GridVisMode::Columns) {
                 gvmode = "Columns";
             }
             ss << "Calling " << (reinitJustColours ? "reinitColours()" : "full reinit()" ) << " for " << grid.n()

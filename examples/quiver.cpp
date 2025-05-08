@@ -8,15 +8,15 @@
 
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/QuiverVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/QuiverVisual.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "morph::QuiverVisual");
+    mplot::Visual v(1024, 768, "mplot::QuiverVisual");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     // For a white background:
@@ -55,7 +55,7 @@ int main()
                 k++;
             }
         }
-        auto vmp = std::make_unique<morph::QuiverVisual<float>>(&coords, offset, &quivs, morph::ColourMapType::MonochromeGreen);
+        auto vmp = std::make_unique<mplot::QuiverVisual<float>>(&coords, offset, &quivs, mplot::ColourMapType::MonochromeGreen);
         v.bindmodel (vmp);
         vmp->quiver_length_gain = 0.4f; // Scale the length of the quivers on screen
         vmp->quiver_thickness_gain = 0.05f; // Scale thickness of the quivers

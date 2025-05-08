@@ -1,5 +1,5 @@
 /*
- * An example morph::Visual scene, containing a HexGrid.
+ * An example mplot::Visual scene, containing a HexGrid.
  */
 
 #include <iostream>
@@ -9,14 +9,14 @@
 #include <sm/vec>
 #include <sm/hexgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/HexGridVisual.h>
 
 int main()
 {
     // Contructor args are width, height, title
-    morph::Visual<morph::gl::version_4_1> v(1600, 1000, "sm::HexGridVisual");
+    mplot::Visual<mplot::gl::version_4_1> v(1600, 1000, "sm::HexGridVisual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // set the x/y offset. Try pressing 'z' in the app window to see what the current sceneTrans is
@@ -30,7 +30,7 @@ int main()
     // You can switch on the "lighting shader" which puts diffuse light into the scene
     //v.lightingEffects();
     // Add some text labels to the scene
-    v.addLabel ("This is a\nmorph::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
+    v.addLabel ("This is a\nmplot::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
 
     // Create a HexGrid to show in the scene. Hexes outside the circular boundary will
     // all be discarded.
@@ -47,11 +47,11 @@ int main()
 
     // Add a HexGridVisual to display the HexGrid within the sm::Visual scene
     sm::vec<float, 3> offset = { 0.0f, -0.05f, 0.0f };
-    auto hgv = std::make_unique<morph::HexGridVisual<float, morph::gl::version_4_1>>(&hg, offset);
+    auto hgv = std::make_unique<mplot::HexGridVisual<float, mplot::gl::version_4_1>>(&hg, offset);
     v.bindmodel (hgv);
-    hgv->cm.setType (morph::ColourMapType::Ice);
+    hgv->cm.setType (mplot::ColourMapType::Ice);
     hgv->setScalarData (&data);
-    hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or sm::HexVisMode::Triangles for a smoother surface plot
+    hgv->hexVisMode = mplot::HexVisMode::HexInterp; // Or sm::HexVisMode::Triangles for a smoother surface plot
     hgv->finalize();
 
     if (v.checkContext() == true) {

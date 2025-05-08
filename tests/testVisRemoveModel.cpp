@@ -9,16 +9,16 @@
 #include <sm/vec>
 #include <sm/scale>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/QuiverVisual.h>
-#include <morph/ScatterVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/QuiverVisual.h>
+#include <mplot/ScatterVisual.h>
 
 int main (int argc, char** argv)
 {
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Visualization");
+    mplot::Visual v(1024, 768, "Visualization");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     // For a white background:
@@ -50,7 +50,7 @@ int main (int argc, char** argv)
         quivs.push_back ({-0.04, 0.05, -.2});
         quivs.push_back ({0.3,  -0.1,  0});
 
-        auto qvp = std::make_unique<morph::QuiverVisual<float>> (&coords, offset, &quivs, morph::ColourMapType::Cividis);
+        auto qvp = std::make_unique<mplot::QuiverVisual<float>> (&coords, offset, &quivs, mplot::ColourMapType::Cividis);
         v.bindmodel (qvp);
         qvp->finalize();
         unsigned int visId = v.addVisualModelId (qvp);
@@ -68,15 +68,15 @@ int main (int argc, char** argv)
         points.push_back ({4,3.9,0});
         std::vector<float> data = {0.1, 0.2, 0.5, 0.6, 0.95};
 
-        auto sv = std::make_unique<morph::ScatterVisual<float>> (offset);
+        auto sv = std::make_unique<mplot::ScatterVisual<float>> (offset);
         v.bindmodel (sv);
         sv->setDataCoords (&points);
         sv->setScalarData (&data);
         sv->radiusFixed = 0.03f;
         sv->colourScale = scale;
-        sv->cm.setType (morph::ColourMapType::Plasma);
+        sv->cm.setType (mplot::ColourMapType::Plasma);
         sv->finalize();
-        morph::ScatterVisual<float>* visPtr = v.addVisualModel (sv);
+        mplot::ScatterVisual<float>* visPtr = v.addVisualModel (sv);
 
         v.render();
         // 10 seconds of viewing the quivers

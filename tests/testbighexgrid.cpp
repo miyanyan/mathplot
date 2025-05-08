@@ -10,17 +10,17 @@
 #include <sm/vec>
 #include <sm/hexgrid>
 
-#include <morph/Visual.h>
-#include <morph/VisualDataModel.h>
-#include <morph/HexGridVisual.h>
-#include <morph/ReadCurves.h>
-#include <morph/tools.h>
+#include <mplot/Visual.h>
+#include <mplot/VisualDataModel.h>
+#include <mplot/HexGridVisual.h>
+#include <mplot/ReadCurves.h>
+#include <mplot/tools.h>
 
 int main()
 {
     int rtn = -1;
 
-    morph::Visual v(800,600,"Test window");
+    mplot::Visual v(800,600,"Test window");
     v.zNear = 0.001;
 
     try {
@@ -45,9 +45,9 @@ int main()
         std::cout << "Created " << data.size() << " floats in data" << std::endl;
 
         sm::vec<float, 3> offset = { 0.0f, 0.0f, 0.0f };
-        auto hgv = std::make_unique<morph::HexGridVisual<float>> (&hg, offset);
+        auto hgv = std::make_unique<mplot::HexGridVisual<float>> (&hg, offset);
         v.bindmodel (hgv);
-        hgv->hexVisMode = morph::HexVisMode::Triangles; // Triangles faster to render than the default hexes
+        hgv->hexVisMode = mplot::HexVisMode::Triangles; // Triangles faster to render than the default hexes
         hgv->setScalarData (&data);
         hgv->zScale.setParams (0.1f, 0.0f);
         hgv->finalize();
@@ -59,7 +59,7 @@ int main()
 
     } catch (const std::exception& e) {
         std::cerr << "Caught exception reading trial.svg: " << e.what() << std::endl;
-        std::cerr << "Current working directory: " << morph::tools::getPwd() << std::endl;
+        std::cerr << "Current working directory: " << mplot::tools::getPwd() << std::endl;
         rtn = -1;
     }
 

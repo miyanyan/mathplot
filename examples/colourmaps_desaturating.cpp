@@ -9,34 +9,34 @@
 #include <sm/mathconst>
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/HSVWheelVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/HSVWheelVisual.h>
 
-struct myvisual final : public morph::Visual<>
+struct myvisual final : public mplot::Visual<>
 {
-    myvisual (int width, int height, const std::string& title) : morph::Visual<> (width, height, title) {}
-    morph::ColourMapType curr_map_type = morph::ColourMapType::Plasma;
+    myvisual (int width, int height, const std::string& title) : mplot::Visual<> (width, height, title) {}
+    mplot::ColourMapType curr_map_type = mplot::ColourMapType::Plasma;
     bool forwards = true;
 protected:
     void key_callback_extra (int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) override
     {
-        if (key == morph::key::right && (action == morph::keyaction::press || action == morph::keyaction::repeat)) {
+        if (key == mplot::key::right && (action == mplot::keyaction::press || action == mplot::keyaction::repeat)) {
             ++this->curr_map_type;
             this->forwards = true;
         }
-        if (key == morph::key::left && (action == morph::keyaction::press || action == morph::keyaction::repeat)) {
+        if (key == mplot::key::left && (action == mplot::keyaction::press || action == mplot::keyaction::repeat)) {
             --this->curr_map_type;
             this->forwards = false;
         }
-        if (key == morph::key::h && action == morph::keyaction::press) { std::cout << "left/right switch maps\n"; }
+        if (key == mplot::key::h && action == mplot::keyaction::press) { std::cout << "left/right switch maps\n"; }
     }
 };
 
 // In this example, I'll create a special visual to show the colours
-struct SquareGridVisual : public morph::VisualModel<>
+struct SquareGridVisual : public mplot::VisualModel<>
 {
-    SquareGridVisual(const sm::vec<float> _offset, morph::ColourMapType mymap) : morph::VisualModel<> (_offset)
+    SquareGridVisual(const sm::vec<float> _offset, mplot::ColourMapType mymap) : mplot::VisualModel<> (_offset)
     {
         this->colourMap.setType (mymap);
         // We're going to 'act 2D'
@@ -44,7 +44,7 @@ struct SquareGridVisual : public morph::VisualModel<>
     }
 
     // A colourMap member attribute
-    morph::ColourMap<float> colourMap;
+    mplot::ColourMap<float> colourMap;
 
     // initializeVertices is the standard function that we override when extending
     // VisualModel. Here, we're going to draw a grid of squares, with colour chosen
@@ -93,7 +93,7 @@ struct SquareGridVisual : public morph::VisualModel<>
 
 int main()
 {
-    // The main function is simple. Create a morph::Visual, add a single SquareGridVisual and then 'keep it open'
+    // The main function is simple. Create a mplot::Visual, add a single SquareGridVisual and then 'keep it open'
     std::string titlestr = "1D colour maps with 2D inputs (desaturating)";
     myvisual v(1600, 1000, titlestr);
     v.backgroundBlack();
@@ -103,26 +103,26 @@ int main()
     auto hsv_vis = std::make_unique<SquareGridVisual>(sm::vec<float>{ 0.0f, 0.0f, 0.0f }, v.curr_map_type);
     v.bindmodel (hsv_vis);
     hsv_vis->addLabel (hsv_vis->colourMap.getTypeStr() + std::string(" (") + hsv_vis->colourMap.getFlagsStr() + std::string(")"),
-                       sm::vec<float>({0,-1,0}), morph::TextFeatures(0.24f, morph::colour::white));
+                       sm::vec<float>({0,-1,0}), mplot::TextFeatures(0.24f, mplot::colour::white));
     hsv_vis->finalize();
     auto gvp = v.addVisualModel (hsv_vis);
 
-    morph::ColourMapType display_map_type = v.curr_map_type;
+    mplot::ColourMapType display_map_type = v.curr_map_type;
 
     while (v.readyToFinish() == false) {
         v.render();
         v.waitevents (0.017);
         if (v.curr_map_type != display_map_type) {
             // Change to v.curr_map_type
-            morph::ColourMap<float> nextmap(v.curr_map_type);
-            if (nextmap.flags.test (morph::ColourMapFlags::one_d) == true) {
+            mplot::ColourMap<float> nextmap(v.curr_map_type);
+            if (nextmap.flags.test (mplot::ColourMapFlags::one_d) == true) {
                 // Update the map
                 v.removeVisualModel (gvp);
 
                 auto hsv_vis = std::make_unique<SquareGridVisual>(sm::vec<float>{ 0.0f, 0.0f, 0.0f }, v.curr_map_type);
                 v.bindmodel (hsv_vis);
                 hsv_vis->addLabel (hsv_vis->colourMap.getTypeStr() + std::string(" (") + hsv_vis->colourMap.getFlagsStr() + std::string(")"),
-                                   sm::vec<float>({0,-1,0}), morph::TextFeatures(0.24f, morph::colour::white));
+                                   sm::vec<float>({0,-1,0}), mplot::TextFeatures(0.24f, mplot::colour::white));
                 hsv_vis->finalize();
                 gvp = v.addVisualModel (hsv_vis);
 

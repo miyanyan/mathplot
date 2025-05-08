@@ -8,14 +8,14 @@
 
 #include <sm/vec>
 
-#include <morph/Visual.h>
-#include <morph/ConeVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ConeVisual.h>
 
 int main()
 {
     int rtn = 0;
 
-    morph::Visual v(1024, 768, "A simple cone");
+    mplot::Visual v(1024, 768, "A simple cone");
     v.lightingEffects(true);
 
     try {
@@ -23,13 +23,13 @@ int main()
 
         // Draw several cones, demonstrating what 'ringoffset' does
         for (int i = 0; i < 6; ++i) {
-            auto cvm = std::make_unique<morph::ConeVisual<>> (offset);
+            auto cvm = std::make_unique<mplot::ConeVisual<>> (offset);
             v.bindmodel (cvm);
             cvm->ringoffset = 0.2f * i;
             cvm->clr = { (5-i) * 0.2f, 0.0f, i * 0.2f };
             std::stringstream ss;
             ss << "ringoffset = " << cvm->ringoffset;
-            cvm->addLabel (ss.str(), { 0.0f, 0.3f, 0.0f }, morph::TextFeatures(0.05f));
+            cvm->addLabel (ss.str(), { 0.0f, 0.3f, 0.0f }, mplot::TextFeatures(0.05f));
             cvm->finalize();
             v.addVisualModel (cvm);
 

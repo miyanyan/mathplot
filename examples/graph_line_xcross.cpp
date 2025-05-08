@@ -3,16 +3,16 @@
 
 #include <format>
 #include <sm/vvec>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
-    // Set up a morph::Visual 'scene environment'.
-    morph::Visual v(1024, 768, "Made with morph::GraphVisual");
+    // Set up a mplot::Visual 'scene environment'.
+    mplot::Visual v(1024, 768, "Made with mplot::GraphVisual");
 
     // Create a GraphVisual object (obtaining a unique_ptr to the object) with a spatial offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>{ 0.0f, 0.0f, 0.0f });
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>{ 0.0f, 0.0f, 0.0f });
 
     // This mandatory line of boilerplate code sets the parent pointer in GraphVisual and binds some functions
     v.bindmodel (gv);
@@ -27,8 +27,8 @@ int main()
     sm::vvec<double> x = { 5, 8, 2, 9, 1, 2, 4, 5, 8, 3, 1 };
 
     // Choose a line graph by creating a lines stylepolicy datasetstyle.
-    morph::DatasetStyle ds (morph::stylepolicy::lines);
-    ds.linecolour = morph::colour::crimson;
+    mplot::DatasetStyle ds (mplot::stylepolicy::lines);
+    ds.linecolour = mplot::colour::crimson;
 
     // For this graph, set manual y axis limits
     gv->setlimits_y (0, 10);
@@ -37,8 +37,8 @@ int main()
     gv->setdata (x, y, ds);
 
     // A second DatasetStyle is used to specify a colour and linewidth for a vertical line at x=3.3
-    morph::DatasetStyle ds_vert (morph::stylepolicy::lines);
-    ds_vert.linecolour = morph::colour::grey68;
+    mplot::DatasetStyle ds_vert (mplot::stylepolicy::lines);
+    ds_vert.linecolour = mplot::colour::grey68;
     ds_vert.linewidth = ds.linewidth * 0.6f;
 
     // Find, and annotate with vertical lines, the locations where the graph crosses
@@ -56,7 +56,7 @@ int main()
         ss << "[no values]";
     }
     // Add a label at location {.05, .05, 0} with fontsize 0.03
-    gv->addLabel (std::format("At x=3.3, y = {:s}", ss.str()), { 0.05f, 0.05f, 0.0f }, morph::TextFeatures(0.03f));
+    gv->addLabel (std::format("At x=3.3, y = {:s}", ss.str()), { 0.05f, 0.05f, 0.0f }, mplot::TextFeatures(0.03f));
 
     // finalize() makes the GraphVisual compute the vertices of the OpenGL model
     gv->finalize();

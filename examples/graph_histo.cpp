@@ -7,8 +7,8 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/histo>
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
@@ -32,15 +32,15 @@ int main()
     sm::histo<int, float> h(inumbers, 30, sm::range<int>{-2000, 2000});
 #endif
 
-    // Set up a morph::Visual for a graph
-    morph::Visual v(1024, 768, "Histogram");
+    // Set up a mplot::Visual for a graph
+    mplot::Visual v(1024, 768, "Histogram");
     v.setSceneTrans (sm::vec<float,3>({-0.539211f, -0.401911f, -2.8f}));
 
     // Create a new GraphVisual with offset within the scene of 0,0,0. Note the type for
     // the GraphVisual has to match the *second* template type for the histo.
-    auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0}));
     v.bindmodel (gv);
-    gv->setdata (h); // to become gv->add_bargraph (h [,morph::colour::darkorchid1] [,morph::colour::orchid2])
+    gv->setdata (h); // to become gv->add_bargraph (h [,mplot::colour::darkorchid1] [,mplot::colour::orchid2])
     gv->xlabel = "1000 sin(x)";
     gv->ylabel = "Proportion";
     gv->finalize();

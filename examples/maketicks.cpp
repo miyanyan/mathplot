@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sm/range>
-#include <morph/graphing.h>
+#include <mplot/graphing.h>
 
 void usage (char** argv)
 {
@@ -32,7 +32,7 @@ int main (int argc, char** argv)
     }
     std::cout << "Number of ticks range: " << nticks << std::endl;
 
-    std::deque<float> ticks = morph::graphing::maketicks (a1, a2, a1, a2, nticks);
+    std::deque<float> ticks = mplot::graphing::maketicks (a1, a2, a1, a2, nticks);
 
     std::cout << "\n" << a1 << " to " << a2 << ": ticks: ";
     for (auto t : ticks) { std::cout << t << ", "; }

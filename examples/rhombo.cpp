@@ -1,11 +1,11 @@
 #include <sm/vec>
-#include <morph/Visual.h>
-#include <morph/RhomboVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/RhomboVisual.h>
 
 int main()
 {
     // Create a scene
-    morph::Visual v(1024, 768, "A rhombohedron");
+    mplot::Visual v(1024, 768, "A rhombohedron");
     v.showCoordArrows (true); // Please show the coord arrows by default
     v.lightingEffects();
 
@@ -16,7 +16,7 @@ int main()
     sm::vec<float, 3> e3 = { 0,  0.0,  0.25 };
     sm::vec<float, 3> colour1 = { 0.35,  0.76,  0.98 };  // RGB colour triplet
 
-    auto rv = std::make_unique<morph::RhomboVisual<>> (offset, e1, e2, e3, colour1);
+    auto rv = std::make_unique<mplot::RhomboVisual<>> (offset, e1, e2, e3, colour1);
     v.bindmodel (rv);
     rv->finalize();
     v.addVisualModel (rv);

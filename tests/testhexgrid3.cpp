@@ -4,19 +4,19 @@
 #include <sm/vec>
 #include <sm/hexgrid>
 
-#include <morph/tools.h>
-#include <morph/ColourMap.h>
-#include <morph/ReadCurves.h>
-#include <morph/Visual.h>
-#include <morph/HexGridVisual.h>
+#include <mplot/tools.h>
+#include <mplot/ColourMap.h>
+#include <mplot/ReadCurves.h>
+#include <mplot/Visual.h>
+#include <mplot/HexGridVisual.h>
 
 int main()
 {
     int rtn = 0;
     try {
-        std::string pwd = morph::tools::getPwd();
+        std::string pwd = mplot::tools::getPwd();
         std::string curvepath = "../../tests/trialmod.svg";
-        morph::ReadCurves r(curvepath);
+        mplot::ReadCurves r(curvepath);
 
         sm::hexgrid hg(0.02, 7, 0);
         hg.setBoundary (r.getCorticalPath());
@@ -31,10 +31,10 @@ int main()
         }
 
         // Create a HexGrid
-        morph::Visual v(1600, 1000, "HexGrid");
+        mplot::Visual v(1600, 1000, "HexGrid");
         v.lightingEffects();
         sm::vec<float, 3> offset = { 0.0f, -0.0f, 0.0f };
-        auto hgv = std::make_unique<morph::HexGridVisual<float>> (&hg, offset);
+        auto hgv = std::make_unique<mplot::HexGridVisual<float>> (&hg, offset);
         v.bindmodel (hgv);
         // Set up data for the HexGridVisual and colour hexes according to their state as being boundary/inside/domain, etc
         std::vector<float> colours (hg.num(), 0.0f);
@@ -58,10 +58,10 @@ int main()
                 colours[i] = cl_domain;
             }
         }
-        hgv->cm.setType (morph::ColourMapType::Jet);
+        hgv->cm.setType (mplot::ColourMapType::Jet);
         hgv->zScale.setParams (0,0); // makes the output flat in z direction, but you still get the colours
         hgv->setScalarData (&colours);
-        hgv->hexVisMode = morph::HexVisMode::HexInterp; // Or morph::HexVisMode::Triangles for a smoother surface plot
+        hgv->hexVisMode = mplot::HexVisMode::HexInterp; // Or mplot::HexVisMode::Triangles for a smoother surface plot
         hgv->finalize();
         v.addVisualModel (hgv);
 
@@ -76,7 +76,7 @@ int main()
 
     } catch (const std::exception& e) {
         std::cerr << "Caught exception reading svg: " << e.what() << std::endl;
-        std::cerr << "Current working directory: " << morph::tools::getPwd() << std::endl;
+        std::cerr << "Current working directory: " << mplot::tools::getPwd() << std::endl;
         rtn = -1;
     }
 

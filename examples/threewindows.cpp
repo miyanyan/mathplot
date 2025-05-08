@@ -1,5 +1,5 @@
 /*
- * An example showing how to create two morph::Visuals and then a third one.
+ * An example showing how to create two mplot::Visuals and then a third one.
  */
 #include <iostream>
 #include <array>
@@ -9,10 +9,10 @@
 #include <sm/vec>
 #include <sm/vvec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/QuiverVisual.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/QuiverVisual.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
@@ -21,17 +21,17 @@ int main()
     // Demonstrates use of offset (left at 0,0,0), lengths (3,2,1) and the 'thickness'
     // scaling factor (0.5) for the coordinate arrows. Defines, and makes current a new
     // window and OpenGL context.
-    morph::Visual v(1024, 768, "Close Window 1 and Window 3 briefly appears then program exits");
+    mplot::Visual v(1024, 768, "Close Window 1 and Window 3 briefly appears then program exits");
     v.showCoordArrows (true);
     v.showTitle (true);
     v.backgroundWhite();
     v.lightingEffects();
 
-    { // I create two morph::Visuals here in their own scope, so that I can demonstrate the creation
-      // of a new, follow-on morph::Visual at the end
+    { // I create two mplot::Visuals here in their own scope, so that I can demonstrate the creation
+      // of a new, follow-on mplot::Visual at the end
 
         // v2 is a second window and OpenGL context
-        morph::Visual v2(768, 768, "Close Window 2 and Window 3 appears");
+        mplot::Visual v2(768, 768, "Close Window 2 and Window 3 appears");
         v2.showCoordArrows (true);
         v2.showTitle (true);
         v2.backgroundWhite();
@@ -55,13 +55,13 @@ int main()
             quivs.push_back ({-0.04, 0.05, -.2});
             quivs.push_back ({0.3,  -0.1,  0});
 
-            auto qvp = std::make_unique<morph::QuiverVisual<float>>(&coords, offset, &quivs, morph::ColourMapType::Cividis);
+            auto qvp = std::make_unique<mplot::QuiverVisual<float>>(&coords, offset, &quivs, mplot::ColourMapType::Cividis);
             v.bindmodel (qvp);
             qvp->finalize();
             v.addVisualModel (qvp);
 
             // Set up v2 with a graph
-            auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
+            auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0}));
             v2.bindmodel (gv);
             sm::vvec<float> x =  {-.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8};
             sm::vvec<float> y = x.pow(3);
@@ -84,9 +84,9 @@ int main()
 
     v.render();
 
-    // Both old windows have now gone out of scope. Right at the end, I re-create a morph::Visual to
+    // Both old windows have now gone out of scope. Right at the end, I re-create a mplot::Visual to
     // prove that it can be done (until March 11 2024, this would fail).
-    morph::Visual v3(1024, 768, "This is the third (empty) window");
+    mplot::Visual v3(1024, 768, "This is the third (empty) window");
     v3.showCoordArrows (true);
     v3.showTitle (true);
     v3.backgroundWhite();

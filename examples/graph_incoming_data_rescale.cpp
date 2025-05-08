@@ -9,17 +9,17 @@
 #include <sm/vec>
 #include <sm/vvec>
 
-#include <morph/Visual.h>
-#include <morph/ColourMap.h>
-#include <morph/GraphVisual.h>
+#include <mplot/Visual.h>
+#include <mplot/ColourMap.h>
+#include <mplot/GraphVisual.h>
 
 int main()
 {
-    namespace uc = morph::unicode;
+    namespace uc = mplot::unicode;
 
     int rtn = -1;
 
-    morph::Visual v(1024, 768, "Graph");
+    mplot::Visual v(1024, 768, "Graph");
     v.zNear = 0.001;
     v.showCoordArrows (true);
     v.backgroundWhite();
@@ -29,7 +29,7 @@ int main()
         sm::vvec<float> absc =  {-1.0, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0};
         sm::vvec<float> data = 2.1f * absc.pow(3);
         sm::vvec<float> data2 = 1.5f * absc.pow(5);
-        auto gv = std::make_unique<morph::GraphVisual<float>> (sm::vec<float>({0,0,0}));
+        auto gv = std::make_unique<mplot::GraphVisual<float>> (sm::vec<float>({0,0,0}));
         v.bindmodel (gv);
 
         // Optionally change the size of the graph and range of the axes
@@ -38,11 +38,11 @@ int main()
         gv->setlimits (-1, 0.1, -1, 1);
 
         // Set the graphing policy
-        gv->policy = morph::stylepolicy::lines; // markers, lines, both, allcolour
-        gv->axisstyle = morph::axisstyle::twinax;
+        gv->policy = mplot::stylepolicy::lines; // markers, lines, both, allcolour
+        gv->axisstyle = mplot::axisstyle::twinax;
         // We 'prepare' two datasets, but won't fill them with data yet. However, we do give the data legend label here.
-        gv->prepdata ("Third power", morph::axisside::left);
-        gv->prepdata ("Fifth power", morph::axisside::right);
+        gv->prepdata ("Third power", mplot::axisside::left);
+        gv->prepdata ("Fifth power", mplot::axisside::right);
 
         gv->ylabel = "f(x) = 2.1x" + uc::toUtf8(uc::ss3);
         // ylabel2 is the right hand y axis label
