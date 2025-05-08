@@ -35,6 +35,12 @@ if(${glfw3_FOUND})
 
     add_executable(testbighexgrid testbighexgrid.cpp)
     target_link_libraries(testbighexgrid OpenGL::GL glfw Freetype::Freetype)
+
+    add_executable(testbezderiv3 testbezderiv3.cpp)
+    target_compile_definitions(testbezderiv3 PUBLIC FLT=double)
+    target_link_libraries(testbezderiv3 ${ARMADILLO_LIBRARY} ${ARMADILLO_LIBRARIES} OpenGL::GL glfw Freetype::Freetype)
+    add_test(testbezderiv3 testbezderiv3)
+
   endif(ARMADILLO_FOUND)
 
   add_executable(testVisCoordArrows testVisCoordArrows.cpp)
@@ -51,21 +57,6 @@ if(${glfw3_FOUND})
     # Test circular HexGrid code
     add_executable(test_circleboundary test_circleboundary.cpp)
     target_link_libraries(test_circleboundary OpenGL::GL glfw Freetype::Freetype)
-
-    if(HDF5_FOUND)
-      # Test Dirichlet code
-      add_executable(testDirichlet testDirichlet.cpp)
-      target_link_libraries(testDirichlet OpenGL::GL glfw Freetype::Freetype)
-
-      add_executable(testDirichlet2 testDirichlet2.cpp)
-      target_link_libraries(testDirichlet2 OpenGL::GL glfw Freetype::Freetype)
-
-      add_executable(testDirichlet4 testDirichlet4.cpp)
-      target_link_libraries(testDirichlet4 OpenGL::GL glfw Freetype::Freetype)
-
-      add_executable(testDirichlet5 testDirichlet5.cpp)
-      target_link_libraries(testDirichlet5 OpenGL::GL glfw Freetype::Freetype)
-    endif(HDF5_FOUND)
   endif(ARMADILLO_FOUND)
 
 endif()
