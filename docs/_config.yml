@@ -1,9 +1,9 @@
-title: morphologica
-description:  Learn how to use morphologica C++ classes to write fast numerical simulations with amazing OpenGL visualization
+title: mathplot
+description:  Learn how to use mathplot C++ classes to add OpenGL visualization to your projects
 baseurl: "/" # the subpath of your site, e.g. /blog
-github_username:  sebjameswml
+github_username:  sebsjames
 
-url: https://abrg-models.github.io/morphologica
+url: https://sebsjames.github.io/mathplot
 
 theme: just-the-docs
 #theme: minima
