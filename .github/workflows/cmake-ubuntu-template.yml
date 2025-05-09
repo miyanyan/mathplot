@@ -24,7 +24,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+      with:
+        submodules: 'true'
     - name: Update index
       run: sudo apt update
 
@@ -54,7 +55,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{ inputs.BUILD_TYPE }}
 
-    - name: Test if all morph headers are installed
+    - name: Test if all mplot headers are installed
       working-directory: ${{ github.workspace }}/build
       run: |
         make install
