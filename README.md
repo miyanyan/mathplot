@@ -12,9 +12,9 @@ It can also be integrated with other GUI frameworks including Qt (see [**example
 
 Mathplot is compatible with **Linux** (including **Raspberry Pi**), **Mac OS** and **Windows**.
 
-You'll find all of the **library code** in the [**morph**](https://github.com/ABRG-Models/morphologica/tree/main/morph) directory and you can find **example code and screenshots** [here](https://github.com/ABRG-Models/morphologica/tree/main/examples). There is also a **template project** [that uses morphologica](https://github.com/ABRG-Models/morphologica_template) to help you incorporate the library into your own work.
+You'll find all of the **library code** in the [**mplot**](https://github.com/sebsjames/mathplot/tree/main/mplot) directory and you can find **example code and screenshots** [here](https://github.com/sebsjames/mathplot/tree/main/examples). There is also a **template project** [that uses mathplot](#) to help you incorporate the library into your own work.
 
-morphologica has a **documentation and reference** website at https://abrg-models.github.io/morphologica/.
+mathplot has a **documentation and reference** website at https://sebsjames.github.io/mathplot/.
 
 ## Quick Start
 
@@ -40,20 +40,20 @@ gedit ../examples/graph1.cpp
 The program graph1.cpp is:
 ```c++
 // Visualize a graph. Minimal example showing how a default graph appears
-#include <morph/Visual.h>
-#include <morph/GraphVisual.h>
-#include <morph/vvec.h>
+#include <mplot/Visual.h>
+#include <mplot/GraphVisual.h>
+#include <mplot/vvec.h>
 
 int main()
 {
-    // Set up a morph::Visual 'scene environment'.
-    morph::Visual v(1024, 768, "Made with morph::GraphVisual");
+    // Set up your mplot::Visual 'scene environment'.
+    mplot::Visual v(1024, 768, "Made with mplot::GraphVisual");
     // Create a new GraphVisual object with offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (morph::vec<float>({0,0,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     // Boilerplate bindmodel function call - do this for every model you add to a Visual
     v.bindmodel (gv);
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
-    morph::vvec<double> x;
+    sm::vvec<double> x;
     // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
     x.linspace (-0.5, 0.8, 14);
     // Set a graph up of y = x^3
@@ -88,9 +88,9 @@ plt.ylabel('y')
 # Render the graph on the screen until user quits with 'q'
 plt.show()
 ```
-See the [coding README](https://github.com/ABRG-Models/morphologica/blob/main/README.coding.md) for a description of some of the main classes that morphologica provides and the [reference website](https://abrg-models.github.io/morphologica/) for more comprehensive information.
+See the [coding README](https://github.com/ABRG-Models/morphologica/blob/main/README.coding.md) for a description of some of the main classes that morphologica provides and the [reference website](https://sebsjames.github.io/mathplot/) for more comprehensive information.
 
-## What is morphologica?
+## What is mathplot?
 
 This header-only C++ code provides **dynamic runtime visualization** for simulations of dynamical systems and agent-based models.
 
