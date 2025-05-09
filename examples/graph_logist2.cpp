@@ -3,7 +3,7 @@
 #include <sm/vvec>
 #include <mplot/Visual.h>
 #include <mplot/GraphVisual.h>
-#include <mplot/Config.h>
+#include <sm/config>
 
 int main()
 {
@@ -19,7 +19,7 @@ int main()
     // Params are read from a JSON file
     double x0=0, k=0, g1x0=0, g1x1=0;
     {
-        mplot::Config conf ("../examples/graph_logist2.json");
+        sm::config conf ("../examples/graph_logist2.json");
         k = conf.get<double> ("k", 10.0);
         x0 = conf.get<double> ("x0", 4.0);
         g1x0 = conf.get<double> ("g1x0", -10.0);
@@ -60,7 +60,7 @@ int main()
         v.waitevents (0.018);
         // Update from config file with every render so that changes in the file are immediately reflected in the graph.
         try {
-            mplot::Config conf ("../examples/graph_logist2.json");
+            sm::config conf ("../examples/graph_logist2.json");
             k = conf.get<double> ("k", 10.0);
             x0 = conf.get<double> ("x0", 4.0);
 

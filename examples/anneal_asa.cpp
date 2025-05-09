@@ -13,7 +13,7 @@
 #include <sm/hexgrid>
 
 #include <mplot/Anneal.h>
-#include <mplot/Config.h>
+#include <sm/config>
 #ifdef VISUALISE
 # include <mplot/Visual.h>
 # include <mplot/VisualDataModel.h>
@@ -74,7 +74,7 @@ int main (int argc, char** argv)
 #endif
     // Optionally, modify ASA parameters from a JSON config specified on the command line.
     if (argc > 1) {
-        mplot::Config conf(argv[1]);
+        sm::config conf(argv[1]);
         if (conf.ready) {
             anneal.temperature_ratio_scale = (F)conf.getDouble ("temperature_ratio_scale", 1e-2);
             anneal.temperature_anneal_scale = (F)conf.getDouble ("temperature_anneal_scale", 200.0);

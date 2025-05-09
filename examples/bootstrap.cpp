@@ -12,14 +12,14 @@
 
 #include <mplot/Visual.h>
 #include <mplot/GraphVisual.h>
-#include <mplot/Config.h>
+#include <sm/config>
 
 int main()
 {
     int rtn = -1;
 
     // Test bootstrap computation of standard error of the mean for a distribution.
-    mplot::Config conf ("../examples/bootstrap.json");
+    sm::config conf ("../examples/bootstrap.json");
 
     // First, generate numbers from a normal distribution. Args of rand_normal constructor are mean, sigma.
     double dist1_mean = conf.get<double>("dist1_mean", 5.0);

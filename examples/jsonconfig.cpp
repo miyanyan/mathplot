@@ -1,6 +1,6 @@
 /*
  * This example shows you how to read configuration information stored in a JSON file
- * using mplot::Config.
+ * using sm::config.
  *
  * Author: Seb James
  * Date: May 2021
@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-#include "mplot/Config.h"
+#include "sm/config"
 
 int main()
 {
@@ -33,7 +33,7 @@ int main()
     f.close();
 
     // Now read from the example
-    mplot::Config config(jsonfile);
+    sm::config config(jsonfile);
     if (config.ready) {
 
         // Single values are easy to read. The first arg matches the name in the example

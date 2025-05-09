@@ -10,7 +10,7 @@
 #include <sm/grid>
 #include <mplot/Visual.h>
 #include <mplot/GraphVisual.h>
-#include <mplot/Config.h>
+#include <sm/config>
 
 // A simple Izhikevich neuron model class
 struct izhi
@@ -89,7 +89,7 @@ int main()
 
     // Set izhi params from config
     std::string jsonfile ("../examples/izhikevich.json");
-    mplot::Config config(jsonfile);
+    sm::config config(jsonfile);
     if (config.ready) {
         // Parameters
         iz.a = config.getFloat ("a", iz.a);
