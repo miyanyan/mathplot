@@ -6,17 +6,14 @@
 install(
   FILES
   Anneal.h
-  base64.h
   colour.h
   ColourMap.h
   ColourMap_Lists.h
   colourmaps_cet.h
   colourmaps_crameri.h
   Config.h
-  crc32.h
   DirichDom.h
   DirichVtx.h
-  flags.h
   GridFeatures.h
   keys.h
   lenthe_colormap.hpp
@@ -81,7 +78,6 @@ install(
   GeodesicVisual.h
   GraphVisual.h
   GratingVisual.h
-  GridctVisual.h
   GridVisual.h
   HealpixVisual.h
   HexGridVisual.h
