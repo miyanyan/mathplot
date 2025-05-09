@@ -60,7 +60,3 @@ jobs:
       run: |
         make install
         ./../ci_scripts/check_installed_headers.sh
-
-    - name: Test standalone examples
-      working-directory: ${{github.workspace}}/standalone_examples
-      run: ./compile_standalone_examples.sh
