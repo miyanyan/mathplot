@@ -12,7 +12,7 @@
 #include <sm/hex>
 #include <sm/hexgrid>
 
-#include <mplot/Anneal.h>
+#include <sm/anneal>
 #include <sm/config>
 #ifdef VISUALISE
 # include <mplot/Visual.h>
@@ -57,8 +57,8 @@ int main (int argc, char** argv)
     sm::vvec<sm::vec<F,2>> p_rng = {{ {-0.3, 0.3}, {-0.3, 0.3} }};
 
     // Set up the anneal algorithm object
-    mplot::Anneal<F> anneal(p, p_rng);
-    // There are defaults hardcoded in Anneal.h, but these work for the cost function here:
+    sm::anneal<F> anneal(p, p_rng);
+    // There are defaults hardcoded in anneal, but these work for the cost function here:
     anneal.temperature_ratio_scale = F{1e-2};
     anneal.temperature_anneal_scale = F{200};
     anneal.cost_parameter_scale_ratio = F{3};
@@ -175,14 +175,14 @@ int main (int argc, char** argv)
     // The Optimization:
     //
     // Your job is to loop, calling anneal.step(), until anneal.state tells you to stop...
-    while (anneal.state != mplot::Anneal_State::ReadyToStop) {
+    while (anneal.state != sm::anneal_state::ready_to_stop) {
 
         // ...and on each loop, compute the objectives that anneal asks you to:
-        if (anneal.state == mplot::Anneal_State::NeedToCompute) {
+        if (anneal.state == sm::anneal_state::need_to_compute) {
             // Compute the candidate objective value
             anneal.f_x_cand = objective (anneal.x_cand);
 
-        } else if (anneal.state == mplot::Anneal_State::NeedToComputeSet) {
+        } else if (anneal.state == sm::anneal_state::need_to_compute_set) {
             // Compute objective values for reannealing
             anneal.f_x_plusdelta = objective (anneal.x_plusdelta);
             // anneal.f_x is already computed. BUT could jump to the x_best on reanneal.

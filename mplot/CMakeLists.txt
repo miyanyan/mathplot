@@ -5,7 +5,6 @@
 # Header installation (list from ls *.h* -1, then re-ordered into functionality groups)
 install(
   FILES
-  Anneal.h
   colour.h
   ColourMap.h
   ColourMap_Lists.h
