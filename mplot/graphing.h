@@ -37,7 +37,7 @@ namespace mplot::graphing {
         sm::range<int> diff_sigcols = sm::algo::significant_cols<F> (num_diff);
 
         // Whats the num_diff maxcol? is it 9.5 plus? In which case it would round up
-        if (num_diff * sm::math::pow (F{10}, -diff_sigcols.max) >= F{9.5}) { diff_sigcols.max += 1; }
+        if (num_diff * sm::cem::pow (F{10}, -diff_sigcols.max) >= F{9.5}) { diff_sigcols.max += 1; }
 
         // Which is the minimum column we should show?
         int min_col = std::min (num_sigcols.max, diff_sigcols.max);
@@ -46,7 +46,7 @@ namespace mplot::graphing {
         // add to precision. I think this is the graphing specific logic that I need.
         F rounded = sm::algo::round_to_col (num, min_col);
 
-        while (min_col > (diff_sigcols.max - 2) && std::abs (rounded - num) > sm::math::pow (F{10}, min_col - 1)) {
+        while (min_col > (diff_sigcols.max - 2) && std::abs (rounded - num) > sm::cem::pow (F{10}, min_col - 1)) {
             min_col -= 1;
             rounded = sm::algo::round_to_col (num, min_col);
         }

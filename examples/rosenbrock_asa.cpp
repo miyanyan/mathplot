@@ -8,8 +8,7 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/hexgrid>
-
-#include <mplot/Anneal.h>
+#include <sm/anneal>
 
 #include <mplot/Visual.h>
 #include <mplot/TriFrameVisual.h>
@@ -91,7 +90,7 @@ int main()
     auto currp = v.addVisualModel (currup);
 #endif
 
-    mplot::Anneal<FLT> anneal(p, p_rng);
+    sm::anneal<FLT> anneal(p, p_rng);
 
     anneal.temperature_ratio_scale = FLT{1e-3};
     anneal.temperature_anneal_scale = FLT{200};
@@ -105,14 +104,14 @@ int main()
     anneal.init();
 
     // Now do the business
-    while (anneal.state != mplot::Anneal_State::ReadyToStop) {
+    while (anneal.state != sm::anneal_state::ready_to_stop) {
 
         // ...and on each loop, compute the objectives that anneal asks you to:
-        if (anneal.state == mplot::Anneal_State::NeedToCompute) {
+        if (anneal.state == sm::anneal_state::need_to_compute) {
             // Compute the candidate objective value
             anneal.f_x_cand = banana (anneal.x_cand);
 
-        } else if (anneal.state == mplot::Anneal_State::NeedToComputeSet) {
+        } else if (anneal.state == sm::anneal_state::need_to_compute_set) {
             // Compute objective values for reannealing
             anneal.f_x_plusdelta = banana (anneal.x_plusdelta);
             //anneal.f_x = banana (anneal.x); // no need
@@ -139,7 +138,7 @@ int main()
         v.render();
 #endif
         anneal.step();
-        //if (anneal.steps > 10) { anneal.state = mplot::Anneal_State::ReadyToStop; }
+        //if (anneal.steps > 10) { anneal.state = sm::anneal_state::ready_to_stop; }
     }
 
 #ifdef VISUALISE
