@@ -46,10 +46,10 @@ The program graph1.cpp is:
 
 int main()
 {
-    // Set up a morph::Visual 'scene environment'.
+    // Set up your mplot::Visual 'scene environment'.
     mplot::Visual v(1024, 768, "Made with mplot::GraphVisual");
     // Create a new GraphVisual object with offset within the scene of 0,0,0
-    auto gv = std::make_unique<morph::GraphVisual<double>> (sm::vec<float>({0,0,0}));
+    auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     // Boilerplate bindmodel function call - do this for every model you add to a Visual
     v.bindmodel (gv);
     // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
