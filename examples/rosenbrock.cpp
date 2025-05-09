@@ -3,7 +3,7 @@
  */
 
 #include <sm/hexgrid>
-#include <sm/optimization/nm_simplex>
+#include <sm/nm_simplex>
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/random>
@@ -81,7 +81,7 @@ int main()
     hgv->finalize();
     v.addVisualModel (hgv);
 
-    sm::optimization::nm_simplex<FLT> simp(i_vertices);
+    sm::nm_simplex<FLT> simp(i_vertices);
 
     // The smaller you make the threshold, the nearer the algo will get
     simp.termination_threshold = std::numeric_limits<FLT>::epsilon();
@@ -105,31 +105,31 @@ int main()
 
         // Now do the business
         unsigned int lcount = 0;
-        while (simp.state != sm::optimization::nm_simplex_state::ReadyToStop && !v.readyToFinish()) {
+        while (simp.state != sm::nm_simplex_state::ReadyToStop && !v.readyToFinish()) {
 
             // Perform optimisation steps slowly
             std::chrono::steady_clock::duration sinceoptstep = std::chrono::steady_clock::now() - lastoptstep;
             if (std::chrono::duration_cast<std::chrono::milliseconds>(sinceoptstep).count() > 50) {
                 lcount++;
-                if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeThenOrder) {
+                if (simp.state == sm::nm_simplex_state::NeedToComputeThenOrder) {
                     // 1. apply objective to each vertex
                     for (unsigned int i = 0; i <= simp.n; ++i) {
                         simp.values[i] = banana (simp.vertices[i][0], simp.vertices[i][1]);
                     }
                     simp.order();
 
-                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToOrder) {
+                } else if (simp.state == sm::nm_simplex_state::NeedToOrder) {
                     simp.order();
 
-                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeReflection) {
+                } else if (simp.state == sm::nm_simplex_state::NeedToComputeReflection) {
                     val = banana (simp.xr[0], simp.xr[1]);
                     simp.apply_reflection (val);
 
-                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeExpansion) {
+                } else if (simp.state == sm::nm_simplex_state::NeedToComputeExpansion) {
                     val = banana (simp.xe[0], simp.xe[1]);
                     simp.apply_expansion (val);
 
-                } else if (simp.state == sm::optimization::nm_simplex_state::NeedToComputeContraction) {
+                } else if (simp.state == sm::nm_simplex_state::NeedToComputeContraction) {
                     val = banana (simp.xc[0], simp.xc[1]);
                     simp.apply_contraction (val);
                 }

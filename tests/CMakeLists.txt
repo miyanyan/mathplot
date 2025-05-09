@@ -61,21 +61,6 @@ if(${glfw3_FOUND})
 
 endif()
 
-# Test morph::Process class
-if(APPLE)
-  message("-- NB: Omitting testProcess.cpp on Mac for now, as it doesn't work.")
-elseif(WIN32)
-  message("-- NB: Omitting testProcess.cpp on Windows for now, as it tests the very Unixy Process class.")
-else(APPLE)
-  add_executable(testProcess testProcess.cpp)
-  add_test(testProcess testProcess)
-endif(APPLE)
-
-# Test morph::Config class
-add_executable(testConfig testConfig.cpp)
-add_test(testConfig testConfig)
-
-
 # Test the colour mapping
 add_executable(testColourMap testColourMap.cpp)
 add_test(testColourMap testColourMap)

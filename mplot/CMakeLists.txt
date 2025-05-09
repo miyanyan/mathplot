@@ -11,7 +11,6 @@ install(
   ColourMap_Lists.h
   colourmaps_cet.h
   colourmaps_crameri.h
-  Config.h
   DirichDom.h
   DirichVtx.h
   GridFeatures.h
@@ -20,7 +19,6 @@ install(
   loadpng.h
   lodepng.h
   Mnist.h
-  Process.h
   ReadCurves.h
   ShapeAnalysis.h
   tools.h
