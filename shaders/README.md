@@ -1,5 +1,5 @@
 These shader files are for development/testing. Shaders for
-morph::Visual are then compiled into the binary.
+mplot::Visual are then compiled into the binary.
 
 To use one of these file-based shaders (so you can hack around with
 it) just copy the files into the same directory that you're launching
