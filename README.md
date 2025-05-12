@@ -6,9 +6,9 @@
 
 Mathplot is a library for drawing 3D data visualization objects called `VisualModels`.
 
-It used to be called morphologica...
+This project is a development of [morphologica](https://github.com/ABRG-Models/morphologica), with a) a new name and b) simiplified and more focussed code. In particular, the maths library has been split out into [sebsjames/maths](https://github.com/sebsjames/maths). 
 
-It can also be integrated with other GUI frameworks including Qt (see [**examples/qt/**](https://github.com/ABRG-Models/morphologica/tree/main/examples/qt)) and [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/ABRG-Models/morphologica/tree/main/examples/wx)).
+mathplot can also be integrated with other GUI frameworks including Qt (see [**examples/qt/**](https://github.com/ABRG-Models/morphologica/tree/main/examples/qt)) and [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/ABRG-Models/morphologica/tree/main/examples/wx)).
 
 Mathplot is compatible with **Linux** (including **Raspberry Pi**), **Mac OS** and **Windows**.
 
