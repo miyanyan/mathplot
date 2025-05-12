@@ -115,29 +115,24 @@ It helps with:
 
 ## Code documentation
 
-See [the reference documentation website](https://abrg-models.github.io/morphologica/) for a guide to the main classes.
+See [the reference documentation website](https://sebsjames.github.io/mathplot/) for a guide to the main classes.
 
-morphologica code is enclosed in the **morph** namespace. If the reference site doesn't cover it, then the header files (They're all in [morph/](https://github.com/ABRG-Models/morphologica/tree/main/morph)) contain code documentation.
+mathplot code is enclosed in the **mplot** namespace. If the reference site doesn't cover it, then the header files (They're all in [mplot/](https://github.com/sebsjames/mathplot/tree/main/mplot)) contain code documentation.
 
 You can find example programs which are compiled when you do the standard
-cmake-driven build of morphologica in both the [tests/](https://github.com/ABRG-Models/morphologica/tree/main/tests) subdirectory
-and the [examples/](https://github.com/ABRG-Models/morphologica/tree/main/examples) subdirectory. The readme in examples/ has some nice
-screenshots.
+cmake-driven build of mathplot in both the [tests/](https://github.com/sebsjames/mathplot/tree/main/tests) subdirectory
+and the [examples/](https://github.com/sebsjames/mathplot/tree/main/examples) subdirectory.
 
-For full, compilable, standalone examples of the code, see the
-[standalone_examples/](https://github.com/ABRG-Models/morphologica/tree/main/standalone_examples) subdirectory. You can use these as templates for creating
-your own projects that use morphologica library code.
+There is also a template repository that demonstrates how you can create a project that *uses* mathplot: [ABRG-Models/morphologica_template](https://github.com/ABRG-Models/morphologica_template) *fixme: This one refers to morphologica*.
 
-There is also a template repository that demonstrates how you can create a project that *uses* morphologica: [ABRG-Models/morphologica_template](https://github.com/ABRG-Models/morphologica_template).
-
-For more info on how to set up CMake files to build a program using morphologica (and some hints as to what you'll need to do with an alternative directed build system), see [README.cmake.md](https://github.com/ABRG-Models/morphologica/blob/main/README.cmake.md).
+For more info on how to set up CMake files to build a program using mathplot (and some hints as to what you'll need to do with an alternative directed build system), see [README.cmake.md](https://github.com/sebsjames/mathplot/blob/main/README.cmake.md).
 
 ## Credits
 
-Authorship of morphologica code is given in each file. Copyright in
-the software is owned by the authors.
+Authorship of mathplot code is given in each file. Copyright in
+the software is owned by the authors. Refer to [morphologica](https://github.com/ABRG-Models/morphologica) for historical code authorship details (some of the code distributed here was written by contributors to morphologica)
 
-morphologica is made possible by a number of third party projects whose source code is included in this repository. These include [lodepng](https://github.com/lvandeve/lodepng), [rapidxml](http://rapidxml.sourceforge.net/), [incbin](https://github.com/graphitemaster/incbin), [UniformBicone](https://github.com/wlenthe/UniformBicone), [jcvoronoi](https://github.com/JCash/voronoi) and the [HEALPix implementation from Astrometry.net](https://astrometry.net/). Thanks to the authors of these projects!
+mathplot is made possible by a number of third party projects whose source code is included in this repository. These include [lodepng](https://github.com/lvandeve/lodepng), [rapidxml](http://rapidxml.sourceforge.net/), [incbin](https://github.com/graphitemaster/incbin), [UniformBicone](https://github.com/wlenthe/UniformBicone), [jcvoronoi](https://github.com/JCash/voronoi) and the [HEALPix implementation from Astrometry.net](https://astrometry.net/). Thanks to the authors of these projects!
 
-morphologica is distributed under the terms of the Apache License, version 2 (see
-[LICENSE.txt](https://github.com/ABRG-Models/morphologica/blob/main/LICENSE.txt)).
+mathplot is distributed under the terms of the Apache License, version 2 (see
+[LICENSE.txt](https://github.com/sebsjames/mathplot/blob/main/LICENSE.txt)).
