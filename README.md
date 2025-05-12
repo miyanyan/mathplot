@@ -2,6 +2,17 @@
 
 ![A banner image morphologica VisualModels](https://github.com/ABRG-Models/morphologica/blob/main/examples/screenshots/banner2.png?raw=true)
 
+![cmake ubuntu 24 gcc 11 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubu24-gcc12.yml/badge.svg)
+![cmake ubuntu 24 default (gcc 13) build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubuntu-2404.yml/badge.svg)
+![cmake ubuntu 24 gcc 14 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubu24-gcc14.yml/badge.svg)
+![cmake ubuntu 24 clang 16 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubu24-clang16.yml/badge.svg)
+![cmake ubuntu 24 clang 17 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubu24-clang16.yml/badge.svg)
+![cmake ubuntu 24 clang 18 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubu24-clang16.yml/badge.svg)
+![cmake ubuntu 22 default (gcc 11?) build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubuntu-2204.yml/badge.svg)
+![cmake mac 14 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-mac-14.yml/badge.svg)
+![cmake mac 15 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-mac-15.yml/badge.svg)
+![cmake windows 22 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-windows-2022.yml/badge.svg)
+
 **Header-only library code to visualize C++ numerical simulations using fast, modern OpenGL.**
 
 Mathplot is a library for drawing 3D data visualization objects called `VisualModels`.
