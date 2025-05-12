@@ -1,6 +1,6 @@
 # mathplot: plotting and data visualization for c++
 
-![A banner image morphologica VisualModels](https://github.com/ABRG-Models/morphologica/blob/main/examples/screenshots/banner2.png?raw=true)
+![A banner image mathplot VisualModels](https://github.com/sebsjames/mathplot/blob/main/examples/screenshots/banner2.png?raw=true)
 
 ![cmake ubuntu 24 gcc 11 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubu24-gcc12.yml/badge.svg)
 ![cmake ubuntu 24 default (gcc 13) build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-ubuntu-2404.yml/badge.svg)
@@ -108,10 +108,10 @@ This header-only C++ code provides **dynamic runtime visualization** for simulat
 It helps with:
 
 * **Visualizing your model while it runs**. A modern OpenGL visualization
-  scheme called **[morph::Visual](https://github.com/ABRG-Models/morphologica/blob/main/morph/Visual.h)**
+  scheme called **[mplot::Visual](https://github.com/sebsjames/mathplot/blob/main/mplot/Visual.h)**
   provides the ability to visualise 2D and 3D graphs
   of surfaces, lines, bars, scatter plots and quiver plots with minimal
-  processing overhead. Here's a [morph::Visual helloworld](https://github.com/ABRG-Models/morphologica/blob/main/examples/helloworld.cpp) and [a more complete example](https://github.com/ABRG-Models/morphologica/blob/main/examples/visual.cpp). It's almost as easy to [draw a graph in C++ with morphologica](https://github.com/ABRG-Models/morphologica/blob/main/examples/graph1.cpp) as it is to do so [in Python](https://github.com/ABRG-Models/morphologica/blob/main/examples/graph1.py).
+  processing overhead. Here's a [mplot::Visual helloworld](https://github.com/sebsjames/mathplot/blob/main/examples/helloworld.cpp) and [a more complete example](https://github.com/sebsjames/mathplot/blob/main/examples/visual.cpp). It's almost as easy to [draw a graph in C++ with mathplot](https://github.com/sebsjames/mathplot/blob/main/examples/graph1.cpp) as it is to do so [in Python](https://github.com/sebsjames/mathplot/blob/main/examples/graph1.py).
 
 ## Code documentation
 
