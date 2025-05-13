@@ -56,7 +56,7 @@ To build the mathplot example programs, it's the usual CMake process:
 
 ```sh
 cd ~/src
-git clone https://github.com/ABRG-Models/mathplot.git
+git clone https://github.com/sebsjames/mathplot.git
 cd mathplot
 mkdir build
 cd build

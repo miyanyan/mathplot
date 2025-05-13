@@ -17,9 +17,9 @@
 
 Mathplot is a library for drawing 3D data visualization objects called `VisualModels`.
 
-This project is a development of [morphologica](https://github.com/ABRG-Models/morphologica), with i) a new name and ii) simplified, focussed code. In particular, the maths library has been split out into [sebsjames/maths](https://github.com/sebsjames/maths). 
+This project is a development of [morphologica](https://github.com/ABRG-Models/morphologica), with i) a new name and ii) simplified, focussed code. In particular, the maths library has been split out into [sebsjames/maths](https://github.com/sebsjames/maths).
 
-mathplot can also be integrated with other GUI frameworks including Qt (see [**examples/qt/**](https://github.com/ABRG-Models/morphologica/tree/main/examples/qt)) and [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/ABRG-Models/morphologica/tree/main/examples/wx)).
+mathplot can also be integrated with other GUI frameworks including Qt (see [**examples/qt/**](https://github.com/sebsjames/mathplot/tree/main/examples/qt)) and [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/sebsjames/mathplot/tree/main/examples/wx)).
 
 Mathplot is compatible with **Linux** (including **Raspberry Pi**), **Mac OS** and **Windows**.
 
@@ -29,7 +29,7 @@ mathplot has a **documentation and reference** website at https://sebsjames.gith
 
 ## Quick Start
 
-This quick start shows dependency installation for Linux, because on this platform, it's a single call to apt (or your favourite package manager). If you're using a Mac, see [README.build.mac](https://github.com/ABRG-Models/morphologica/tree/main/README.build.mac.md) for help getting dependencies in place. It's [README.build.windows](https://github.com/ABRG-Models/morphologica/tree/main/README.build.windows.md) for Windows users. For notes on supported compilers, see [README.build.compiler](https://github.com/ABRG-Models/morphologica/tree/main/README.build.compiler.md)
+This quick start shows dependency installation for Linux, because on this platform, it's a single call to apt (or your favourite package manager). If you're using a Mac, see [README.build.mac](https://github.com/sebsjames/mathplot/tree/main/README.build.mac.md) for help getting dependencies in place. It's [README.build.windows](https://github.com/sebsjames/mathplot/tree/main/README.build.windows.md) for Windows users. For notes on supported compilers, see [README.build.compiler](https://github.com/sebsjames/mathplot/tree/main/README.build.compiler.md)
 
 ```bash
 # Install dependencies for building graph1.cpp and (almost) all the other examples (assuming Debian-like OS)
@@ -80,7 +80,7 @@ int main()
 ```
 The program generates a clean looking graph...
 
-![Screenshot of graph1.cpp output showing a cubic function](https://github.com/ABRG-Models/morphologica/blob/main/examples/screenshots/graph1.png?raw=true)
+![Screenshot of graph1.cpp output showing a cubic function](https://github.com/sebsjames/mathplot/blob/main/examples/screenshots/graph1.png?raw=true)
 
 ...and the code is only a few lines longer than an equivalent Python program, graph1.py:
 ```Python
@@ -99,7 +99,7 @@ plt.ylabel('y')
 # Render the graph on the screen until user quits with 'q'
 plt.show()
 ```
-See the [coding README](https://github.com/ABRG-Models/morphologica/blob/main/README.coding.md) for a description of some of the main classes that morphologica provides and the [reference website](https://sebsjames.github.io/mathplot/) for more comprehensive information.
+See the the [reference website](https://sebsjames.github.io/mathplot/) for reference information.
 
 ## What is mathplot?
 
