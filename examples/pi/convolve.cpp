@@ -17,7 +17,6 @@
 #include <mplot/Visual.h>
 #include <mplot/VisualDataModel.h>
 #include <mplot/HexGridVisual.h>
-#include <mplot/ReadCurves.h>
 
 int main()
 {

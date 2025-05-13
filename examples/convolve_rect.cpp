@@ -13,7 +13,6 @@
 #include <mplot/Visual.h>
 #include <mplot/VisualDataModel.h>
 #include <mplot/CartGridVisual.h>
-#include <mplot/ReadCurves.h>
 
 int main()
 {
