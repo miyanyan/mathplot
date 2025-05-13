@@ -10,8 +10,6 @@ install(
   ColourMap_Lists.h
   colourmaps_cet.h
   colourmaps_crameri.h
-  DirichDom.h
-  DirichVtx.h
   GridFeatures.h
   keys.h
   lenthe_colormap.hpp
@@ -19,7 +17,6 @@ install(
   lodepng.h
   Mnist.h
   ReadCurves.h
-  ShapeAnalysis.h
   tools.h
   unicode.h
   version.h
