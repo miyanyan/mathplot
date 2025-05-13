@@ -1,22 +1,25 @@
-# Building your code with morphologica
+# Building your code with mathplot
 
 ## Dependencies
 
-First, ensure you have the necessary dependencies installed. Classes in morphologica use nlohmann-json, rapidxml, Armadillo, OpenGL, Freetype, glfw3 and HDF5. You won't necessarily need all of these; it depends on which classes you will use (see [here](https://github.com/ABRG-Models/morphologica/blob/main/README.coding.md#linking-a-morphologica-program) for details). For most visualisation, you only need OpenGL, Freetype and glfw3 and the header files for nlohmann-json. Platform-specific instructions can be found in the files [README.build.linux.md](https://github.com/ABRG-Models/morphologica/blob/main/README.build.linux.md), [README.build.mac.md](https://github.com/ABRG-Models/morphologica/blob/main/README.build.mac.md) and [README.build.windows.md](https://github.com/ABRG-Models/morphologica/blob/main/README.build.windows.md).
+First, ensure you have the necessary dependencies installed. Classes in mathplot use nlohmann-json, rapidxml, Armadillo, OpenGL, Freetype, glfw3 and HDF5.
+You won't necessarily need all of these; it depends on which classes you will use (see [here](https://github.com/sebsjames/mathplot/blob/main/README.coding.md#linking-a-mathplot-program) for details).
+For most visualisation, you only need OpenGL, Freetype and glfw3 and the header files for nlohmann-json.
+Platform-specific instructions can be found in the files [README.build.linux.md](https://github.com/sebsjames/mathplot/blob/main/README.build.linux.md), [README.build.mac.md](https://github.com/sebsjames/mathplot/blob/main/README.build.mac.md) and [README.build.windows.md](https://github.com/sebsjames/mathplot/blob/main/README.build.windows.md).
 
 ## Three necessities to build
 
 Regardless of which build process you use (plain makefiles, autotools,
-CMake or whatever), to build a program against morphologica, you need
+CMake or whatever), to build a program against mathplot, you need
 to tell it: **1**) What compiler flags to add to the
 compiler command line, including a directive to say where the fonts
-that morphologica will compile into your binaries (if you're using
-morph::Visual) are located. **2**) Where the morphologica headers are
+that mathplot will compile into your binaries (if you're using
+mplot::Visual) are located. **2**) Where the mathplot headers (in *mplot/*) are
 to be found. **3**) which libraries to link to.
 
-While you can install morphologica headers (and fonts) into a chosen
+While you can install mathplot headers (and fonts) into a chosen
 location (/usr/local by default) we recommend that you just clone a
-copy of the morphologica repository into the base of your own source tree.
+copy of the mathplot repository into the base of your own source tree.
 
 ## Building with CMake
 
@@ -26,24 +29,10 @@ CMakeLists.txt:
 ### 1) Compiler flags
 
 This piece of boiler-plate cmake will get you started with a sensible
-set of compiler flags for morphologica:
+set of compiler flags for mathplot:
 
 ```cmake
-# From CMAKE_SYSTEM work out which of __OSX__, __GLN__, __NIX__ or __WIN__ are required
-message(STATUS "Operating system: " ${CMAKE_SYSTEM})
-if(CMAKE_SYSTEM MATCHES Linux.*)
-  set(OS_FLAG "-D__GLN__")
-elseif(CMAKE_SYSTEM MATCHES BSD.*)
-  set(OS_FLAG "-D__NIX__")
-elseif(APPLE)
-  set(OS_FLAG "-D__OSX__")
-elseif(WIN)
-  set(OS_FLAG "-D__WIN__")
-else()
-  message(ERROR "Operating system not supported: " ${CMAKE_SYSTEM})
-endif()
-
-# morphologica uses c++-20 language features
+# mathplot uses c++-20 language features
 set(CMAKE_CXX_STANDARD 20)
 
 # Add the host definition to CXXFLAGS along with other switches,
@@ -53,7 +42,7 @@ if (APPLE)
 else() # assume g++ (or a gcc/g++ mimic like Clang)
   set(WARNING_FLAGS "-Wall -Wfatal-errors -Wno-unused-result -Wno-unknown-pragmas")
 endif()
-set(CMAKE_CXX_FLAGS "${OS_FLAG} -g -O3 ${WARNING_FLAGS}")
+set(CMAKE_CXX_FLAGS "-g -O3 ${WARNING_FLAGS}")
 
 # Add OpenMP flags here, if necessary
 find_package(OpenMP)
@@ -68,67 +57,58 @@ if(APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGL_SILENCE_DEPRECATION")
 endif()
 
-# Tell the program where the morph fonts are, to compile them into the binary
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMORPH_FONTS_DIR=\"\\\"${PROJECT_SOURCE_DIR}/morphologica/fonts\\\"\"")
+# Tell the program where the mathplot fonts are, to compile them into the binary
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMPLOT_FONTS_DIR=\"\\\"${PROJECT_SOURCE_DIR}/fonts\\\"\"")
 ```
 
-The last flag (**MORPH_FONTS_DIR**) helps your compiler to copy in the
-fonts that morph::Visual needs.  If you are working with and
-'installed' morphologica change this to:
+The last flag (**MPLOT_FONTS_DIR**) helps your compiler to copy in the
+fonts that mplot::Visual needs.  If you are working with and
+'installed' mathplot change this to:
 
 ```cmake
-# Tell the program where the morph fonts are. Again, assuming you installed morphologica in /usr/local:
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMORPH_FONTS_DIR=\"\\\"/usr/local/share/fonts\\\"\"")
+# Tell the program where the mplot fonts are. Again, assuming you installed mathplot in /usr/local:
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMPLOT_FONTS_DIR=\"\\\"/usr/local/share/fonts\\\"\"")
 ```
 
 ### 2) Include directories for headers
 
 ```cmake
 # Find the libraries which will be needed
-find_package(HDF5 REQUIRED)        # Only required if you used morph::HdfData
-find_package(Armadillo REQUIRED)   # Only required if you use the Bezier curve classes or HexGrid/CartGrid
-find_package(OpenGL REQUIRED)      # This, glfw3, Freetype and nlohmann-json are required for morph::Visual
+find_package(HDF5 REQUIRED)        # Only required if you used sm::hdfdata
+find_package(Armadillo REQUIRED)   # Only required if you use the sm::bezcurve classes or sm::hexgrid/sm::cartgrid
+find_package(OpenGL REQUIRED)      # This, glfw3, Freetype and nlohmann-json are required for mplot::Visual
 find_package(glfw3 3.3 REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(nlohmann-json REQUIRED)
 
 # Define collections of includes for the dependencies
-set(MORPH_INC_CORE ${ARMADILLO_INCLUDE_DIR} ${ARMADILLO_INCLUDE_DIRS} ${HDF5_INCLUDE_DIR})
-set(MORPH_INC_GL ${OPENGL_INCLUDE_DIR} ${GLFW3_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
-include_directories(${MORPH_INC_CORE} ${MORPH_INC_GL})
+set(MPLOT_INC_CORE ${ARMADILLO_INCLUDE_DIR} ${ARMADILLO_INCLUDE_DIRS} ${HDF5_INCLUDE_DIR})
+set(MPLOT_INC_GL ${OPENGL_INCLUDE_DIR} ${GLFW3_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+include_directories(${MPLOT_INC_CORE} ${MPLOT_INC_GL})
 
-# Assuming that you installed morphologica in-tree (i.e. 'next to' schnakenberg.cpp).
-set(MORPH_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/morphologica" CACHE PATH "The path to morphologica")
-include_directories(BEFORE ${MORPH_INCLUDE_PATH})         # Allows morph/Header.h to be found
+# Assuming that you installed mathplot 'in-tree'
+set(MPLOT_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/mathplot" CACHE PATH "The path to mathplot")
+include_directories(BEFORE ${MPLOT_INCLUDE_PATH})         # Allows mplot/Header.h to be found
 ```
-If you are working with a system-installed morphologica (with /usr/local/include/morph or similar), then replace the last section with:
+If you are working with a system-installed mathplot (with /usr/local/include/mplot or similar), then replace the last section with:
 ```cmake
-# MORPH_INCLUDE_PATH is set to the location at which the header directory 'morph' is found. For 'Installed morpholoigca':
-set(MORPH_INCLUDE_PATH /usr/local CACHE PATH "The path to the morphologica headers (e.g. /usr/local/include or \$HOME/usr/include)")
-include_directories(BEFORE ${MORPH_INCLUDE_PATH}/include)       # Allows morph/Header.h to be found
+# MPLOT_INCLUDE_PATH is set to the location at which the header directory 'mplot' is found. For 'Installed mathplot':
+set(MPLOT_INCLUDE_PATH /usr/local CACHE PATH "The path to the mathplot headers (e.g. /usr/local/include or \$HOME/usr/include)")
+include_directories(BEFORE ${MPLOT_INCLUDE_PATH}/include)       # Allows mplot/Header.h to be found
 ```
 
 ### 3) Links to dynamically linked libraries
 
-Morphologica makes use of a number of libraries. Depending on which
-classes you use from morphologica, you'll need to link to some or all
+Mathplot makes use of a number of libraries. Depending on which
+classes you use from mathplot, you'll need to link to some or all
 of these:
 
 ```cmake
-set(MORPH_LIBS_CORE ${ARMADILLO_LIBRARY} ${ARMADILLO_LIBRARIES} ${HDF5_C_LIBRARIES})
-set(MORPH_LIBS_GL OpenGL::GL Freetype::Freetype glfw)
-target_link_libraries(myprogtarget ${MORPH_LIBS_CORE} ${MORPH_LIBS_GL})
+set(MPLOT_LIBS_CORE ${ARMADILLO_LIBRARY} ${ARMADILLO_LIBRARIES} ${HDF5_C_LIBRARIES})
+set(MPLOT_LIBS_GL OpenGL::GL Freetype::Freetype glfw)
+target_link_libraries(myprogtarget ${MPLOT_LIBS_CORE} ${MPLOT_LIBS_GL})
 ```
 
 ### Example build files
 
-Each of the examples in [**morphologica/standalone_examples**](https://github.com/ABRG-Models/morphologica/tree/main/standalone_examples) has a CMakeLists.txt, written as if each
-example was a standalone project in its own right.
-
-The best example CMakeLists.txt file is the one in [**standalone_examples/schnakenberg**](https://github.com/ABRG-Models/morphologica/tree/main/standalone_examples/schnakenberg),
-because it uses a broad range of morphologica's features.
-
-In **standalone_examples/schnakenberg**, the default cmake build file, [**CMakeLists.txt**](https://github.com/ABRG-Models/morphologica/blob/main/standalone_examples/schnakenberg/CMakeLists.txt) assumes you did a
-'morphologica install' into **/usr/local**, whereas
-[**CMakeLists_intree.txt**](https://github.com/ABRG-Models/morphologica/blob/main/standalone_examples/schnakenberg/CMakeLists_intree.txt) will (if renamed to CMakeLists.txt) build the code assuming that you
-placed a copy of the morphologica source  tree *inside* *standalone_examples/schnakenberg*.
+Need link to example repos here.

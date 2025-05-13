@@ -21,8 +21,8 @@ if(BUILD_DOC_SCREENSHOTS)
 endif()
 
 #
-# Any example that uses morph::HexGrid or morph::CartGrid requires
-# libarmadillo (because these classes use morph::BezCurve).
+# Any example that uses sm::hexgrid or sm::cartgrid requires
+# libarmadillo (because the classes use sm::BezCurve).
 #
 if(ARMADILLO_FOUND)
   # Basic morph::Visual class example

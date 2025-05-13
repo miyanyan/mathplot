@@ -1,12 +1,12 @@
 # Minimum compiler versions
 
-morphologica makes extensive use of C++-20. For this reason, there
+mathplog makes extensive use of C++-20. For this reason, there
 are minimum supported versions of common compilers to be able to
-compile the examples and any program against morphologica. The general rule is that the compiler should
+compile the examples and any program against mathplog. The general rule is that the compiler should
 provide full C++-20 support.
 
 Note that some of the headers will have more relaxed compiler
-requirements. If you are only using a small subset of morphologica
+requirements. If you are only using a small subset of the
 headers in your code, you may get away with a compiler that does not
 fulfil the requirements given here.
 
@@ -15,7 +15,7 @@ fulfil the requirements given here.
 
 | OS           | Compiler | Version | Result and reason                        |
 | :-------:    | :------: | :-----: | ---------------------------------------- |
-| Ubuntu 24.04 | g++      | 10.5    | Fail: on constexpr code in morph::Gridct |
+| Ubuntu 24.04 | g++      | 10.5    | Fail: g++ 10.5 support for C++20 missing |
 | Ubuntu 24.04 | g++      | 11.4    | Pass (make && make test)                 |
 | Ubuntu 24.04 | g++      | 12.3    | Pass (make && make test)                 |
 | Ubuntu 24.04 | g++      | 13.2    | Pass (make && make test)                 |

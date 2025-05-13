@@ -1,12 +1,12 @@
-# Build morphologica on Apple Mac
+# Build mathplot on Apple Mac
 
-You don't need to *build* morphologica to use the headers, but
+You don't need to *build* mathplot to use the headers, but
 you *will* need to install the dependencies.
 
-The cmake-driven morphologica build process compiles a set of test and
+The cmake-driven mathplot build process compiles a set of test and
 example programs which require all of the dependencies to be met.
 
-Programs that ```#include``` morphologica headers will also need to link to
+Programs that ```#include``` mathplot headers will also need to link to
 some or all of those dependencies. Finally, you'll need the cmake
 program and a C++ compiler which can compile c++-17 code.
 
@@ -35,7 +35,7 @@ ports (Option 1, below). This does lead to the installation of a great deal of
 additional software, some of which can conflict with Mac system
 software (that's libiconv, in particular). However, a clean install of
 Mac ports will successfully install the dependencies for
-morphologica. Another managed option to to use the brew system (Option 3, below).
+mathplot. Another managed option to to use the brew system (Option 3, below).
 
 I'd advise you to use Option 1: Mac Ports only if you *already* use Mac Ports, and Option 3 if you already use brew.
 Otherwise, prefer Option 2: Manual dependency builds.
@@ -76,7 +76,7 @@ export PATH="/Applications/CMake.app/Contents/bin:${PATH}"
 
 ### Option 3: brew
 
-The morphologica github actions for mac runners use brew to install
+The mathplot github actions for mac runners use brew to install
 dependencies. The command for the basic dependencies is
 
 ```sh
@@ -86,8 +86,8 @@ brew install libomp glfw armadillo hdf5 nlohmann-json
 #### Armadillo
 
 Armadillo is a library for matrix manipulation. The only place it's used in
-morphologica is within the Bezier curve code,
-morph::BezCurve. This code is used in the morph::HexGrid classes. If your programs won't use Bezier curve code, then you don't need Armadillo. It *is* required to compile many of morphologica's test programs though.
+mathplot is within the Bezier curve code,
+sm::bezcurve. This code is used in the sm::hexgrid classes. If your programs won't use Bezier curve code, then you don't need Armadillo. It *is* required to compile some of mathplot's test programs though.
 
 Download a package - I downloaded
 armadillo-9.900.3.tar.xz, though older versions back to 8.400.0 should
@@ -110,9 +110,9 @@ sudo make install
 #### HDF5
 
 Hierarchical data format is a standard format for saving binary
-data. morph::HdfData wraps the HDF5 API and hence HDF5 is a required
-dependency to build all of the morphologica tests and is required if
-you are going to use morph::HdfData. Build version 1.10.x.
+data. `sm::hdfdata` wraps the HDF5 API and hence HDF5 is a required
+dependency to build all of the mathplot tests and is required if
+you are going to use `sm::hdfdata`. Build version 1.10.x.
 
 ```sh
 mkdir -p ~/src
@@ -126,29 +126,9 @@ make
 sudo make install
 ```
 
-#### OpenCV
-
-Optional. Computer vision code. ONLY used in the class
-morph::HdfDataCV, which is OpenCV-aware (and can save cv::Points and
-cv::Mats). I compiled OpenCV master from git. That probably
-corresponded to version 4.4.0. OpenCV versions as old as 3.2.0 also
-work.
-
-```sh
-mkdir -p ~/src
-cd ~/src
-git clone git@github.com:opencv/opencv.git
-cd opencv
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-```
-
 #### Qt5
 
-If present, the Qt5 components Core, Gui and Widgets components are used to compile some example Qt morphologica programs. I've not tested this on Mac.
+If present, the Qt5 components Core, Gui and Widgets components are used to compile some example Qt mathplot programs. I've not tested this on Mac.
 
 
 ### Common manual dependency builds
@@ -159,9 +139,8 @@ whether there is a mac ports version of glfw).
 
 #### glfw3
 
-The modern OpenGL code in morphologica requires the GL-window managing
-library GLFW3. Compile it like
-this:
+The modern OpenGL code in mathplot requires the GL-window managing
+library GLFW3. Compile it like this:
 
 ```
 cd ~/src
@@ -188,17 +167,16 @@ sudo port install nlohmann-json
 Or install manually from https://github.com/nlohmann/json
 
 
-## Build morphologica on Mac
+## Build mathplot on Mac
 
-To build morphologica itself, it's the usual CMake process:
+To build mathplot itself, it's the usual CMake process:
 
 ```sh
 cd ~/src
-git clone https://github.com/ABRG-Models/morphologica.git
-cd morphologica
+git clone https://github.com/sebsjames/mathplot.git
+cd mathplot
 mkdir build
 cd build
-# If you have doxygen, you can build the docs with -DBUILD_DOC=1.
 # If you have OpenMP, you can add -DCOMPILE_WITH_OPENMP=1
 cmake ..
 make -j$(nproc)
