@@ -23,7 +23,7 @@
 
 #include <sm/bezcurvepath>
 #include <rapidxml/rapidxml.hpp>
-#include <mplot/tools.h>
+#include <mplot/tools.h> // for tools::searchReplace and tools::containsOnlyWhitespace
 
 namespace mplot
 {
