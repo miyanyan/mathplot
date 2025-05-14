@@ -51,9 +51,9 @@ gedit ../examples/graph1.cpp
 The program graph1.cpp is:
 ```c++
 // Visualize a graph. Minimal example showing how a default graph appears
+#include <sm/vvec> // vvec is part of Seb's maths library
 #include <mplot/Visual.h>
 #include <mplot/GraphVisual.h>
-#include <mplot/vvec.h>
 
 int main()
 {
@@ -63,7 +63,7 @@ int main()
     auto gv = std::make_unique<mplot::GraphVisual<double>> (sm::vec<float>({0,0,0}));
     // Boilerplate bindmodel function call - do this for every model you add to a Visual
     v.bindmodel (gv);
-    // Data for the x axis. A vvec is like std::vector, but with built-in maths methods
+    // Data for the x axis. sm::vvec is like std::vector, but with built-in maths methods
     sm::vvec<double> x;
     // This works like numpy's linspace() (the 3 args are "start", "end" and "num"):
     x.linspace (-0.5, 0.8, 14);
