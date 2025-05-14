@@ -1,5 +1,5 @@
 ---
-title: Who'd need morphologica?
+title: Who'd need mathplot?
 parent: Welcome
 layout: page
 permalink: /who
