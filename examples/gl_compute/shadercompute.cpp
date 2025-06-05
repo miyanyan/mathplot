@@ -1,10 +1,10 @@
 /*
- * How to make a compute shader with morph::gl::compute_manager
+ * How to make a compute shader with mplot::gl::compute_manager
  *
- * 1) Extend morph::compute_manager to add the data structures and compute_programs that you will
+ * 1) Extend mplot::compute_manager to add the data structures and compute_programs that you will
  * need for your computation
  * 2) Write the compute glsl files
- * 3) Create an object of your morph::gl::compute_manager class, call init() and set its compute inputs
+ * 3) Create an object of your mplot::gl::compute_manager class, call init() and set its compute inputs
  * 4) call the compute() method
  * 5) Read the results from your compute_manager class's output attributes
  *
@@ -20,13 +20,13 @@
 // including gl_compute.h. Update: I think on Desktop, it's ok to just #include <GL/gl.h>
 #include <GL/gl.h>
 
-#include <morph/gl/compute_manager.h>
-#include <morph/gl/texture.h>
+#include <mplot/gl/compute_manager.h>
+#include <mplot/gl/texture.h>
 
 namespace my {
 
     // Specify OpenGL version 4.5 (4.3 is min for compute)
-    struct compute_manager : public morph::gl::compute_manager<morph::gl::version_4_5>
+    struct compute_manager : public mplot::gl::compute_manager<mplot::gl::version_4_5>
     {
         // Call init in your constructor, ensuring *your* version of load_shaders() is called.
         compute_manager()
@@ -54,8 +54,8 @@ namespace my {
             // Texture setup
             this->compute_program.use();
             GLuint itu = 0; // Image texture unit
-            morph::vec<GLsizei, 2> dims = { tex_width, tex_height };
-            morph::gl::setup_texture (itu, this->texture, dims);
+            sm::vec<GLsizei, 2> dims = { tex_width, tex_height };
+            mplot::gl::setup_texture (itu, this->texture, dims);
         }
         ~compute_manager()
         {
@@ -73,18 +73,18 @@ namespace my {
         // Override load_shaders() to load whatever shaders you need.
         void load_shaders() final
         {
-            std::vector<morph::gl::ShaderInfo> shaders = {
+            std::vector<mplot::gl::ShaderInfo> shaders = {
                 // Here I set up to load examples/shadercompute.glsl and leave the default shader in
                 // place (which I don't intend to use).
-                {GL_COMPUTE_SHADER, "../examples/gl_compute/shadercompute.glsl", morph::gl::nonCompilingComputeShader, 0 }
+                {GL_COMPUTE_SHADER, "../examples/gl_compute/shadercompute.glsl", mplot::gl::nonCompilingComputeShader, 0 }
             };
             this->compute_program.load_shaders (shaders);
 
-            std::vector<morph::gl::ShaderInfo> vtxshaders = {
-                {GL_VERTEX_SHADER, "../examples/gl_compute/shadercompute.vert.glsl", morph::defaultVtxShader, 0 },
-                {GL_FRAGMENT_SHADER, "../examples/gl_compute/shadercompute.frag.glsl", morph::defaultFragShader, 0 }
+            std::vector<mplot::gl::ShaderInfo> vtxshaders = {
+                {GL_VERTEX_SHADER, "../examples/gl_compute/shadercompute.vert.glsl", mplot::defaultVtxShader, 0 },
+                {GL_FRAGMENT_SHADER, "../examples/gl_compute/shadercompute.frag.glsl", mplot::defaultFragShader, 0 }
             };
-            this->vtxprog = morph::gl::LoadShaders (vtxshaders);
+            this->vtxprog = mplot::gl::LoadShaders (vtxshaders);
         }
 
         // Override your one time/non-rendering compute function
@@ -137,7 +137,7 @@ namespace my {
         unsigned int vao = 0;
         unsigned int vbo = 0;
         // You will need at least one gl::compute_shaderprog
-        morph::gl::compute_shaderprog<morph::gl::version_4_5> compute_program;
+        mplot::gl::compute_shaderprog<mplot::gl::version_4_5> compute_program;
     };
 } // namespace my
 

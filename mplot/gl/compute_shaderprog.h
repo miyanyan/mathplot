@@ -4,12 +4,14 @@
 #include <string>
 #include <sstream>
 #include <cstddef>
+
+#include <sm/vec>
+#include <sm/vvec>
+
 #include <mplot/gl/version.h>
 #include <mplot/gl/util_nomx.h>
 #include <mplot/gl/shaders.h>
 #include <mplot/gl/loadshaders_nomx.h>
-#include <mplot/vec.h>
-#include <mplot/vvec.h>
 
 namespace mplot {
     namespace gl {
@@ -76,7 +78,7 @@ namespace mplot {
 
             // Set an array into the OpenGL context
             template <typename T, std::size_t N>
-            void set_uniform (const std::string& glsl_varname, const mplot::vec<T, N>& value)
+            void set_uniform (const std::string& glsl_varname, const sm::vec<T, N>& value)
             {
                 GLint uloc = glGetUniformLocation (this->prog_id, static_cast<const GLchar*>(glsl_varname.c_str()));
                 this->check_uniform_location (glsl_varname, uloc);

@@ -10,9 +10,9 @@
  */
 
 #include <cstddef>
-#include <mplot/vec.h>
-#include <mplot/vvec.h>
-#include <mplot/range.h>
+#include <sm/vec>
+#include <sm/vvec>
+#include <sm/range>
 #include <mplot/gl/util_nomx.h>
 
 namespace mplot {
@@ -28,7 +28,7 @@ namespace mplot {
             // The name of the buffer, generated with glGenBuffers()
             unsigned int name = 0;
             // The CPU-side data for the buffer
-            mplot::vec<T, N> data;
+            sm::vec<T, N> data;
 
             ssbo() {}
             ~ssbo() {}
@@ -40,7 +40,7 @@ namespace mplot {
                 this->copy_to_gpu();
             }
 
-            // Copy the data in the mplot::vec data over to the GPU
+            // Copy the data in the sm::vec data over to the GPU
             void copy_to_gpu()
             {
                 glBindBufferBase (GL_SHADER_STORAGE_BUFFER, index, this->name);
@@ -52,7 +52,7 @@ namespace mplot {
             }
 
             // Map the GPU memory to CPU space, then copy the values into this->data. NB: it's a
-            // performance hit to *copy* to the mapped data to our mplot::vec, because the data is
+            // performance hit to *copy* to the mapped data to our sm::vec, because the data is
             // *already in CPU accessible memory* after glMapBufferRange().
             // However, in case you need it, here it is.
             void copy_from_gpu()
@@ -72,9 +72,9 @@ namespace mplot {
             // ssbo_idx: The Index of the Shader Storage Buffer Object that we're reading from
             // ssbo_name: The name (really a number) of the Shader Storage Buffer Object that we're reading from
             // ssbo_num_elements: The number of elements of type T in the SSBO.
-            mplot::range<T> get_range()
+            sm::range<T> get_range()
             {
-                mplot::range<T> r;
+                sm::range<T> r;
                 r.search_init();
                 glBindBufferBase (GL_SHADER_STORAGE_BUFFER, index, this->name);
                 mplot::gl::Util::checkError (__FILE__, __LINE__);
@@ -88,9 +88,9 @@ namespace mplot {
             }
         };
 
-        // Set up a Shader Storage Buffer Object (SSBO) and buffer data into it (from a mplot::vvec)
+        // Set up a Shader Storage Buffer Object (SSBO) and buffer data into it (from a sm::vvec)
         template<typename T>
-        void setup_ssbo (const GLuint target_index, unsigned int& ssbo_id, const mplot::vvec<T>& data)
+        void setup_ssbo (const GLuint target_index, unsigned int& ssbo_id, const sm::vvec<T>& data)
         {
             glGenBuffers (1, &ssbo_id);
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, target_index, ssbo_id);
@@ -103,9 +103,9 @@ namespace mplot {
             mplot::gl::Util::checkError (__FILE__, __LINE__);
         }
 
-        // Set up a Shader Storage Buffer Object (SSBO) and buffer data into it (mplot::vec version)
+        // Set up a Shader Storage Buffer Object (SSBO) and buffer data into it (sm::vec version)
         template<typename T, unsigned int N>
-        void setup_ssbo (const GLuint target_index, unsigned int& ssbo_id, const mplot::vec<T, N>& data)
+        void setup_ssbo (const GLuint target_index, unsigned int& ssbo_id, const sm::vec<T, N>& data)
         {
             glGenBuffers (1, &ssbo_id);
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, target_index, ssbo_id);
@@ -116,7 +116,7 @@ namespace mplot {
 
         // Copy data to an existing SSBO
         template<typename T>
-        void copy_vvec_to_ssbo (const GLuint target_index, const unsigned int ssbo_id, const mplot::vvec<T>& data)
+        void copy_vvec_to_ssbo (const GLuint target_index, const unsigned int ssbo_id, const sm::vvec<T>& data)
         {
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, target_index, ssbo_id);
             glBufferData (GL_SHADER_STORAGE_BUFFER, data.size() * sizeof(T), data.data(), GL_STATIC_DRAW);
@@ -125,7 +125,7 @@ namespace mplot {
         }
 
         template<typename T, unsigned int N>
-        void copy_vvec_to_ssbo (const GLuint target_index, const unsigned int ssbo_id, const mplot::vvec<T>& data)
+        void copy_vvec_to_ssbo (const GLuint target_index, const unsigned int ssbo_id, const sm::vvec<T>& data)
         {
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, target_index, ssbo_id);
             glBufferData (GL_SHADER_STORAGE_BUFFER, N * sizeof(T), data.data(), GL_STATIC_DRAW);
@@ -139,7 +139,7 @@ namespace mplot {
         // ssbo_name: The name (really a number) of the Shader Storage Buffer Object that we're reading from
         // cpu_data: A vvec of the right size to receive the data in the SSBO into 'CPU accessible memory'
         template <typename T>
-        void ssbo_copy_to_vvec (const unsigned int ssbo_idx, const unsigned int ssbo_name, mplot::vvec<T>& cpu_side)
+        void ssbo_copy_to_vvec (const unsigned int ssbo_idx, const unsigned int ssbo_name, sm::vvec<T>& cpu_side)
         {
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, ssbo_idx, ssbo_name);
             // Really, it's crazy to *copy* because the data is *already in CPU
@@ -152,7 +152,7 @@ namespace mplot {
         }
 
         template <typename T, unsigned int N>
-        void ssbo_copy_to_vec (const unsigned int ssbo_idx, const unsigned int ssbo_name, mplot::vec<T, N>& cpu_side)
+        void ssbo_copy_to_vec (const unsigned int ssbo_idx, const unsigned int ssbo_name, sm::vec<T, N>& cpu_side)
         {
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, ssbo_idx, ssbo_name);
             // Really, it's crazy to *copy* because the data is *already in CPU
@@ -170,9 +170,9 @@ namespace mplot {
         // ssbo_name: The name (really a number) of the Shader Storage Buffer Object that we're reading from
         // ssbo_num_elements: The number of elements of type T in the SSBO.
         template <typename T>
-        mplot::range<T> ssbo_get_range (const unsigned int ssbo_idx, const unsigned int ssbo_name, const unsigned int ssbo_num_elements)
+        sm::range<T> ssbo_get_range (const unsigned int ssbo_idx, const unsigned int ssbo_name, const unsigned int ssbo_num_elements)
         {
-            mplot::range<T> r;
+            sm::range<T> r;
             r.search_init();
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, ssbo_idx, ssbo_name);
             T* cpuptr = static_cast<T*>(glMapBufferRange (GL_SHADER_STORAGE_BUFFER, 0, ssbo_num_elements*sizeof(T), GL_MAP_READ_BIT));

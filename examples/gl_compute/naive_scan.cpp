@@ -12,15 +12,15 @@
 // This implementation is in C++, and was used to help debug shader_naive_scan.cpp/naive_scan.glsl
 
 #include <iostream>
-#include <morph/vec.h>
+#include <sm/vec>
 
 int main()
 {
     // static constexpr int n = 32;
-    morph::vec<float, 32> g_idata;
-    morph::vec<float, 32> g_odata;
-    morph::vec<float, 32> g_dbg;
-    morph::vec<float, 32> g_dbg2;
+    sm::vec<float, 32> g_idata;
+    sm::vec<float, 32> g_odata;
+    sm::vec<float, 32> g_dbg;
+    sm::vec<float, 32> g_dbg2;
 
     for (int k = 0; k < 32; ++k) {
         g_idata[k] = float(k);

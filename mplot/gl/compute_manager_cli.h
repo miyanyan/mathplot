@@ -265,8 +265,8 @@ namespace mplot {
             GLint max_compute_uniform_blocks = -1;
             GLint max_compute_uniform_components = -1;
             GLint64 max_compute_work_group_invocations = -1;
-            mplot::vec<GLint64, 3> max_compute_work_group_count = {-1,-1,-1};
-            mplot::vec<GLint64, 3> max_compute_work_group_size = {-1,-1,-1};
+            sm::vec<GLint64, 3> max_compute_work_group_count = {-1,-1,-1};
+            sm::vec<GLint64, 3> max_compute_work_group_size = {-1,-1,-1};
             GLint max_compute_shared_memory_size = -1; // bytes
             GLint max_shader_storage_block_size = -1; // bytes?
             GLint max_shader_storage_buffer_bindings = -1;

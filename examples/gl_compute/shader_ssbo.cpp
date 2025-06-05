@@ -1,5 +1,5 @@
 /*
- * A second example of extending morph::gl_compute, this time to a shader which computes
+ * A second example of extending mplot::gl_compute, this time to a shader which computes
  * using SSBOs - shader storage buffer objects.
  */
 
@@ -9,16 +9,16 @@
 // GLES3/gl3[12].h (and maybe GLES3/gl3ext.h).
 #include <GLES3/gl31.h>
 
-#include <morph/gl/compute_manager.h>
-#include <morph/gl/texture.h>
-#include <morph/gl/ssbo.h>
-#include <morph/vvec.h>
-#include <morph/loadpng.h>
+#include <sm/vvec>
+#include <mplot/gl/compute_manager.h>
+#include <mplot/gl/texture.h>
+#include <mplot/gl/ssbo.h>
+#include <mplot/loadpng.h>
 
 namespace my {
 
     // Use OpenGL 3.1 ES here
-    struct compute_manager : public morph::gl::compute_manager<morph::gl::version_3_1_es>
+    struct compute_manager : public mplot::gl::compute_manager<mplot::gl::version_3_1_es>
     {
         static constexpr int dwidth = 256;
         static constexpr int dheight = 65;
@@ -71,18 +71,18 @@ namespace my {
             // Set up the texture for output
             this->compute_program.use();
             GLuint itu = 0; // Image texture unit. The first compute shader texture will be itu 0 in the compute shader program.
-            morph::vec<GLsizei, 2> dims = { tex_width, tex_height };
+            sm::vec<GLsizei, 2> dims = { tex_width, tex_height };
 
             // First texture
-            morph::gl::setup_texture (itu, this->texture1, dims);
+            mplot::gl::setup_texture (itu, this->texture1, dims);
             // A second texture
-            morph::gl::setup_texture (++itu, this->texture2, dims);
+            mplot::gl::setup_texture (++itu, this->texture2, dims);
 
             std::cout << "texture1: " << texture1 << ", texture2: " << texture2 << std::endl;
 
-            // SSBO setup. First load input into a morph::vvec
-            morph::vvec<float> inputvv (dsz, 0.0f);
-            morph::vec<unsigned int, 2> _dims = morph::loadpng ("../examples/gl_compute/bike.png", inputvv);
+            // SSBO setup. First load input into a sm::vvec
+            sm::vvec<float> inputvv (dsz, 0.0f);
+            sm::vec<unsigned int, 2> _dims = mplot::loadpng ("../examples/gl_compute/bike.png", inputvv);
             if ((_dims - dims) > 0) { throw std::runtime_error ("Loaded image is not expected size"); }
 
             // Set that data into the SSBO object (where it is stored in a vec<>)
@@ -110,19 +110,19 @@ namespace my {
         // Override load_shaders() to load whatever shaders you need.
         void load_shaders() final
         {
-            std::vector<morph::gl::ShaderInfo> shaders = {
+            std::vector<mplot::gl::ShaderInfo> shaders = {
                 // Here I set up to load examples/shadercompute.glsl and leave the default shader in
                 // place (which I don't intend to use).
-                {GL_COMPUTE_SHADER, "../examples/gl_compute/shader_ssbo.glsl", morph::gl::nonCompilingComputeShader, 0 }
+                {GL_COMPUTE_SHADER, "../examples/gl_compute/shader_ssbo.glsl", mplot::gl::nonCompilingComputeShader, 0 }
             };
             this->compute_program.load_shaders (shaders);
 
             // We'll reuse the vertex/fragment shaders from the shadercompute example
-            std::vector<morph::gl::ShaderInfo> vtxshaders = {
-                {GL_VERTEX_SHADER, "../examples/gl_compute/shader_ssbo.vert.glsl", morph::defaultVtxShader, 0 },
-                {GL_FRAGMENT_SHADER, "../examples/gl_compute/shader_ssbo.frag.glsl", morph::defaultFragShader, 0 }
+            std::vector<mplot::gl::ShaderInfo> vtxshaders = {
+                {GL_VERTEX_SHADER, "../examples/gl_compute/shader_ssbo.vert.glsl", mplot::defaultVtxShader, 0 },
+                {GL_FRAGMENT_SHADER, "../examples/gl_compute/shader_ssbo.frag.glsl", mplot::defaultFragShader, 0 }
             };
-            this->vtxprog = morph::gl::LoadShaders (vtxshaders);
+            this->vtxprog = mplot::gl::LoadShaders (vtxshaders);
         }
 
         double compstep = 0.0;
@@ -139,7 +139,7 @@ namespace my {
             this->compute_program.dispatch (dwidth, dheight, 1);
 
             // To retreive data from the SSBO:
-            // morph::range<float> ssbo_range = this->input_ssbo.get_range();
+            // sm::range<float> ssbo_range = this->input_ssbo.get_range();
             // or
             this->input_ssbo.copy_from_gpu();
             // and access input_ssbo.data.
@@ -173,7 +173,7 @@ namespace my {
             glfwSwapBuffers (this->window);
             glfwPollEvents();
 
-            morph::gl::Util::checkError (__FILE__, __LINE__);
+            mplot::gl::Util::checkError (__FILE__, __LINE__);
         }
 
     private:
@@ -191,9 +191,9 @@ namespace my {
         unsigned int vao2 = 0;
         unsigned int vbo2 = 0;
         // CPU side input data. This will be SSBO index 1.
-        morph::gl::ssbo<1, float, dsz> input_ssbo;
+        mplot::gl::ssbo<1, float, dsz> input_ssbo;
         // You will need at least one gl::compute_shaderprog
-        morph::gl::compute_shaderprog<morph::gl::version_3_1_es> compute_program;
+        mplot::gl::compute_shaderprog<mplot::gl::version_3_1_es> compute_program;
     };
 } // namespace my
 

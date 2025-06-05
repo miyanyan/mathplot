@@ -27,6 +27,7 @@
 
 #include <chrono>
 #include <mplot/VisualDefaultShaders.h>
+#include <mplot/VisualGlfw.h>
 
 namespace mplot {
     namespace gl {
@@ -52,7 +53,6 @@ namespace mplot {
             ~compute_manager()
             {
                 glfwDestroyWindow (this->window);
-                glfwTerminate();
             }
 
             //! Init GLFW and then the GLFW window. What if you want to set window width
@@ -100,21 +100,11 @@ namespace mplot {
 
             void init_glfw()
             {
-                if (!glfwInit()) { std::cerr << "GLFW initialization failed!\n"; }
-                // Set up error callback
-                glfwSetErrorCallback (mplot::gl::compute_manager<glver>::errorCallback);
+                mplot::VisualGlfw<glver>::i().init();
                 // See https://www.glfw.org/docs/latest/monitor_guide.html
                 GLFWmonitor* primary = glfwGetPrimaryMonitor();
                 glfwGetMonitorContentScale (primary, &this->monitor_xscale, &this->monitor_yscale);
                 glfwGetMonitorWorkarea (primary, &this->workarea_xpos, &this->workarea_ypos, &this->workarea_width, &this->workarea_height);
-                // 4.3+ or 3.1ES+ are required for shader compute
-                if constexpr (mplot::gl::version::gles (glver) == true) {
-                    glfwWindowHint (GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-                    glfwWindowHint (GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-                }
-                glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, mplot::gl::version::major (glver));
-                glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, mplot::gl::version::minor (glver));
-                mplot::gl::Util::checkError (__FILE__, __LINE__);
             }
 
             void init_window()
@@ -131,7 +121,6 @@ namespace mplot {
                 // Lastly make the context current
                 glfwMakeContextCurrent (this->window);
                 glfwSwapInterval (0);
-                mplot::gl::Util::checkError (__FILE__, __LINE__);
             }
 
             // Initialize OpenGL shaders, set any GL flags required
@@ -257,7 +246,7 @@ namespace mplot {
             int workarea_height=0;
 
             //! Window size, if the derived class creates a Window
-            mplot::vec<int, 2> win_sz = { 640, 480 };
+            sm::vec<int, 2> win_sz = { 640, 480 };
             //! The title for the object, if needed
             std::string title = "mplot::gl_compute";
 
@@ -271,8 +260,8 @@ namespace mplot {
             GLint max_compute_uniform_blocks = -1;
             GLint max_compute_uniform_components = -1;
             GLint64 max_compute_work_group_invocations = -1;
-            mplot::vec<GLint64, 3> max_compute_work_group_count = {-1,-1,-1};
-            mplot::vec<GLint64, 3> max_compute_work_group_size = {-1,-1,-1};
+            sm::vec<GLint64, 3> max_compute_work_group_count = {-1,-1,-1};
+            sm::vec<GLint64, 3> max_compute_work_group_size = {-1,-1,-1};
             GLint max_compute_shared_memory_size = -1; // bytes
             GLint max_shader_storage_block_size = -1; // bytes?
             GLint max_shader_storage_buffer_bindings = -1;

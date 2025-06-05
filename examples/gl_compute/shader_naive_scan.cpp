@@ -9,17 +9,16 @@
 // GLES3/gl3[12].h (and maybe GLES3/gl3ext.h).
 #include <GLES3/gl31.h>
 
-#include <morph/gl/compute_manager.h>
-#include <morph/gl/texture.h>
-#include <morph/gl/ssbo.h>
-#include <morph/gl/shaders.h>
-#include <morph/vvec.h>
-#include <morph/loadpng.h>
+#include <mplot/gl/compute_manager.h>
+#include <mplot/gl/texture.h>
+#include <mplot/gl/ssbo.h>
+#include <mplot/gl/shaders.h>
+#include <mplot/loadpng.h>
 
 namespace my {
 
     // Use OpenGL 3.1 ES here
-    struct compute_manager : public morph::gl::compute_manager<morph::gl::version_3_1_es>
+    struct compute_manager : public mplot::gl::compute_manager<mplot::gl::version_3_1_es>
     {
         static constexpr int dsz = 32;
 
@@ -48,8 +47,8 @@ namespace my {
         // Override load_shaders() to load whatever shaders you need.
         void load_shaders() final
         {
-            std::vector<morph::gl::ShaderInfo> shaders = {
-                {GL_COMPUTE_SHADER, "../examples/gl_compute/naive_scan.glsl", morph::gl::nonCompilingComputeShader, 0 }
+            std::vector<mplot::gl::ShaderInfo> shaders = {
+                {GL_COMPUTE_SHADER, "../examples/gl_compute/naive_scan.glsl", mplot::gl::nonCompilingComputeShader, 0 }
             };
             this->scan_program.load_shaders (shaders);
         }
@@ -77,12 +76,12 @@ namespace my {
     private:
         // Add any members required in your compute class
         // CPU side input data. This will be SSBO index 1.
-        morph::gl::ssbo<1, float, dsz> input_ssbo;
-        morph::gl::ssbo<2, float, dsz> output_ssbo;
-        morph::gl::ssbo<3, float, dsz> debug_ssbo;
-        morph::gl::ssbo<4, float, dsz> debug2_ssbo;
+        mplot::gl::ssbo<1, float, dsz> input_ssbo;
+        mplot::gl::ssbo<2, float, dsz> output_ssbo;
+        mplot::gl::ssbo<3, float, dsz> debug_ssbo;
+        mplot::gl::ssbo<4, float, dsz> debug2_ssbo;
         // You will need at least one gl::compute_shaderprog
-        morph::gl::compute_shaderprog<morph::gl::version_3_1_es> scan_program;
+        mplot::gl::compute_shaderprog<mplot::gl::version_3_1_es> scan_program;
     };
 } // namespace my
 

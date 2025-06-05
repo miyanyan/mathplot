@@ -9,10 +9,10 @@
  * Author: Seb James.
  */
 
-#include <mplot/vec.h>
-#include <mplot/gl/util_nomx.h>
 #include <iostream>
 #include <stdexcept>
+#include <sm/vec>
+#include <mplot/gl/util_nomx.h>
 
 namespace mplot {
     namespace gl {
@@ -20,7 +20,7 @@ namespace mplot {
         // Set up a single texture suitable for filling with values within the
         // compute shader. Note: fixed format of GL_RGBA and GL_FLOAT; could set these
         // with template params.
-        void setup_texture (const GLuint image_texture_unit, unsigned int& texture_id, mplot::vec<GLsizei, 2> dims)
+        void setup_texture (const GLuint image_texture_unit, unsigned int& texture_id, sm::vec<GLsizei, 2> dims)
         {
             glGenTextures (1, &texture_id); // generate a texture name and place it in texture_id
             // Bind a texture (GL_TEXTURE_2D) to the texture name
@@ -41,7 +41,7 @@ namespace mplot {
         // Set up a shader-read-only texture with the provided rgb image data
         template <bool gles = false>
         void setup_texture (const GLuint image_texture_unit, unsigned int& texture_id,
-                            mplot::vec<GLsizei, 2> dims, float* rgb_data)
+                            sm::vec<GLsizei, 2> dims, float* rgb_data)
         {
             if constexpr (gles == false) {
                 // This may not be perfect, but seemed to work with a non-GLES context
@@ -58,7 +58,7 @@ namespace mplot {
                 glBindImageTexture (image_texture_unit, texture_id, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
                 mplot::gl::Util::checkError (__FILE__, __LINE__);
             } else {
-                throw std::runtime_error ("Fix setup_texture (const GLuint, unsigned int&, mplot::vec<GLsizei,2>, float* rgb_data) to work on OpenGL ES");
+                throw std::runtime_error ("Fix setup_texture (const GLuint, unsigned int&, sm::vec<GLsizei,2>, float* rgb_data) to work on OpenGL ES");
             }
         }
 
@@ -68,7 +68,7 @@ namespace mplot {
         // Set up a shader-read-only texture with the provided rgb image data.
         // Just can't figure out how to make this work in GL 3.1 ES!
         void setup_texture (const GLuint image_texture_unit, unsigned int& texture_id,
-                            mplot::vec<GLsizei, 2> dims, float* rgb_data)
+                            sm::vec<GLsizei, 2> dims, float* rgb_data)
         {
             std::cout << "setup_texture for READ_ONLY access of an image in shader\n";
 
@@ -120,7 +120,7 @@ namespace mplot {
         // attempt to create one mutable texture, and an immutable one and copy the texture from
         // the mutable to the immutable. Doesn't work.
         void setup_texture_alt (const GLuint image_texture_unit, unsigned int& texture_id,
-                                mplot::vec<GLsizei, 2> dims, float* rgb_data)
+                                sm::vec<GLsizei, 2> dims, float* rgb_data)
         {
             std::cout << "setup_texture for READ_ONLY access of an image in shader\n";
 

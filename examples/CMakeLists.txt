@@ -1,3 +1,10 @@
+# Shader compute examples. Not supported on Apple, which is limited to
+# OpenGL 4.1 or Windows because I want to keep the GL header inclusion
+# simple on these examples.
+if(NOT APPLE AND NOT WIN32)
+  add_subdirectory(gl_compute)
+endif()
+
 # Examples showing how to use morphologica with Qt. Compiled only if
 # find_package found Qt5
 if(Qt5_FOUND)
