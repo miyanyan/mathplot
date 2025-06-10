@@ -25,12 +25,10 @@ namespace mplot {
                         sm::vvec<sm::vec<float>> _norm,
                         sm::vvec<sm::vec<float>> _colr)
         {
+            this->viewmatrix = _model_transform;
             this->mv_offset = _model_transform.translation();
-            this->viewmatrix.translate (this->mv_offset);
-            for (auto i : _ind) {
-                this->indices.push_back (i);
-                //std::cout << "Pushed i=" << i << " onto indices\n";
-            }
+            this->mv_rotation = _model_transform.rotation();
+            for (auto i : _ind) { this->indices.push_back (i); }
             for (auto p : _posn) {
                 this->vertexPositions.push_back (p[0]);
                 this->vertexPositions.push_back (p[1]);
