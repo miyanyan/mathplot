@@ -246,6 +246,7 @@ namespace mplot {
             this->viewmatrix.translate (v0);
         }
 
+        //! Set a rotation (only) into the view, but keep texts fixed
         void setViewRotationFixTexts (const sm::quaternion<float>& r)
         {
             this->viewmatrix.setToIdentity();
@@ -274,6 +275,13 @@ namespace mplot {
             this->mv_rotation.premultiply (r);
             this->viewmatrix.prerotate (r);
             this->addViewRotationTexts (r);
+        }
+
+        //! Apply a further rotation to the model view matrix, but keep texts fixed
+        void addViewRotationFixTexts (const sm::quaternion<float>& r)
+        {
+            this->mv_rotation.premultiply (r);
+            this->viewmatrix.prerotate (r);
         }
 
         // The alpha attribute accessors

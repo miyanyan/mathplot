@@ -221,6 +221,9 @@ target_link_libraries(quiver OpenGL::GL glfw Freetype::Freetype)
 add_executable(vectorvis vectorvis.cpp)
 target_link_libraries(vectorvis OpenGL::GL glfw Freetype::Freetype)
 
+add_executable(rotating_models rotating_models.cpp)
+target_link_libraries(rotating_models OpenGL::GL glfw Freetype::Freetype)
+
 add_executable(scatter scatter.cpp)
 target_link_libraries(scatter OpenGL::GL glfw Freetype::Freetype)
 
