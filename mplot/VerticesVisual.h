@@ -1,8 +1,5 @@
 #pragma once
 
-// Create a visual model directly from indices, vertices and normals, which might have been
-// harvested from a file (glTF, for example)
-
 #include <string>
 #include <iostream>
 #include <vector>
@@ -13,12 +10,17 @@
 
 #include <mplot/VisualModel.h>
 
-namespace mplot {
-
+namespace mplot
+{
+    /*!
+     * Create a visual model directly from indices, vertices and normals, which might have been
+     * harvested from a file (glTF, for example). This model is constructed with the data required
+     * to specify it. Unlike most VisualModel derived classes, it doesn't need to implement
+     * initializeVertices as the vertices are copied in by the constructor.
+     */
     template<int glver = mplot::gl::version_4_1>
-    class VerticesVisual : public VisualModel<glver>
+    struct VerticesVisual : public VisualModel<glver>
     {
-    public:
         VerticesVisual (sm::mat44<float>& _model_transform,
                         sm::vvec<uint32_t> _ind,
                         sm::vvec<sm::vec<float>> _posn,
@@ -26,28 +28,16 @@ namespace mplot {
                         sm::vvec<sm::vec<float>> _colr)
         {
             this->viewmatrix = _model_transform;
+            // offset (and sometimes rotation) are usually passed in by client code and then used to
+            // populate this->viewmatrix, but here, just make sure they match the viewmatrix:
             this->mv_offset = _model_transform.translation();
             this->mv_rotation = _model_transform.rotation();
+            // Copy in the indices and vertices
             for (auto i : _ind) { this->indices.push_back (i); }
-            for (auto p : _posn) {
-                this->vertexPositions.push_back (p[0]);
-                this->vertexPositions.push_back (p[1]);
-                this->vertexPositions.push_back (p[2]);
-            }
-            for (auto n : _norm) {
-                this->vertexNormals.push_back (n[0]);
-                this->vertexNormals.push_back (n[1]);
-                this->vertexNormals.push_back (n[2]);
-            }
-            for (auto c : _colr) {
-                this->vertexColors.push_back (c[0]);
-                this->vertexColors.push_back (c[1]);
-                this->vertexColors.push_back (c[2]);
-            }
+            for (auto p : _posn) { this->vertex_push (p, this->vertexPositions); }
+            for (auto n : _norm) { this->vertex_push (n, this->vertexNormals); }
+            for (auto c : _colr) { this->vertex_push (c, this->vertexColors); }
         }
-
-        // No op, as data is given in constructor
-        void initializeVertices() { std::cout << "VerticesVisual::initializeVertices called" << std::endl; }
     };
 
 } // namespace mplot
