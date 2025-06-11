@@ -38,7 +38,7 @@ sudo apt install build-essential cmake git wget \
                  freeglut3-dev libglu1-mesa-dev libxmu-dev libxi-dev \
                  libglfw3-dev libfreetype-dev libarmadillo-dev libhdf5-dev
 
-git clone --recurse-submodules git@github.com:sebjames/mathplot   # Get your copy of the morphologica code
+git clone --recurse-submodules git@github.com:sebsjames/mathplot   # Get your copy of the morphologica code
 cd mathplot
 mkdir build         # Create a build directory
 cd build
