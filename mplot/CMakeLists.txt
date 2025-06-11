@@ -95,6 +95,7 @@ install(
   TriFrameVisual.h
   TxtVisual.h
   VectorVisual.h
+  VerticesVisual.h
   VoronoiVisual.h
 
   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/mplot
