@@ -466,3 +466,6 @@ target_link_libraries(txt OpenGL::GL glfw Freetype::Freetype)
 target_compile_definitions(txt PUBLIC GLAD_OPTION_MX=1)
 
 add_executable(maketicks maketicks.cpp)
+
+add_executable(coordarrows coordarrows.cpp)
+target_link_libraries(coordarrows OpenGL::GL glfw Freetype::Freetype)
