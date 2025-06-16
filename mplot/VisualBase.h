@@ -336,6 +336,17 @@ namespace mplot {
             this->coordArrows->setViewRotation (this->rotation);
         }
 
+        // Update the coordinate axes labels
+        void updateCoordLabels (const std::string& x_lbl, const std::string& y_lbl, const std::string& z_lbl)
+        {
+            this->coordArrows->clear();
+            this->coordArrows->x_label = x_lbl;
+            this->coordArrows->y_label = y_lbl;
+            this->coordArrows->z_label = z_lbl;
+            this->coordArrows->initAxisLabels();
+            this->coordArrows->reinit();
+        }
+
         // state defaults. All state is false by default
         constexpr sm::flags<visual_state> state_defaults()
         {

@@ -17,26 +17,10 @@
 #include <mplot/unicode.h>
 namespace uc =  mplot::unicode;
 
-// Derive Visual to modify the coordinate arrows object in the constructor.
-class MyVisual : public mplot::Visual<>
-{
-public:
-    MyVisual (int width, int height, const std::string& title) : mplot::Visual<> (width, height, title)
-    {
-        this->backgroundWhite();
-        this->coordArrows->clear();
-        this->coordArrows->x_label = uc::toUtf8 (uc::theta);
-        this->coordArrows->y_label = std::string("d") + uc::toUtf8 (uc::beta);
-        this->coordArrows->z_label = "F";
-        this->coordArrows->initAxisLabels();
-        this->coordArrows->reinit();
-    }
-};
-
 int main()
 {
     // Contructor args are width, height, title
-    MyVisual v(1600, 1000, "mplot::HexGridVisual");
+    mplot::Visual v(1600, 1000, "mplot::HexGridVisual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // Make this larger to "scroll in and out of the image" faster
@@ -49,6 +33,8 @@ int main()
     v.lightingEffects();
     // Add some text labels to the scene
     v.addLabel ("This is a\nmplot::HexGridVisual\nobject", {0.26f, -0.16f, 0.0f});
+    // This function allows you to update the coordinate axes labels (updateCoordLabels ("x", "y", "z"))
+    v.updateCoordLabels (uc::toUtf8 (uc::theta), std::string("d") + uc::toUtf8 (uc::beta), "F");
 
     // Create a hexgrid to show in the scene. Hexes outside the circular boundary will
     // all be discarded.
