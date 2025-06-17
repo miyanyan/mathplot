@@ -5,12 +5,13 @@
 #include <sm/vec>
 #include <sm/vvec>
 #include <sm/grid>
-#include <mplot/VisualCompoundRay.h>
+#include <mplot/compoundray/Visual.h>
 #include <mplot/CurvyTellyVisual.h>
 
 int main()
 {
-    mplot::VisualCompoundRay<> v(1600, 1000, "CurvyTellyVisual as a stripey pipe");
+    // compoundray::Visual is a version of Visual that can output compound-ray compatible glTF
+    mplot::compoundray::Visual<> v(1600, 1000, "CurvyTellyVisual as a stripey pipe");
 
     // Make a Grid to display the stripes.
     // In x, make it as many wide as there will be facets on the tube.
