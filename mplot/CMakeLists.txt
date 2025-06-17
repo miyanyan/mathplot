@@ -47,7 +47,6 @@ install(
   VisualNoMX.h
   VisualMX.h
   Visual.h
-  VisualCompoundRay.h
 
   VisualModelBase.h
   VisualModelImplNoMX.h
