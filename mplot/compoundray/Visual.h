@@ -11,12 +11,12 @@
 #include <string>
 #include <mplot/Visual.h>
 
-namespace mplot {
+namespace mplot::compoundray {
 
     template <int glver = mplot::gl::version_4_1>
-    struct VisualCompoundRay : public mplot::Visual<glver>
+    struct Visual : public mplot::Visual<glver>
     {
-        VisualCompoundRay (int width, int height, const std::string& title) : mplot::Visual<glver> (width, height, title) {}
+        Visual (int width, int height, const std::string& title) : mplot::Visual<glver> (width, height, title) {}
     public:
         //! If set true, then output additional glTF to make files compatible with compound-ray
         bool enable_compound_ray_gltf = true;

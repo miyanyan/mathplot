@@ -119,6 +119,9 @@ add_subdirectory(qt)
 # wxWindows
 add_subdirectory(wx)
 
+# Compound ray glue code
+add_subdirectory(compoundray)
+
 # Install the EXPORT so that mathplot has its own .cmake file and find_package(mathplot) should work
 install(FILES mathplot-config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/mathplot)
 #install(EXPORT mathplot DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/mathplot)
