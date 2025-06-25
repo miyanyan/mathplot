@@ -74,7 +74,9 @@ namespace mplot {
         //! Set true to output some user information to stdout (e.g. user requested quit)
         userInfoStdout,
         //! If true, output mplot version to stdout
-        versionStdout
+        versionStdout,
+        //! If true (the default), then call swapBuffers() at the end of render()
+        renderSwapsBuffers
     };
 
     //! Whether to render with perspective or orthographic (or even a cylindrical projection)
@@ -357,10 +359,12 @@ namespace mplot {
         // State flags
         sm::flags<visual_state> state = state_defaults();
 
-        // Options defaults. All options are false by default
+        // Options defaults.
         constexpr sm::flags<visual_options> options_defaults()
         {
             sm::flags<visual_options> _options;
+            // Only with ImGui do we manually swap buffers, so this is true by default:
+            _options.set (visual_options::renderSwapsBuffers);
             return _options;
         }
 
@@ -393,6 +397,9 @@ namespace mplot {
 
         //! Set true to output some user information to stdout (e.g. user requested quit)
         void userInfoStdout (const bool val) { this->options.set (visual_options::userInfoStdout, val); }
+
+        //! You can call this with val==false to manage exactly when you call the swapBuffer() method (for ImGui programs)
+        void renderSwapsBuffers (const bool val) {  this->options.set (visual_options::renderSwapsBuffers, val); }
 
         //! How big should the steps in scene translation be when scrolling?
         float scenetrans_stepsize = 0.1f;
