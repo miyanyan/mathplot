@@ -153,6 +153,9 @@ namespace mplot {
             return this->window == nullptr ? false : (glfwGetCurrentContext() == this->window);
         }
 
+        //! Obtain the window pointer
+        win_t* getWindow() { return this->window; }
+
         /*!
          * Set up the passed-in VisualModel (or indeed, VisualTextModel) with functions that need access to Visual attributes.
          */
