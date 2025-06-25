@@ -283,7 +283,9 @@ namespace mplot {
                 ++ti;
             }
 
-            this->swapBuffers();
+            if (this->options.test (visual_options::renderSwapsBuffers) == true) {
+                this->swapBuffers();
+            }
         }
 
     public:
