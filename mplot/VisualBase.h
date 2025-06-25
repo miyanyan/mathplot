@@ -635,7 +635,7 @@ namespace mplot {
             // Set perspective projection
             this->projection.perspective (this->fov, aspect, this->zNear, this->zFar);
             // Compute the inverse projection matrix
-            this->invproj = this->projection.invert();
+            this->invproj = this->projection.inverse();
         }
 
         /*!
@@ -651,7 +651,7 @@ namespace mplot {
         {
             this->projection.setToIdentity();
             this->projection.orthographic (this->ortho_lb, this->ortho_rt, this->zNear, this->zFar);
-            this->invproj = this->projection.invert();
+            this->invproj = this->projection.inverse();
         }
 
         //! A vector of pointers to all the mplot::VisualModels (HexGridVisual,
@@ -1104,7 +1104,7 @@ namespace mplot {
                 // Get the scene's rotation at the start of the mouse movement:
                 this->scene.setToIdentity();
                 this->scene.rotate (this->savedRotation);
-                this->invscene = this->scene.invert();
+                this->invscene = this->scene.inverse();
             }
 
             if (button == mplot::mousebutton::left) { // Primary button means rotate
