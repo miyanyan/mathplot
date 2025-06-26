@@ -13,11 +13,9 @@
 ![cmake mac 15 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-mac-15.yml/badge.svg)
 ![cmake windows 22 build test](https://github.com/sebsjames/mathplot/actions/workflows/cmake-windows-2022.yml/badge.svg)
 
-**Header-only library code to visualize C++ numerical simulations using fast, modern OpenGL.**
+**Header-only library code to visualize C++ numerical simulations using modern OpenGL.**
 
 Mathplot is a library for drawing 3D data visualization objects called `VisualModels`.
-
-This project is a development of [morphologica](https://github.com/ABRG-Models/morphologica), with i) a new name and ii) simplified, focussed code. In particular, the maths library has been split out into [sebsjames/maths](https://github.com/sebsjames/maths).
 
 mathplot can also be integrated with other GUI frameworks including [Qt](https://doc.qt.io/) (see [**examples/qt/**](https://github.com/sebsjames/mathplot/tree/main/examples/qt)), [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/sebsjames/mathplot/tree/main/examples/wx)) and [Dear ImGui](https://github.com/ocornut/imgui) (see this [ImGui example](https://github.com/sebsjames/mathplot_imgui)). Dear ImGui is the easiest way to add GUI control to your visualizations.
 
@@ -99,19 +97,24 @@ plt.ylabel('y')
 # Render the graph on the screen until user quits with 'q'
 plt.show()
 ```
-See the the [reference website](https://sebsjames.github.io/mathplot/) for reference information.
-
 ## What is mathplot?
 
-This header-only C++ code provides **dynamic runtime visualization** for simulations of dynamical systems and agent-based models.
+This header-only C++ code provides **dynamic runtime visualization**
+for your programs. It was developed to visualize simulations of dynamical
+systems and agent-based models in real-time.
 
-It helps with:
-
-* **Visualizing your model while it runs**. A modern OpenGL visualization
-  scheme called **[mplot::Visual](https://github.com/sebsjames/mathplot/blob/main/mplot/Visual.h)**
-  provides the ability to visualise 2D and 3D graphs
-  of surfaces, lines, bars, scatter plots and quiver plots with minimal
-  processing overhead. Here's a [mplot::Visual helloworld](https://github.com/sebsjames/mathplot/blob/main/examples/helloworld.cpp) and [a more complete example](https://github.com/sebsjames/mathplot/blob/main/examples/visual.cpp). It's almost as easy to [draw a graph in C++ with mathplot](https://github.com/sebsjames/mathplot/blob/main/examples/graph1.cpp) as it is to do so [in Python](https://github.com/sebsjames/mathplot/blob/main/examples/graph1.py).
+A modern OpenGL visualization scheme called
+  **[mplot::Visual](https://github.com/sebsjames/mathplot/blob/main/mplot/Visual.h)**
+  provides the ability to visualise 2D and 3D graphs of surfaces,
+  lines, bars, scatter plots and quiver plots with minimal processing
+  overhead. Here's a [mplot::Visual
+  helloworld](https://github.com/sebsjames/mathplot/blob/main/examples/helloworld.cpp)
+  and [a more complete
+  example](https://github.com/sebsjames/mathplot/blob/main/examples/visual.cpp). It's
+  almost as easy to [draw a graph in C++ with
+  mathplot](https://github.com/sebsjames/mathplot/blob/main/examples/graph1.cpp)
+  as it is to do so [in
+  Python](https://github.com/sebsjames/mathplot/blob/main/examples/graph1.py).
 
 ## Code documentation
 
@@ -130,7 +133,7 @@ For more info on how to set up CMake files to build a program using mathplot (an
 ## Credits
 
 Authorship of mathplot code is given in each file. Copyright in
-the software is owned by the authors. Refer to [morphologica](https://github.com/ABRG-Models/morphologica) for historical code authorship details (some of the code distributed here was written by contributors to morphologica)
+the software is owned by the authors. Refer to [morphologica](https://github.com/ABRG-Models/morphologica) for historical code authorship details (some of the code distributed here was written by contributors to morphologica). The original idea to use OpenGL to graph hexagonal grids came from @stuartwilson. Seb James reimplemented Stuart's hexgrid plotting code in modern OpenGL and developed morphologica into a general purpose visualization library. In 2025, the name was changed to *mathplot* to indicate to new developers what functionality the library provides.
 
 mathplot is made possible by a number of third party projects whose source code is included in this repository. These include [lodepng](https://github.com/lvandeve/lodepng), [rapidxml](http://rapidxml.sourceforge.net/), [incbin](https://github.com/graphitemaster/incbin), [UniformBicone](https://github.com/wlenthe/UniformBicone), [jcvoronoi](https://github.com/JCash/voronoi) and the [HEALPix implementation from Astrometry.net](https://astrometry.net/). Thanks to the authors of these projects!
 
