@@ -19,11 +19,11 @@ Mathplot is a library for drawing 3D data visualization objects called `VisualMo
 
 This project is a development of [morphologica](https://github.com/ABRG-Models/morphologica), with i) a new name and ii) simplified, focussed code. In particular, the maths library has been split out into [sebsjames/maths](https://github.com/sebsjames/maths).
 
-mathplot can also be integrated with other GUI frameworks including Qt (see [**examples/qt/**](https://github.com/sebsjames/mathplot/tree/main/examples/qt)), [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/sebsjames/mathplot/tree/main/examples/wx)) and [Dear ImGui](https://github.com/ocornut/imgui) (see the template project https://github.com/sebsjames/mathplot_imgui). Dear ImGui is the easiest way to add GUI control to your visualizations.
+mathplot can also be integrated with other GUI frameworks including [Qt](https://doc.qt.io/) (see [**examples/qt/**](https://github.com/sebsjames/mathplot/tree/main/examples/qt)), [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/sebsjames/mathplot/tree/main/examples/wx)) and [Dear ImGui](https://github.com/ocornut/imgui) (see this [ImGui example](https://github.com/sebsjames/mathplot_imgui)). Dear ImGui is the easiest way to add GUI control to your visualizations.
 
 Mathplot is compatible with **Linux** (including **Raspberry Pi**), **Mac OS** and **Windows**.
 
-You'll find all of the **library code** in the [**mplot**](https://github.com/sebsjames/mathplot/tree/main/mplot) directory and you can find **example code and screenshots** [here](https://github.com/sebsjames/mathplot/tree/main/examples). There is also a **template project** [that uses mathplot](#) to help you incorporate the library into your own work.
+You'll find all of the **library code** in the [**mplot**](https://github.com/sebsjames/mathplot/tree/main/mplot) directory and you can find **example code and screenshots** [here](https://github.com/sebsjames/mathplot/tree/main/examples). There is also a **template project** [that uses mathplot](https://github.com/sebsjames/mathplot_template) to help you incorporate the library into your own work.
 
 mathplot has a **documentation and reference** website at https://sebsjames.github.io/mathplot/.
 
@@ -123,7 +123,7 @@ You can find example programs which are compiled when you do the standard
 cmake-driven build of mathplot in both the [tests/](https://github.com/sebsjames/mathplot/tree/main/tests) subdirectory
 and the [examples/](https://github.com/sebsjames/mathplot/tree/main/examples) subdirectory.
 
-There is also a template repository that demonstrates how you can create a project that *uses* mathplot: [ABRG-Models/morphologica_template](https://github.com/ABRG-Models/morphologica_template) *fixme: This one refers to morphologica*.
+There is also a template repository that demonstrates how you can create a project that *uses* mathplot: [sebsjames/mathplot_template](https://github.com/sebsjames/mathplot_template).
 
 For more info on how to set up CMake files to build a program using mathplot (and some hints as to what you'll need to do with an alternative directed build system), see [README.cmake.md](https://github.com/sebsjames/mathplot/blob/main/README.cmake.md).
 
