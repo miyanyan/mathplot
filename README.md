@@ -19,7 +19,7 @@ Mathplot is a library for drawing 3D data visualization objects called `VisualMo
 
 This project is a development of [morphologica](https://github.com/ABRG-Models/morphologica), with i) a new name and ii) simplified, focussed code. In particular, the maths library has been split out into [sebsjames/maths](https://github.com/sebsjames/maths).
 
-mathplot can also be integrated with other GUI frameworks including Qt (see [**examples/qt/**](https://github.com/sebsjames/mathplot/tree/main/examples/qt)) and [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/sebsjames/mathplot/tree/main/examples/wx)).
+mathplot can also be integrated with other GUI frameworks including Qt (see [**examples/qt/**](https://github.com/sebsjames/mathplot/tree/main/examples/qt)), [wxWidgets](https://www.wxwidgets.org/) (see [**examples/wx/**](https://github.com/sebsjames/mathplot/tree/main/examples/wx)) and [Dear ImGui](https://github.com/ocornut/imgui) (see the template project https://github.com/sebsjames/mathplot_imgui). Dear ImGui is the easiest way to add GUI control to your visualizations.
 
 Mathplot is compatible with **Linux** (including **Raspberry Pi**), **Mac OS** and **Windows**.
 
