@@ -36,7 +36,6 @@ int main()
     // all be discarded.
     sm::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (0.6f);
-    hg.bollocks();
     std::cout << "Number of pixels in grid:" << hg.num() << std::endl;
 
 
