@@ -32,7 +32,7 @@ int main()
     using mc = sm::mathconst<float>;
     constexpr spherical_projection proj = spherical_projection::mercator;
 
-    mplot::Visual v(1600, 1000, "Spherically transformed HexGrid");
+    mplot::Visual v(1600, 1000, "Spherically transformed hexgrid");
 
     // radius of sphere
     constexpr float r_sph = 1.0f;

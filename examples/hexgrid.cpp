@@ -16,7 +16,7 @@
 int main()
 {
     // Contructor args are width, height, title
-    mplot::Visual<mplot::gl::version_4_1> v(1600, 1000, "sm::HexGridVisual");
+    mplot::Visual<mplot::gl::version_4_1> v(1600, 1000, "mplot::HexGridVisual");
     // You can set a field of view (in degrees)
     v.fov = 15;
     // set the x/y offset. Try pressing 'z' in the app window to see what the current sceneTrans is
@@ -36,6 +36,7 @@ int main()
     // all be discarded.
     sm::hexgrid hg(0.01f, 3.0f, 0.0f);
     hg.setCircularBoundary (0.6f);
+    hg.bollocks();
     std::cout << "Number of pixels in grid:" << hg.num() << std::endl;
 
 
