@@ -138,7 +138,9 @@ namespace mplot {
                     this->dcolour3[i] = (*this->vectorData)[i][2];
                 }
                 this->zScale.transform (veclens, this->dcopy);
-                if (this->cm.getType() != mplot::ColourMapType::RGB) {
+                if (this->cm.getType() != mplot::ColourMapType::RGB
+                    && this->cm.getType() != mplot::ColourMapType::RGBMono
+                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
                     this->colourScale.transform (this->dcolour, this->dcolour);
                     this->colourScale2.transform (this->dcolour2, this->dcolour2);
                     this->colourScale3.transform (this->dcolour3, this->dcolour3);
@@ -210,7 +212,9 @@ namespace mplot {
                 // Handle case where this->cm.getType() == mplot::ColourMapType::RGB and there is
                 // exactly one colour. ColourMapType::RGB assumes R/G/B data all in range 0->1
                 // ALREADY and therefore they don't need to be re-scaled with this->colourScale.
-                if (this->cm.getType() != mplot::ColourMapType::RGB) {
+                if (this->cm.getType() != mplot::ColourMapType::RGB
+                    && this->cm.getType() != mplot::ColourMapType::RGBMono
+                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
                     this->colourScale.transform (this->dcolour, this->dcolour);
                     // Dual axis colour maps like Duochrome and HSV will need to use colourScale2 to
                     // transform their second colour/axis,
