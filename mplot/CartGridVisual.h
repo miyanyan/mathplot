@@ -68,6 +68,9 @@ namespace mplot {
         //! Do the computations to initialize the vertices that will represent the HexGrid.
         void initializeVertices()
         {
+            this->determine_datasize();
+            if (this->datasize == 0) { return; }
+
             // Optionally compute an offset to ensure that the cartgrid is centred about the mv_offset.
             if (this->centralize == true) {
                 float left_lim = -this->cg->width()/2.0f;
@@ -119,33 +122,7 @@ namespace mplot {
             this->idx = 0;
             unsigned int nrect = this->cg->num();
 
-            if (this->scalarData != nullptr) {
-                this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), this->dcopy);
-                this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), this->dcolour);
-            } else if (this->vectorData != nullptr) {
-                this->dcopy.resize (this->vectorData->size());
-                this->dcolour.resize (this->vectorData->size());
-                this->dcolour2.resize (this->vectorData->size());
-                this->dcolour3.resize (this->vectorData->size());
-                sm::vvec<float> veclens(this->dcopy);
-                for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
-                    veclens[i] = (*this->vectorData)[i].length();
-                    this->dcolour[i] = (*this->vectorData)[i][0];
-                    this->dcolour2[i] = (*this->vectorData)[i][1];
-                    // Could also extract a third colour for Trichrome vs Duochrome
-                    this->dcolour3[i] = (*this->vectorData)[i][2];
-                }
-                this->zScale.transform (veclens, this->dcopy);
-                if (this->cm.getType() != mplot::ColourMapType::RGB
-                    && this->cm.getType() != mplot::ColourMapType::RGBMono
-                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
-                    this->colourScale.transform (this->dcolour, this->dcolour);
-                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
-                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
-                }
-            }
+            this->setupScaling();
 
             for (unsigned int ri = 0; ri < nrect; ++ri) {
                 std::array<float, 3> clr = this->setColour (ri);
@@ -189,40 +166,8 @@ namespace mplot {
             unsigned int nrect = this->cg->num();
             this->idx = 0;
 
-            if (this->scalarData != nullptr) {
-                this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), this->dcopy);
-                this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), this->dcolour);
-            } else if (this->vectorData != nullptr) {
-                this->dcopy.resize (this->vectorData->size());
-                this->dcolour.resize (this->vectorData->size());
-                this->dcolour2.resize (this->vectorData->size());
-                this->dcolour3.resize (this->vectorData->size());
-                sm::vvec<float> veclens(this->dcopy);
-                for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
-                    veclens[i] = (*this->vectorData)[i].length();
-                    this->dcolour[i] = (*this->vectorData)[i][0];
-                    this->dcolour2[i] = (*this->vectorData)[i][1];
-                    // Could also extract a third colour for Trichrome vs Duochrome (or for raw RGB signal)
-                    this->dcolour3[i] = (*this->vectorData)[i][2];
-                }
-                this->zScale.transform (veclens, this->dcopy);
+            this->setupScaling();
 
-                // Handle case where this->cm.getType() == mplot::ColourMapType::RGB and there is
-                // exactly one colour. ColourMapType::RGB assumes R/G/B data all in range 0->1
-                // ALREADY and therefore they don't need to be re-scaled with this->colourScale.
-                if (this->cm.getType() != mplot::ColourMapType::RGB
-                    && this->cm.getType() != mplot::ColourMapType::RGBMono
-                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
-                    this->colourScale.transform (this->dcolour, this->dcolour);
-                    // Dual axis colour maps like Duochrome and HSV will need to use colourScale2 to
-                    // transform their second colour/axis,
-                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
-                    // Similarly for Triple axis maps
-                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
-                } // else assume dcolour/dcolour2/dcolour3 are all in range 0->1 (or 0-255) already
-            }
             float datumC = 0.0f;   // datum at the centre
             float datumNE = 0.0f;  // datum at the hex to the east.
             float datumNNE = 0.0f;

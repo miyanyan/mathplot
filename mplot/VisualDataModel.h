@@ -161,6 +161,61 @@ namespace mplot
             return clr;
         }
 
+        //! Find datasize
+        void determine_datasize()
+        {
+            this->datasize = 0;
+            if (this->vectorData != nullptr && !this->vectorData->empty()) {
+                this->datasize = this->vectorData->size();
+            } else if (this->scalarData != nullptr && !this->scalarData->empty()) {
+                this->datasize = this->scalarData->size();
+            } // else datasize remains 0
+        }
+
+        // Common function for setting up the z and colour scaling
+        void setupScaling()
+        {
+            this->dcopy.resize (this->datasize, 0);
+            this->dcolour.resize (this->datasize);
+
+            if (this->scalarData != nullptr) {
+                // What do these scaling operations do to any NaNs in scalarData? They should remain
+                // NaN. Then in dcopy, might want to make them 0.
+                this->zScale.transform (*(this->scalarData), this->dcopy);
+                this->dcopy.replace_nan_with (this->zScale.transform_one(0.0f));
+                this->colourScale.transform (*(this->scalarData), this->dcolour);
+
+            } else if (this->vectorData != nullptr) {
+
+                this->dcolour2.resize (this->datasize);
+                this->dcolour3.resize (this->datasize);
+                sm::vvec<float> veclens(this->dcopy);
+                for (unsigned int i = 0; i < this->datasize; ++i) {
+                    veclens[i] = (*this->vectorData)[i].length();
+                    this->dcolour[i] = (*this->vectorData)[i][0];
+                    this->dcolour2[i] = (*this->vectorData)[i][1];
+                    // Could also extract a third colour for Trichrome vs Duochrome (or for raw RGB signal)
+                    this->dcolour3[i] = (*this->vectorData)[i][2];
+                }
+                this->zScale.transform (veclens, this->dcopy);
+
+                // Handle case where this->cm.getType() == mplot::ColourMapType::RGB and there is
+                // exactly one colour. ColourMapType::RGB (and RGBMono/Grey) assumes R/G/B data all
+                // in range 0->1 ALREADY and therefore they don't need to be re-scaled with
+                // this->colourScale.
+                if (this->cm.getType() != mplot::ColourMapType::RGB
+                    && this->cm.getType() != mplot::ColourMapType::RGBMono
+                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
+                    this->colourScale.transform (this->dcolour, this->dcolour);
+                    // Dual axis colour maps like Duochrome and HSV will need to use colourScale2 to
+                    // transform their second colour/axis,
+                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
+                    // Similarly for Triple axis maps
+                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
+                } // else assume dcolour/dcolour2/dcolour3 are all in range 0->1 (or 0-255) already
+            }
+        }
+
         //! All data models use a a colour map. Change the type/hue of this colour map
         //! object to generate different types of map.
         ColourMap<float> cm;
@@ -209,6 +264,10 @@ namespace mplot
         sm::vvec<float> dcolour2;
         //! For the third field of vectorData
         sm::vvec<float> dcolour3;
+
+        //! The length of the data structure that will be visualized. May be length of
+        //! this->scalarData or of this->vectorData.
+        unsigned int datasize = 0;
     };
 
 } // namespace mplot
