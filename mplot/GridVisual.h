@@ -1221,26 +1221,6 @@ namespace mplot {
             this->reinit_colour_buffer();
         }
 
-        //! An overridable function to set the colour of rect ri
-        std::array<float, 3> setColour (I ri)
-        {
-            std::array<float, 3> clr = { 0.0f, 0.0f, 0.0f };
-            if (this->cm.numDatums() == 3) {
-                if constexpr (std::is_integral<std::decay_t<T>>::value) {
-                    // Differs from above as we divide by 255 to get value in range 0-1
-                    clr = this->cm.convert (this->dcolour[ri]/255.0f, this->dcolour2[ri]/255.0f, this->dcolour3[ri]/255.0f);
-                } else {
-                    clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri], this->dcolour3[ri]);
-                }
-            } else if (this->cm.numDatums() == 2) {
-                // Use vectorData
-                clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri]);
-            } else {
-                clr = this->cm.convert (this->dcolour[ri]);
-            }
-            return clr;
-        }
-
         //! The sm::grid<> to visualize
         const sm::grid<I, C>* grid;
 

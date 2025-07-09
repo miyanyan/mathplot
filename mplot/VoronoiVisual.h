@@ -506,30 +506,6 @@ namespace mplot {
             }
         }
 
-        //! An overridable function to set the colour of rect ri
-        std::array<float, 3> setColour (size_t ri)
-        {
-            std::array<float, 3> clr = { 0.0f, 0.0f, 0.0f };
-            if (this->cm.numDatums() == 3) {
-                if constexpr (std::is_integral<std::decay_t<F>>::value) {
-                    // Differs from above as we divide by 255 to get value in range 0-1
-                    clr = this->cm.convert (this->dcolour[ri]/255.0f, this->dcolour2[ri]/255.0f, this->dcolour3[ri]/255.0f);
-                } else {
-                    if (!this->dcolour2.empty() && ! this->dcolour3.empty()) {
-                        clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri], this->dcolour3[ri]);
-                    }
-                }
-            } else if (this->cm.numDatums() == 2) {
-                // Use vectorData
-                if (!this->dcolour2.empty()) {
-                    clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri]);
-                }
-            } else {
-                clr = this->cm.convert (this->dcolour[ri]);
-            }
-            return clr;
-        }
-
         //! Compute a triangle from 3 arbitrary corners
         void computeTriangle (sm::vec<float> c1, sm::vec<float> c2, sm::vec<float> c3, const std::array<float, 3>& colr)
         {

@@ -1128,27 +1128,6 @@ namespace mplot {
         HexVisMode hexVisMode = HexVisMode::HexInterp;
 
     protected:
-        //! An overridable function to set the colour of hex hi
-        virtual std::array<float, 3> setColour (unsigned int hi)
-        {
-            std::array<float, 3> clr = { 0.0f, 0.0f, 0.0f };
-            if (this->cm.numDatums() == 3) {
-                //if constexpr (std::is_same<std::decay_t<T>, unsigned char>::value == true) {
-                if constexpr (std::is_integral<std::decay_t<T>>::value) {
-                    // Differs from above as we divide by 255 to get value in range 0-1
-                    clr = this->cm.convert (this->dcolour[hi]/255.0f, this->dcolour2[hi]/255.0f, this->dcolour3[hi]/255.0f);
-                } else {
-                    clr = this->cm.convert (this->dcolour[hi], this->dcolour2[hi], this->dcolour3[hi]);
-                }
-            } else if (this->cm.numDatums() == 2) {
-                // Use vectorData
-                clr = this->cm.convert (this->dcolour[hi], this->dcolour2[hi]);
-            } else {
-                clr = this->cm.convert (this->dcolour[hi]);
-            }
-            return clr;
-        }
-
         //! The hexgrid to visualize. This is not expected to change (update methods may
         //! assume the hexgrid has remained unaltered)
         const sm::hexgrid* hg;
