@@ -31,12 +31,14 @@ int main()
 
             if constexpr (require_n_minus_abs_m_even) { if ((n - std::abs(m)) % 2 != 0) { continue; } }
 
-            auto pv = std::make_unique<mplot::PolarVisual<double>> (sm::vec<float>{1.4f * n, 1.4f * m, 0});
+            auto pv = std::make_unique<mplot::PolarVisual<double>> (sm::vec<float>{1.1f * n, 1.1f * m, 0});
             v.bindmodel (pv);
             pv->cm.setType (mplot::ColourMapType::Cork);
             pv->setFrameTextColour (mplot::colour::white);
-            pv->radius = 3.5f;
+            pv->radius = 0.5f;
             pv->tf.fontsize = 0.4f;
+            pv->zScale.reset();
+            pv->zScale.do_autoscale = true;
             pv->numrings = N;
             pv->numsegs = N;
             pv->twodimensional = false;

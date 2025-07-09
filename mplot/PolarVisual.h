@@ -29,6 +29,11 @@ namespace mplot {
             this->tf.colour = this->framecolour;
             // Like graphs, Polar visuals don't rotate by default. If you want yours to, set this false in your client code.
             this->twodimensional = true;
+
+            this->zScale.setParams (1, 0);
+            this->colourScale.do_autoscale = true;
+            this->colourScale2.do_autoscale = true;
+            this->colourScale3.do_autoscale = true;
         }
 
         void setTextColour (const std::array<float, 3>& c) { this->tf.colour = c; }
