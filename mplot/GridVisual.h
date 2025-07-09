@@ -368,9 +368,9 @@ namespace mplot {
                 }
 
                 this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), dcopy);
+                this->zScale.transform (*(this->scalarData), this->dcopy);
                 this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), dcolour);
+                this->colourScale.transform (*(this->scalarData), this->dcolour);
 
             } else if (this->vectorData != nullptr) {
 
@@ -383,7 +383,7 @@ namespace mplot {
                 this->dcolour.resize (this->vectorData->size());
                 this->dcolour2.resize (this->vectorData->size());
                 this->dcolour3.resize (this->vectorData->size());
-                std::vector<float> veclens(dcopy);
+                std::vector<float> veclens(this->dcopy);
                 for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
                     veclens[i] = (*this->vectorData)[i].length();
                     this->dcolour[i] = (*this->vectorData)[i][0];
@@ -492,7 +492,7 @@ namespace mplot {
                 vidx = vpsz + ri * 3;
                 this->vertexPositions[vidx++] = (*this->grid)[ri][0]+centering_offset[0];
                 this->vertexPositions[vidx++] = (*this->grid)[ri][1]+centering_offset[1];
-                this->vertexPositions[vidx++] = dcopy[ri];
+                this->vertexPositions[vidx++] = this->dcopy[ri];
 
                 vidx = vcsz + ri * 3;
                 this->vertexColors[vidx++] = clr[0];
@@ -632,15 +632,15 @@ namespace mplot {
                 } // else sx = sy = 0
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
-                datumNE =  this->grid->has_ne(ri)  ? dcopy[this->grid->index_ne(ri)] : datumC;
-                datumNN =  this->grid->has_nn(ri)  ? dcopy[this->grid->index_nn(ri)] : datumC;
-                datumNW =  this->grid->has_nw(ri)  ? dcopy[this->grid->index_nw(ri)] : datumC;
-                datumNS =  this->grid->has_ns(ri)  ? dcopy[this->grid->index_ns(ri)] : datumC;
-                datumNNE = this->grid->has_nne(ri) ? dcopy[this->grid->index_nne(ri)] : datumC;
-                datumNNW = this->grid->has_nnw(ri) ? dcopy[this->grid->index_nnw(ri)] : datumC;
-                datumNSW = this->grid->has_nsw(ri) ? dcopy[this->grid->index_nsw(ri)] : datumC;
-                datumNSE = this->grid->has_nse(ri) ? dcopy[this->grid->index_nse(ri)] : datumC;
+                datumC  = this->dcopy[ri];
+                datumNE =  this->grid->has_ne(ri)  ? this->dcopy[this->grid->index_ne(ri)] : datumC;
+                datumNN =  this->grid->has_nn(ri)  ? this->dcopy[this->grid->index_nn(ri)] : datumC;
+                datumNW =  this->grid->has_nw(ri)  ? this->dcopy[this->grid->index_nw(ri)] : datumC;
+                datumNS =  this->grid->has_ns(ri)  ? this->dcopy[this->grid->index_ns(ri)] : datumC;
+                datumNNE = this->grid->has_nne(ri) ? this->dcopy[this->grid->index_nne(ri)] : datumC;
+                datumNNW = this->grid->has_nnw(ri) ? this->dcopy[this->grid->index_nnw(ri)] : datumC;
+                datumNSW = this->grid->has_nsw(ri) ? this->dcopy[this->grid->index_nsw(ri)] : datumC;
+                datumNSE = this->grid->has_nse(ri) ? this->dcopy[this->grid->index_nse(ri)] : datumC;
 
                 // Use a single colour for each rect, even though rectangle's z positions are
                 // interpolated. Do the _colour_ scaling:
@@ -774,9 +774,9 @@ namespace mplot {
             for (I ri = 0; ri < this->grid->n(); ++ri) {
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
-                datumNE =  this->grid->has_ne(ri)  ? dcopy[this->grid->index_ne(ri)] : datumC;
-                datumNN =  this->grid->has_nn(ri)  ? dcopy[this->grid->index_nn(ri)] : datumC;
+                datumC  = this->dcopy[ri];
+                datumNE =  this->grid->has_ne(ri)  ? this->dcopy[this->grid->index_ne(ri)] : datumC;
+                datumNN =  this->grid->has_nn(ri)  ? this->dcopy[this->grid->index_nn(ri)] : datumC;
 
                 // Use a single colour for each rect, even though rectangle's z positions are
                 // interpolated. Do the _colour_ scaling:
@@ -966,7 +966,7 @@ namespace mplot {
                 }
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
+                datumC  = this->dcopy[ri];
 
                 // Use a single colour for each rect, even though rectangle's z positions are
                 // interpolated. Do the _colour_ scaling:
@@ -1171,7 +1171,7 @@ namespace mplot {
         {
             if (this->colourScale.do_autoscale == true) { this->colourScale.reset(); }
             this->dcolour.resize (this->scalarData->size());
-            this->colourScale.transform (*(this->scalarData), dcolour);
+            this->colourScale.transform (*(this->scalarData), this->dcolour);
 
             // Replace elements of vertexColors
             for (std::size_t i = 0u; i < n_data; ++i) {
@@ -1243,13 +1243,6 @@ namespace mplot {
 
         //! The sm::grid<> to visualize
         const sm::grid<I, C>* grid;
-
-        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
-        std::vector<float> dcopy;
-        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
-        std::vector<float> dcolour;
-        std::vector<float> dcolour2;
-        std::vector<float> dcolour3;
 
         // A centering offset to make sure that the grid is centred on
         // this->mv_offset. This is computed so that you *add* centering_offset to each

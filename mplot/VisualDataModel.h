@@ -5,18 +5,18 @@
 
 #include <vector>
 #include <sm/vec>
+#include <sm/vvec>
 #include <sm/scale>
 #include <mplot/VisualModel.h>
 #include <mplot/ColourMap.h>
 
-namespace mplot {
-
+namespace mplot
+{
     //! Class for VisualModels that visualize data of type T. T is probably float or
     //! double, but may be integer types, too.
     template <typename T, int glver = mplot::gl::version_4_1>
-    class VisualDataModel : public VisualModel<glver>
+    struct VisualDataModel : public VisualModel<glver>
     {
-    public:
         VisualDataModel() : mplot::VisualModel<glver>::VisualModel() {}
         VisualDataModel (const sm::vec<float> _offset) : mplot::VisualModel<glver>::VisualModel (_offset) {}
         //! Deconstructor should *not* deallocate data - client code should do that
@@ -174,6 +174,20 @@ namespace mplot {
         //! graph, quiver plot). Note fixed type of float, which is suitable for
         //! OpenGL coordinates. Not const as child code may resize or update content.
         std::vector<sm::vec<float>>* dataCoords = nullptr;
+
+        /*
+         * Scaled data. Used in GridVisual classes and PolarVisual or anywhere else where scalarData
+         * or vectorData are scaled to be z values or colours.
+         */
+
+        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
+        sm::vvec<float> dcopy;
+        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
+        sm::vvec<float> dcolour;
+        //! For the second field of vectorData
+        sm::vvec<float> dcolour2;
+        //! For the third field of vectorData
+        sm::vvec<float> dcolour3;
     };
 
 } // namespace mplot

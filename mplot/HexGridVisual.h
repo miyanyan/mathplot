@@ -107,7 +107,7 @@ namespace mplot {
                 // What do these scaling operations do to any NaNs in scalarData? They should remain
                 // NaN. Then in dcopy, might want to make them 0.
                 this->zScale.transform (*(this->scalarData), this->dcopy);
-                dcopy.replace_nan_with (this->zScale.transform_one(0.0f));
+                this->dcopy.replace_nan_with (this->zScale.transform_one(0.0f));
                 this->colourScale.transform (*(this->scalarData), this->dcolour);
 
             } else if (this->vectorData != nullptr) {
@@ -242,7 +242,7 @@ namespace mplot {
                         this->vertexPositions[hi * 3] = this->zoom * this->hg->d_x[hi];
                         this->vertexPositions[hi * 3 + 1] = this->zoom * this->hg->d_y[hi];
                     }
-                    this->vertexPositions[hi * 3 + 2] = this->zoom * dcopy[hi];
+                    this->vertexPositions[hi * 3 + 2] = this->zoom * this->dcopy[hi];
 
                 } else { // Otherwise use the positions directly in the hexgrid:
                     if (update == false) {
@@ -357,13 +357,13 @@ namespace mplot {
                     _x = this->hg->d_x[hi];
                     _y = this->hg->d_y[hi];
                     // Use the linear scaled copy of the data, dcopy.
-                    datumC   = dcopy[hi]; // '_z'
-                    datumNE  = HAS_NE(hi)  ? dcopy[NE(hi)]  : datumC; // datum Neighbour East
-                    datumNNE = HAS_NNE(hi) ? dcopy[NNE(hi)] : datumC; // datum Neighbour North East
-                    datumNNW = HAS_NNW(hi) ? dcopy[NNW(hi)] : datumC; // etc
-                    datumNW  = HAS_NW(hi)  ? dcopy[NW(hi)]  : datumC;
-                    datumNSW = HAS_NSW(hi) ? dcopy[NSW(hi)] : datumC;
-                    datumNSE = HAS_NSE(hi) ? dcopy[NSE(hi)] : datumC;
+                    datumC   = this->dcopy[hi]; // '_z'
+                    datumNE  = HAS_NE(hi)  ? this->dcopy[NE(hi)]  : datumC; // datum Neighbour East
+                    datumNNE = HAS_NNE(hi) ? this->dcopy[NNE(hi)] : datumC; // datum Neighbour North East
+                    datumNNW = HAS_NNW(hi) ? this->dcopy[NNW(hi)] : datumC; // etc
+                    datumNW  = HAS_NW(hi)  ? this->dcopy[NW(hi)]  : datumC;
+                    datumNSW = HAS_NSW(hi) ? this->dcopy[NSW(hi)] : datumC;
+                    datumNSE = HAS_NSE(hi) ? this->dcopy[NSE(hi)] : datumC;
                 } else {
                     // Get coordinates from dataCoords
                     _x = (*this->dataCoords)[hi][0];
@@ -602,7 +602,7 @@ namespace mplot {
                 // Usually seven vertices with the same colour, but if the hex is
                 // marked, then three of the vertices are given the colour black,
                 // marking the hex out visually.
-                if (std::isnan(dcolour[hi])) {
+                if (std::isnan(this->dcolour[hi])) {
                     this->vertex_push (clr, this->vertexColors);
                     this->vertex_push (blkclr, this->vertexColors);
                     this->vertex_push (blkclr, this->vertexColors);
@@ -1152,13 +1152,6 @@ namespace mplot {
         //! The hexgrid to visualize. This is not expected to change (update methods may
         //! assume the hexgrid has remained unaltered)
         const sm::hexgrid* hg;
-
-        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
-        sm::vvec<float> dcopy;
-        //! A copy of the scalarData, scaled to be a colour value
-        std::vector<float> dcolour;
-        std::vector<float> dcolour2;
-        std::vector<float> dcolour3;
     };
 
 } // namespace mplot

@@ -352,7 +352,7 @@ namespace mplot {
         {
             if (this->colourScale.do_autoscale == true) { this->colourScale.reset(); }
             this->dcolour.resize (this->scalarData->size());
-            this->colourScale.transform (*(this->scalarData), dcolour);
+            this->colourScale.transform (*(this->scalarData), this->dcolour);
 
             // Replace elements of vertexColors
             unsigned int tcounts = 0;
@@ -465,9 +465,9 @@ namespace mplot {
                 }
 
                 this->dcopy.resize (n);
-                this->zScale.transform (*(this->scalarData), dcopy);
+                this->zScale.transform (*(this->scalarData), this->dcopy);
                 this->dcolour.resize (n);
-                this->colourScale.transform (*(this->scalarData), dcolour);
+                this->colourScale.transform (*(this->scalarData), this->dcolour);
 
             } else if (this->vectorData != nullptr) {
 
@@ -480,7 +480,7 @@ namespace mplot {
                 this->dcolour.resize (n);
                 this->dcolour2.resize (n);
                 this->dcolour3.resize (n);
-                std::vector<float> veclens(dcopy);
+                sm::vvec<float> veclens(this->dcopy);
                 for (unsigned int i = 0; i < n; ++i) {
                     veclens[i] = (*this->vectorData)[i].length();
                     this->dcolour[i] = (*this->vectorData)[i][0];
@@ -560,13 +560,6 @@ namespace mplot {
         //! Record the data index for each Voronoi cell index
         sm::vvec<unsigned int> site_indices;
         unsigned int triangle_count_sum = 0;
-
-        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
-        std::vector<float> dcopy;
-        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
-        std::vector<float> dcolour;
-        std::vector<float> dcolour2;
-        std::vector<float> dcolour3;
 
         //! Internally owned version of dataCoords after rotation
         std::vector<sm::vec<float>> dcoords;

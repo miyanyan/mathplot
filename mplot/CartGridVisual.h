@@ -121,15 +121,15 @@ namespace mplot {
 
             if (this->scalarData != nullptr) {
                 this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), dcopy);
+                this->zScale.transform (*(this->scalarData), this->dcopy);
                 this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), dcolour);
+                this->colourScale.transform (*(this->scalarData), this->dcolour);
             } else if (this->vectorData != nullptr) {
                 this->dcopy.resize (this->vectorData->size());
                 this->dcolour.resize (this->vectorData->size());
                 this->dcolour2.resize (this->vectorData->size());
                 this->dcolour3.resize (this->vectorData->size());
-                std::vector<float> veclens(dcopy);
+                sm::vvec<float> veclens(this->dcopy);
                 for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
                     veclens[i] = (*this->vectorData)[i].length();
                     this->dcolour[i] = (*this->vectorData)[i][0];
@@ -150,7 +150,7 @@ namespace mplot {
             for (unsigned int ri = 0; ri < nrect; ++ri) {
                 std::array<float, 3> clr = this->setColour (ri);
                 this->vertex_push (this->cg->d_x[ri]+centering_offset[0],
-                                   this->cg->d_y[ri]+centering_offset[1], dcopy[ri], this->vertexPositions);
+                                   this->cg->d_y[ri]+centering_offset[1], this->dcopy[ri], this->vertexPositions);
                 this->vertex_push (clr, this->vertexColors);
                 this->vertex_push (0.0f, 0.0f, 1.0f, this->vertexNormals);
             }
@@ -191,15 +191,15 @@ namespace mplot {
 
             if (this->scalarData != nullptr) {
                 this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), dcopy);
+                this->zScale.transform (*(this->scalarData), this->dcopy);
                 this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), dcolour);
+                this->colourScale.transform (*(this->scalarData), this->dcolour);
             } else if (this->vectorData != nullptr) {
                 this->dcopy.resize (this->vectorData->size());
                 this->dcolour.resize (this->vectorData->size());
                 this->dcolour2.resize (this->vectorData->size());
                 this->dcolour3.resize (this->vectorData->size());
-                std::vector<float> veclens(dcopy);
+                sm::vvec<float> veclens(this->dcopy);
                 for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
                     veclens[i] = (*this->vectorData)[i].length();
                     this->dcolour[i] = (*this->vectorData)[i][0];
@@ -239,17 +239,17 @@ namespace mplot {
             for (unsigned int ri = 0; ri < nrect; ++ri) {
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
-                datumNE =  R_HAS_NE(ri)  ? dcopy[R_NE(ri)] : datumC;
+                datumC  = this->dcopy[ri];
+                datumNE =  R_HAS_NE(ri)  ? this->dcopy[R_NE(ri)] : datumC;
                 //std::cout << "NE? " << (R_HAS_NE(ri) ? "yes\n" : "no\n");
-                datumNN =  R_HAS_NN(ri)  ? dcopy[R_NN(ri)] : datumC;
-                datumNW =  R_HAS_NW(ri)  ? dcopy[R_NW(ri)] : datumC;
+                datumNN =  R_HAS_NN(ri)  ? this->dcopy[R_NN(ri)] : datumC;
+                datumNW =  R_HAS_NW(ri)  ? this->dcopy[R_NW(ri)] : datumC;
                 //std::cout << "NW? " << (R_HAS_NW(ri) ? "yes\n" : "no\n");
-                datumNS =  R_HAS_NS(ri)  ? dcopy[R_NS(ri)] : datumC;
-                datumNNE = R_HAS_NNE(ri) ? dcopy[R_NNE(ri)] : datumC;
-                datumNNW = R_HAS_NNW(ri) ? dcopy[R_NNW(ri)] : datumC;
-                datumNSW = R_HAS_NSW(ri) ? dcopy[R_NSW(ri)] : datumC;
-                datumNSE = R_HAS_NSE(ri) ? dcopy[R_NSE(ri)] : datumC;
+                datumNS =  R_HAS_NS(ri)  ? this->dcopy[R_NS(ri)] : datumC;
+                datumNNE = R_HAS_NNE(ri) ? this->dcopy[R_NNE(ri)] : datumC;
+                datumNNW = R_HAS_NNW(ri) ? this->dcopy[R_NNW(ri)] : datumC;
+                datumNSW = R_HAS_NSW(ri) ? this->dcopy[R_NSW(ri)] : datumC;
+                datumNSE = R_HAS_NSE(ri) ? this->dcopy[R_NSE(ri)] : datumC;
 
                 // Use a single colour for each rect, even though rectangle's z
                 // positions are interpolated. Do the _colour_ scaling:
@@ -494,13 +494,6 @@ namespace mplot {
 
         //! The cartgrid to visualize
         const sm::cartgrid* cg;
-
-        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
-        std::vector<float> dcopy;
-        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
-        std::vector<float> dcolour;
-        std::vector<float> dcolour2;
-        std::vector<float> dcolour3;
 
         // A centering offset to make sure that the Cartgrid is centred on
         // this->mv_offset. This is computed so that you *add* centering_offset to each
