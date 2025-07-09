@@ -472,3 +472,9 @@ target_link_libraries(coordarrows OpenGL::GL glfw Freetype::Freetype)
 
 add_executable(sph_to_cart sph_to_cart.cpp)
 target_link_libraries(sph_to_cart OpenGL::GL glfw Freetype::Freetype)
+
+add_executable(zernike_radial zernike_radial.cpp)
+target_link_libraries(zernike_radial OpenGL::GL glfw Freetype::Freetype)
+
+add_executable(zernike zernike.cpp)
+target_link_libraries(zernike OpenGL::GL glfw Freetype::Freetype)
