@@ -1,4 +1,4 @@
-# mathplot: plotting and data visualization for c++
+# mathplot: plotting and data visualization for C++
 
 ![A banner image mathplot VisualModels](https://github.com/sebsjames/mathplot/blob/main/examples/screenshots/banner2.png?raw=true)
 
