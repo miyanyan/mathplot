@@ -2,7 +2,6 @@
  * A simple polar plot example.
  */
 
-#include <format>
 #include <sm/mathconst>
 #include <sm/vvec>
 #include <mplot/Visual.h>
