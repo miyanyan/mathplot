@@ -60,7 +60,7 @@ namespace mplot::compoundray
         for (unsigned int mi = 0; mi < mymeshes.size(); ++mi) {
             sm::mat44<float> tfm;
             for (unsigned int tfi = 0; tfi < 16; ++tfi) { tfm[tfi] = mymeshes[mi]->transform[tfi]; }
-            tfm.transpose(); // Need to transpose tfm after copying data
+            tfm.transpose_inplace(); // Need to transpose tfm after copying data
             if constexpr (debug_meshload) {
                 std::cout << "A mesh called " << mymeshes[mi]->name  << " with scene transform\n" << tfm << "\n";
             }
