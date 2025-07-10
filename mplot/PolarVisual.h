@@ -30,7 +30,7 @@ namespace mplot {
             // Like graphs, Polar visuals don't rotate by default. If you want yours to, set this false in your client code.
             this->twodimensional = true;
 
-            this->zScale.setParams (1, 0);
+            this->zScale.identity_scaling();
             this->colourScale.do_autoscale = true;
             this->colourScale2.do_autoscale = true;
             this->colourScale3.do_autoscale = true;
@@ -128,7 +128,6 @@ namespace mplot {
                     float inner_z = this->dcopy[(ring - 1) * this->numsegs + j];
 
                     sm::vec<float> c_in = this->uy * sin(t) * r_in + this->ux * cos(t) * r_in;
-                    // set c_in z value from data
                     c_in[2] = inner_z;
 
                     this->vertex_push (c_in, this->vertexPositions);

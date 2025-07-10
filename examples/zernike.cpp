@@ -25,7 +25,7 @@ int main()
     sm::vvec<double> theta;
     theta.linspace (0.0, mc::two_pi, N);
 
-    for (unsigned int n = 0; n < 20; ++n) {
+    for (unsigned int n = 0; n < 10; ++n) {
 
         for (int m = 0; m <= static_cast<int>(n); ++m) {
 
@@ -37,8 +37,6 @@ int main()
             pv->setFrameTextColour (mplot::colour::goldenrod1);
             pv->radius = 0.5f;
             pv->tf.fontsize = 0.0f;
-            pv->zScale.reset();
-            pv->zScale.do_autoscale = true;
             pv->numrings = N;
             pv->numsegs = N;
             pv->addLabel (std::format ("n{}, m{}", n, m), sm::vec<float>{-0.1,-0.58,0}, mplot::TextFeatures(0.08f));
@@ -52,6 +50,15 @@ int main()
                 }
             }
             pv->setScalarData (&Vnm_real);
+
+            // Set z scaling based on the range, if it's off the charts, draw a flat polar plot
+            sm::range<double> rng = Vnm_real.range();
+            if (std::isnan (rng.min) || std::isinf (rng.min) ||std::isnan (rng.max) || std::isinf (rng.max)) {
+                pv->zScale.null_scaling();
+            } else {
+                pv->zScale.output_range = {-1.0f, 1.0f};
+                pv->zScale.compute_scaling (-10, 10);
+            }
 
             pv->finalize();
             v.addVisualModel (pv);
