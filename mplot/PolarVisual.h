@@ -59,8 +59,9 @@ namespace mplot {
         //! Draw a circular frame around the polar plot
         void drawFrame()
         {
-            // Draw an approximation of a circle.
-            this->computeFlatCircleLine (sm::vec<float>{0,0,this->z}, this->uz, this->radius + this->framelinewidth/2.0f,
+            // Draw an approximation of a circle. Passing -uy as the inplane vector ensures
+            // flatcircle line aligns with colour drawn by fillFrameWithColour()
+            this->computeFlatCircleLine (sm::vec<float>{0,0,this->z}, this->uz, -this->uy, this->radius + this->framelinewidth/2.0f,
                                          this->framelinewidth, this->framecolour, this->numsegs);
         }
 
@@ -113,6 +114,7 @@ namespace mplot {
 
             sm::vec<float> centre = {0,0,this->z};
 
+            // Note: Going from out to in, rather than in to out
             for (int ring = this->numrings; ring > 0; ring--) {
 
                 float r_out = this->radius * static_cast<float>(ring)/this->numrings;
@@ -120,7 +122,7 @@ namespace mplot {
 
                 for (int j = 0; j < static_cast<int>(this->numsegs); j++) {
 
-                    std::array<float, 3> clr = this->setColour (ring * this->numsegs + j);
+                    std::array<float, 3> clr = this->setColour ((ring - 1) * this->numsegs + j);
 
                     float t = j * sm::mathconst<float>::two_pi/static_cast<float>(this->numsegs);
                     sm::vec<float> c_in = this->uy * sin(t) * r_in + this->ux * cos(t) * r_in;
@@ -147,8 +149,6 @@ namespace mplot {
             }
         }
 
-        //! The ColourMap to show (copy in). Should be type ColourMapType::HSV
-        mplot::ColourMap<F> cm;
         //! The radius of the HSVwheel
         float radius = 1.0f;
         //! Position in z in model space. Default is just 0.

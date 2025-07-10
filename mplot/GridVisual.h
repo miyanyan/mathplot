@@ -59,10 +59,8 @@ namespace mplot {
      * \tparam glver The OpenGL version in use in your program
      */
     template <typename T, typename I = unsigned int, typename C = float, int glver = mplot::gl::version_4_1>
-    class GridVisual : public VisualDataModel<T, glver>
+    struct GridVisual : public VisualDataModel<T, glver>
     {
-    public:
-
         GridVisual(const sm::grid<I, C>* _grid, const sm::vec<float> _offset)
         {
             // Set up...

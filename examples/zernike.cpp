@@ -18,14 +18,14 @@ int main()
 
     mplot::Visual<> v (1024, 768, "Zernike Polynomials");
 
-    constexpr std::size_t N = 20;
+    constexpr std::size_t N = 400;
     sm::vvec<double> rho;
     rho.linspace (0.0, 1.0, N);
 
     sm::vvec<double> theta;
     theta.linspace (0.0, mc::two_pi, N);
 
-    for (unsigned int n = 0; n < 10; ++n) {
+    for (unsigned int n = 0; n < 20; ++n) {
 
         for (int m = 0; m <= static_cast<int>(n); ++m) {
 
@@ -34,9 +34,9 @@ int main()
             auto pv = std::make_unique<mplot::PolarVisual<double>> (sm::vec<float>{1.1f * n, 1.1f * m, 0});
             v.bindmodel (pv);
             pv->cm.setType (mplot::ColourMapType::Cork);
-            pv->setFrameTextColour (mplot::colour::white);
+            pv->setFrameTextColour (mplot::colour::goldenrod1);
             pv->radius = 0.5f;
-            pv->tf.fontsize = 0.4f;
+            pv->tf.fontsize = 0.0f;
             pv->zScale.reset();
             pv->zScale.do_autoscale = true;
             pv->numrings = N;
