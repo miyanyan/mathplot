@@ -63,20 +63,17 @@ namespace mplot {
         {
             unsigned int ncoords = this->dataCoords == nullptr ? 0 : this->dataCoords->size();
             if (ncoords == 0) { return; }
-            unsigned int ndata = this->scalarData == nullptr ? 0 : this->scalarData->size();
-            // If we have vector data, then manipulate colour accordingly.
-            unsigned int nvdata = this->vectorData == nullptr ? 0 : this->vectorData->size();
 
-            if (ndata > 0 && ncoords != ndata) {
-                std::cerr << "VoronoiVisual Error: ncoords ("<<ncoords<<") != ndata ("<<ndata<<"), return (no model)." << std::endl;
-                return;
-            }
-            if (nvdata > 0 && ncoords != nvdata) {
-                std::cerr << "VoronoiVisual Error: ncoords ("<<ncoords<<") != nvdata ("<<nvdata<<"), return (no model)." << std::endl;
+            this->determine_datasize();
+            if (this->datasize == 0) { return; }
+
+            if (ncoords != this->datasize) {
+                std::cerr << "VoronoiVisual Error: ncoords (" << ncoords << ") != datasize ("<< this->datasize
+                          << "), return (no model)." << std::endl;
                 return;
             }
 
-            this->setupScaling (ncoords); // should be same size as nvdata or data
+            this->setupScaling();
 
             sm::quaternion<float> rq;
             if (this->data_z_direction != this->uz) {
@@ -352,7 +349,7 @@ namespace mplot {
         {
             if (this->colourScale.do_autoscale == true) { this->colourScale.reset(); }
             this->dcolour.resize (this->scalarData->size());
-            this->colourScale.transform (*(this->scalarData), dcolour);
+            this->colourScale.transform (*(this->scalarData), this->dcolour);
 
             // Replace elements of vertexColors
             unsigned int tcounts = 0;
@@ -456,80 +453,6 @@ namespace mplot {
         float labelSize = 0.03f;
 
     protected:
-        void setupScaling (size_t n)
-        {
-            if (this->scalarData != nullptr) {
-                // Check scalar data has same size as Grid
-                if (this->scalarData->size() != n) {
-                    throw std::runtime_error ("Error: scalarData size does not match n");
-                }
-
-                this->dcopy.resize (n);
-                this->zScale.transform (*(this->scalarData), dcopy);
-                this->dcolour.resize (n);
-                this->colourScale.transform (*(this->scalarData), dcolour);
-
-            } else if (this->vectorData != nullptr) {
-
-                // Check vector data
-                if (this->vectorData->size() != n) {
-                    throw std::runtime_error ("Error: size does not match vectorData size");
-                }
-
-                this->dcopy.resize (n);
-                this->dcolour.resize (n);
-                this->dcolour2.resize (n);
-                this->dcolour3.resize (n);
-                std::vector<float> veclens(dcopy);
-                for (unsigned int i = 0; i < n; ++i) {
-                    veclens[i] = (*this->vectorData)[i].length();
-                    this->dcolour[i] = (*this->vectorData)[i][0];
-                    this->dcolour2[i] = (*this->vectorData)[i][1];
-                    // Could also extract a third colour for Trichrome vs Duochrome (or for raw RGB signal)
-                    this->dcolour3[i] = (*this->vectorData)[i][2];
-                }
-                this->zScale.transform (veclens, this->dcopy);
-
-                // Handle case where this->cm.getType() == mplot::ColourMapType::RGB and there is
-                // exactly one colour. ColourMapType::RGB assumes R/G/B data all in range 0->1
-                // ALREADY and therefore they don't need to be re-scaled with this->colourScale.
-                if (this->cm.getType() != mplot::ColourMapType::RGB
-                    && this->cm.getType() != mplot::ColourMapType::RGBMono
-                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
-                    this->colourScale.transform (this->dcolour, this->dcolour);
-                    // Dual axis colour maps like Duochrome and HSV will need to use colourScale2 to
-                    // transform their second colour/axis,
-                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
-                    // Similarly for Triple axis maps
-                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
-                } // else assume dcolour/dcolour2/dcolour3 are all in range 0->1 (or 0-255) already
-            }
-        }
-
-        //! An overridable function to set the colour of rect ri
-        std::array<float, 3> setColour (size_t ri)
-        {
-            std::array<float, 3> clr = { 0.0f, 0.0f, 0.0f };
-            if (this->cm.numDatums() == 3) {
-                if constexpr (std::is_integral<std::decay_t<F>>::value) {
-                    // Differs from above as we divide by 255 to get value in range 0-1
-                    clr = this->cm.convert (this->dcolour[ri]/255.0f, this->dcolour2[ri]/255.0f, this->dcolour3[ri]/255.0f);
-                } else {
-                    if (!this->dcolour2.empty() && ! this->dcolour3.empty()) {
-                        clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri], this->dcolour3[ri]);
-                    }
-                }
-            } else if (this->cm.numDatums() == 2) {
-                // Use vectorData
-                if (!this->dcolour2.empty()) {
-                    clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri]);
-                }
-            } else {
-                clr = this->cm.convert (this->dcolour[ri]);
-            }
-            return clr;
-        }
-
         //! Compute a triangle from 3 arbitrary corners
         void computeTriangle (sm::vec<float> c1, sm::vec<float> c2, sm::vec<float> c3, const std::array<float, 3>& colr)
         {
@@ -560,13 +483,6 @@ namespace mplot {
         //! Record the data index for each Voronoi cell index
         sm::vvec<unsigned int> site_indices;
         unsigned int triangle_count_sum = 0;
-
-        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
-        std::vector<float> dcopy;
-        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
-        std::vector<float> dcolour;
-        std::vector<float> dcolour2;
-        std::vector<float> dcolour3;
 
         //! Internally owned version of dataCoords after rotation
         std::vector<sm::vec<float>> dcoords;

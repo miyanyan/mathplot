@@ -2496,18 +2496,9 @@ namespace mplot {
         } // end computeFlatDashedLine
 
         // Compute a flat line circle outline
-        void computeFlatCircleLine (sm::vec<float> centre, sm::vec<float> norm, float radius,
+        void computeFlatCircleLine (sm::vec<float> centre, sm::vec<float> norm, sm::vec<float> inplane, float radius,
                                     float linewidth, std::array<float, 3> col, int segments = 128)
         {
-            // circle in a plane defined by a point (v0 = vstart or vend) and a normal
-            // (v) can be found: Choose random vector vr. A vector inplane = vr ^ v. The
-            // unit in-plane vector is inplane.normalise. Can now use that vector in the
-            // plan to define a point on the circle. Note that this starting point on
-            // the circle is at a random position, which means that this version of
-            // computeTube is useful for tubes that have quite a few segments.
-            sm::vec<float> rand_vec;
-            rand_vec.randomize();
-            sm::vec<float> inplane = rand_vec.cross(norm);
             inplane.renormalize();
             sm::vec<float> norm_x_inplane = norm.cross(inplane);
 
@@ -2541,7 +2532,24 @@ namespace mplot {
             }
             this->idx += 2 * segments; // nverts
 
-        } // end computeFlatCircle
+        } // end computeFlatCircleLine
+
+        // Compute a flat line circle outline
+        void computeFlatCircleLine (sm::vec<float> centre, sm::vec<float> norm, float radius,
+                                    float linewidth, std::array<float, 3> col, int segments = 128)
+        {
+            // circle in a plane defined by a point (v0 = vstart or vend) and a normal
+            // (v) can be found: Choose random vector vr. A vector inplane = vr ^ v. The
+            // unit in-plane vector is inplane.normalise. Can now use that vector in the
+            // plan to define a point on the circle. Note that this starting point on
+            // the circle is at a random position, which means that this version of
+            // computeFlatCircleLine is useful for tubes that have quite a few segments.
+            sm::vec<float> rand_vec;
+            rand_vec.randomize();
+            sm::vec<float> inplane = rand_vec.cross(norm);
+            // Sub call to the method that takes a normal vector AND an inplane vector:
+            this->computeFlatCircleLine (centre, norm, inplane, radius, linewidth, col, segments);
+        }
 
         // Compute triangles to form a true cuboid from 8 corners.
         void computeCuboid (const std::array<sm::vec<float>, 8>& v, const std::array<float, 3>& clr)

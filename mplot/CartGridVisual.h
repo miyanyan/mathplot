@@ -68,6 +68,9 @@ namespace mplot {
         //! Do the computations to initialize the vertices that will represent the HexGrid.
         void initializeVertices()
         {
+            this->determine_datasize();
+            if (this->datasize == 0) { return; }
+
             // Optionally compute an offset to ensure that the cartgrid is centred about the mv_offset.
             if (this->centralize == true) {
                 float left_lim = -this->cg->width()/2.0f;
@@ -119,38 +122,12 @@ namespace mplot {
             this->idx = 0;
             unsigned int nrect = this->cg->num();
 
-            if (this->scalarData != nullptr) {
-                this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), dcopy);
-                this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), dcolour);
-            } else if (this->vectorData != nullptr) {
-                this->dcopy.resize (this->vectorData->size());
-                this->dcolour.resize (this->vectorData->size());
-                this->dcolour2.resize (this->vectorData->size());
-                this->dcolour3.resize (this->vectorData->size());
-                std::vector<float> veclens(dcopy);
-                for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
-                    veclens[i] = (*this->vectorData)[i].length();
-                    this->dcolour[i] = (*this->vectorData)[i][0];
-                    this->dcolour2[i] = (*this->vectorData)[i][1];
-                    // Could also extract a third colour for Trichrome vs Duochrome
-                    this->dcolour3[i] = (*this->vectorData)[i][2];
-                }
-                this->zScale.transform (veclens, this->dcopy);
-                if (this->cm.getType() != mplot::ColourMapType::RGB
-                    && this->cm.getType() != mplot::ColourMapType::RGBMono
-                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
-                    this->colourScale.transform (this->dcolour, this->dcolour);
-                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
-                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
-                }
-            }
+            this->setupScaling();
 
             for (unsigned int ri = 0; ri < nrect; ++ri) {
                 std::array<float, 3> clr = this->setColour (ri);
                 this->vertex_push (this->cg->d_x[ri]+centering_offset[0],
-                                   this->cg->d_y[ri]+centering_offset[1], dcopy[ri], this->vertexPositions);
+                                   this->cg->d_y[ri]+centering_offset[1], this->dcopy[ri], this->vertexPositions);
                 this->vertex_push (clr, this->vertexColors);
                 this->vertex_push (0.0f, 0.0f, 1.0f, this->vertexNormals);
             }
@@ -189,40 +166,8 @@ namespace mplot {
             unsigned int nrect = this->cg->num();
             this->idx = 0;
 
-            if (this->scalarData != nullptr) {
-                this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), dcopy);
-                this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), dcolour);
-            } else if (this->vectorData != nullptr) {
-                this->dcopy.resize (this->vectorData->size());
-                this->dcolour.resize (this->vectorData->size());
-                this->dcolour2.resize (this->vectorData->size());
-                this->dcolour3.resize (this->vectorData->size());
-                std::vector<float> veclens(dcopy);
-                for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
-                    veclens[i] = (*this->vectorData)[i].length();
-                    this->dcolour[i] = (*this->vectorData)[i][0];
-                    this->dcolour2[i] = (*this->vectorData)[i][1];
-                    // Could also extract a third colour for Trichrome vs Duochrome (or for raw RGB signal)
-                    this->dcolour3[i] = (*this->vectorData)[i][2];
-                }
-                this->zScale.transform (veclens, this->dcopy);
+            this->setupScaling();
 
-                // Handle case where this->cm.getType() == mplot::ColourMapType::RGB and there is
-                // exactly one colour. ColourMapType::RGB assumes R/G/B data all in range 0->1
-                // ALREADY and therefore they don't need to be re-scaled with this->colourScale.
-                if (this->cm.getType() != mplot::ColourMapType::RGB
-                    && this->cm.getType() != mplot::ColourMapType::RGBMono
-                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
-                    this->colourScale.transform (this->dcolour, this->dcolour);
-                    // Dual axis colour maps like Duochrome and HSV will need to use colourScale2 to
-                    // transform their second colour/axis,
-                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
-                    // Similarly for Triple axis maps
-                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
-                } // else assume dcolour/dcolour2/dcolour3 are all in range 0->1 (or 0-255) already
-            }
             float datumC = 0.0f;   // datum at the centre
             float datumNE = 0.0f;  // datum at the hex to the east.
             float datumNNE = 0.0f;
@@ -239,17 +184,17 @@ namespace mplot {
             for (unsigned int ri = 0; ri < nrect; ++ri) {
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
-                datumNE =  R_HAS_NE(ri)  ? dcopy[R_NE(ri)] : datumC;
+                datumC  = this->dcopy[ri];
+                datumNE =  R_HAS_NE(ri)  ? this->dcopy[R_NE(ri)] : datumC;
                 //std::cout << "NE? " << (R_HAS_NE(ri) ? "yes\n" : "no\n");
-                datumNN =  R_HAS_NN(ri)  ? dcopy[R_NN(ri)] : datumC;
-                datumNW =  R_HAS_NW(ri)  ? dcopy[R_NW(ri)] : datumC;
+                datumNN =  R_HAS_NN(ri)  ? this->dcopy[R_NN(ri)] : datumC;
+                datumNW =  R_HAS_NW(ri)  ? this->dcopy[R_NW(ri)] : datumC;
                 //std::cout << "NW? " << (R_HAS_NW(ri) ? "yes\n" : "no\n");
-                datumNS =  R_HAS_NS(ri)  ? dcopy[R_NS(ri)] : datumC;
-                datumNNE = R_HAS_NNE(ri) ? dcopy[R_NNE(ri)] : datumC;
-                datumNNW = R_HAS_NNW(ri) ? dcopy[R_NNW(ri)] : datumC;
-                datumNSW = R_HAS_NSW(ri) ? dcopy[R_NSW(ri)] : datumC;
-                datumNSE = R_HAS_NSE(ri) ? dcopy[R_NSE(ri)] : datumC;
+                datumNS =  R_HAS_NS(ri)  ? this->dcopy[R_NS(ri)] : datumC;
+                datumNNE = R_HAS_NNE(ri) ? this->dcopy[R_NNE(ri)] : datumC;
+                datumNNW = R_HAS_NNW(ri) ? this->dcopy[R_NNW(ri)] : datumC;
+                datumNSW = R_HAS_NSW(ri) ? this->dcopy[R_NSW(ri)] : datumC;
+                datumNSE = R_HAS_NSE(ri) ? this->dcopy[R_NSE(ri)] : datumC;
 
                 // Use a single colour for each rect, even though rectangle's z
                 // positions are interpolated. Do the _colour_ scaling:
@@ -471,36 +416,8 @@ namespace mplot {
         float border_thickness_fixed = 0.0f;
 
     protected:
-        //! An overridable function to set the colour of rect ri
-        std::array<float, 3> setColour (unsigned int ri)
-        {
-            std::array<float, 3> clr = { 0.0f, 0.0f, 0.0f };
-            if (this->cm.numDatums() == 3) {
-                //if constexpr (std::is_same<std::decay_t<T>, unsigned char>::value == true) {
-                if constexpr (std::is_integral<std::decay_t<T>>::value) {
-                    // Differs from above as we divide by 255 to get value in range 0-1
-                    clr = this->cm.convert (this->dcolour[ri]/255.0f, this->dcolour2[ri]/255.0f, this->dcolour3[ri]/255.0f);
-                } else {
-                    clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri], this->dcolour3[ri]);
-                }
-            } else if (this->cm.numDatums() == 2) {
-                // Use vectorData
-                clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri]);
-            } else {
-                clr = this->cm.convert (this->dcolour[ri]);
-            }
-            return clr;
-        }
-
         //! The cartgrid to visualize
         const sm::cartgrid* cg;
-
-        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
-        std::vector<float> dcopy;
-        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
-        std::vector<float> dcolour;
-        std::vector<float> dcolour2;
-        std::vector<float> dcolour3;
 
         // A centering offset to make sure that the Cartgrid is centred on
         // this->mv_offset. This is computed so that you *add* centering_offset to each

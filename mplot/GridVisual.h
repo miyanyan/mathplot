@@ -59,10 +59,8 @@ namespace mplot {
      * \tparam glver The OpenGL version in use in your program
      */
     template <typename T, typename I = unsigned int, typename C = float, int glver = mplot::gl::version_4_1>
-    class GridVisual : public VisualDataModel<T, glver>
+    struct GridVisual : public VisualDataModel<T, glver>
     {
-    public:
-
         GridVisual(const sm::grid<I, C>* _grid, const sm::vec<float> _offset)
         {
             // Set up...
@@ -358,60 +356,32 @@ namespace mplot {
         // checks size of scalar/vectorData and the Grid match.
         void setupScaling()
         {
+            // Grid specific checks
             if (this->grid == nullptr) {
                 throw std::runtime_error ("GridVisual error: grid is a nullptr");
             }
+
             if (this->scalarData != nullptr) {
                 // Check scalar data has same size as Grid
                 if (this->scalarData->size() != static_cast<std::size_t>(this->grid->n())) {
                     throw std::runtime_error ("GridVisual error: grid size does not match scalarData size");
                 }
-
-                this->dcopy.resize (this->scalarData->size());
-                this->zScale.transform (*(this->scalarData), dcopy);
-                this->dcolour.resize (this->scalarData->size());
-                this->colourScale.transform (*(this->scalarData), dcolour);
-
             } else if (this->vectorData != nullptr) {
-
-                // Check vector data
+                // Check vector data matches grid
                 if (this->vectorData->size() != static_cast<std::size_t>(this->grid->n())) {
                     throw std::runtime_error ("GridVisual error: grid size does not match vectorData size");
                 }
-
-                this->dcopy.resize (this->vectorData->size());
-                this->dcolour.resize (this->vectorData->size());
-                this->dcolour2.resize (this->vectorData->size());
-                this->dcolour3.resize (this->vectorData->size());
-                std::vector<float> veclens(dcopy);
-                for (unsigned int i = 0; i < this->vectorData->size(); ++i) {
-                    veclens[i] = (*this->vectorData)[i].length();
-                    this->dcolour[i] = (*this->vectorData)[i][0];
-                    this->dcolour2[i] = (*this->vectorData)[i][1];
-                    // Could also extract a third colour for Trichrome vs Duochrome (or for raw RGB signal)
-                    this->dcolour3[i] = (*this->vectorData)[i][2];
-                }
-                this->zScale.transform (veclens, this->dcopy);
-
-                // Handle case where this->cm.getType() == mplot::ColourMapType::RGB and there is
-                // exactly one colour. ColourMapType::RGB (and RGBMono/Grey) assumes R/G/B data all in range 0->1
-                // ALREADY and therefore they don't need to be re-scaled with this->colourScale.
-                if (this->cm.getType() != mplot::ColourMapType::RGB
-                    && this->cm.getType() != mplot::ColourMapType::RGBMono
-                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
-                    this->colourScale.transform (this->dcolour, this->dcolour);
-                    // Dual axis colour maps like Duochrome and HSV will need to use colourScale2 to
-                    // transform their second colour/axis,
-                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
-                    // Similarly for Triple axis maps
-                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
-                } // else assume dcolour/dcolour2/dcolour3 are all in range 0->1 (or 0-255) already
             }
+            // Now call the parent function
+            mplot::VisualDataModel<T, glver>::setupScaling();
         }
 
         //! Do the computations to initialize the vertices that will represent the Grid.
         void initializeVertices()
         {
+            this->determine_datasize();
+            if (this->datasize == 0) { return; }
+
             // Optionally compute an offset to ensure that the cartgrid is centred about the mv_offset.
             if (this->options.test(gridvisual_flags::centralize) == true) {
                 this->centering_offset = -this->grid->centre().plus_one_dim();
@@ -490,9 +460,9 @@ namespace mplot {
                 std::array<float, 3> clr = this->setColour (ri);
 
                 vidx = vpsz + ri * 3;
-                this->vertexPositions[vidx++] = (*this->grid)[ri][0]+centering_offset[0];
-                this->vertexPositions[vidx++] = (*this->grid)[ri][1]+centering_offset[1];
-                this->vertexPositions[vidx++] = dcopy[ri];
+                this->vertexPositions[vidx++] = (*this->grid)[ri][0] + centering_offset[0];
+                this->vertexPositions[vidx++] = (*this->grid)[ri][1] + centering_offset[1];
+                this->vertexPositions[vidx++] = this->dcopy[ri];
 
                 vidx = vcsz + ri * 3;
                 this->vertexColors[vidx++] = clr[0];
@@ -632,15 +602,15 @@ namespace mplot {
                 } // else sx = sy = 0
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
-                datumNE =  this->grid->has_ne(ri)  ? dcopy[this->grid->index_ne(ri)] : datumC;
-                datumNN =  this->grid->has_nn(ri)  ? dcopy[this->grid->index_nn(ri)] : datumC;
-                datumNW =  this->grid->has_nw(ri)  ? dcopy[this->grid->index_nw(ri)] : datumC;
-                datumNS =  this->grid->has_ns(ri)  ? dcopy[this->grid->index_ns(ri)] : datumC;
-                datumNNE = this->grid->has_nne(ri) ? dcopy[this->grid->index_nne(ri)] : datumC;
-                datumNNW = this->grid->has_nnw(ri) ? dcopy[this->grid->index_nnw(ri)] : datumC;
-                datumNSW = this->grid->has_nsw(ri) ? dcopy[this->grid->index_nsw(ri)] : datumC;
-                datumNSE = this->grid->has_nse(ri) ? dcopy[this->grid->index_nse(ri)] : datumC;
+                datumC  = this->dcopy[ri];
+                datumNE =  this->grid->has_ne(ri)  ? this->dcopy[this->grid->index_ne(ri)] : datumC;
+                datumNN =  this->grid->has_nn(ri)  ? this->dcopy[this->grid->index_nn(ri)] : datumC;
+                datumNW =  this->grid->has_nw(ri)  ? this->dcopy[this->grid->index_nw(ri)] : datumC;
+                datumNS =  this->grid->has_ns(ri)  ? this->dcopy[this->grid->index_ns(ri)] : datumC;
+                datumNNE = this->grid->has_nne(ri) ? this->dcopy[this->grid->index_nne(ri)] : datumC;
+                datumNNW = this->grid->has_nnw(ri) ? this->dcopy[this->grid->index_nnw(ri)] : datumC;
+                datumNSW = this->grid->has_nsw(ri) ? this->dcopy[this->grid->index_nsw(ri)] : datumC;
+                datumNSE = this->grid->has_nse(ri) ? this->dcopy[this->grid->index_nse(ri)] : datumC;
 
                 // Use a single colour for each rect, even though rectangle's z positions are
                 // interpolated. Do the _colour_ scaling:
@@ -774,9 +744,9 @@ namespace mplot {
             for (I ri = 0; ri < this->grid->n(); ++ri) {
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
-                datumNE =  this->grid->has_ne(ri)  ? dcopy[this->grid->index_ne(ri)] : datumC;
-                datumNN =  this->grid->has_nn(ri)  ? dcopy[this->grid->index_nn(ri)] : datumC;
+                datumC  = this->dcopy[ri];
+                datumNE =  this->grid->has_ne(ri)  ? this->dcopy[this->grid->index_ne(ri)] : datumC;
+                datumNN =  this->grid->has_nn(ri)  ? this->dcopy[this->grid->index_nn(ri)] : datumC;
 
                 // Use a single colour for each rect, even though rectangle's z positions are
                 // interpolated. Do the _colour_ scaling:
@@ -966,7 +936,7 @@ namespace mplot {
                 }
 
                 // Use the linear scaled copy of the data, dcopy.
-                datumC  = dcopy[ri];
+                datumC  = this->dcopy[ri];
 
                 // Use a single colour for each rect, even though rectangle's z positions are
                 // interpolated. Do the _colour_ scaling:
@@ -1171,7 +1141,7 @@ namespace mplot {
         {
             if (this->colourScale.do_autoscale == true) { this->colourScale.reset(); }
             this->dcolour.resize (this->scalarData->size());
-            this->colourScale.transform (*(this->scalarData), dcolour);
+            this->colourScale.transform (*(this->scalarData), this->dcolour);
 
             // Replace elements of vertexColors
             for (std::size_t i = 0u; i < n_data; ++i) {
@@ -1221,35 +1191,8 @@ namespace mplot {
             this->reinit_colour_buffer();
         }
 
-        //! An overridable function to set the colour of rect ri
-        std::array<float, 3> setColour (I ri)
-        {
-            std::array<float, 3> clr = { 0.0f, 0.0f, 0.0f };
-            if (this->cm.numDatums() == 3) {
-                if constexpr (std::is_integral<std::decay_t<T>>::value) {
-                    // Differs from above as we divide by 255 to get value in range 0-1
-                    clr = this->cm.convert (this->dcolour[ri]/255.0f, this->dcolour2[ri]/255.0f, this->dcolour3[ri]/255.0f);
-                } else {
-                    clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri], this->dcolour3[ri]);
-                }
-            } else if (this->cm.numDatums() == 2) {
-                // Use vectorData
-                clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri]);
-            } else {
-                clr = this->cm.convert (this->dcolour[ri]);
-            }
-            return clr;
-        }
-
         //! The sm::grid<> to visualize
         const sm::grid<I, C>* grid;
-
-        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
-        std::vector<float> dcopy;
-        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
-        std::vector<float> dcolour;
-        std::vector<float> dcolour2;
-        std::vector<float> dcolour3;
 
         // A centering offset to make sure that the grid is centred on
         // this->mv_offset. This is computed so that you *add* centering_offset to each

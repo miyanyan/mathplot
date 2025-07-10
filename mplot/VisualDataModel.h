@@ -4,19 +4,20 @@
 #pragma once
 
 #include <vector>
+#include <cstdint>
 #include <sm/vec>
+#include <sm/vvec>
 #include <sm/scale>
 #include <mplot/VisualModel.h>
 #include <mplot/ColourMap.h>
 
-namespace mplot {
-
+namespace mplot
+{
     //! Class for VisualModels that visualize data of type T. T is probably float or
     //! double, but may be integer types, too.
     template <typename T, int glver = mplot::gl::version_4_1>
-    class VisualDataModel : public VisualModel<glver>
+    struct VisualDataModel : public VisualModel<glver>
     {
-    public:
         VisualDataModel() : mplot::VisualModel<glver>::VisualModel() {}
         VisualDataModel (const sm::vec<float> _offset) : mplot::VisualModel<glver>::VisualModel (_offset) {}
         //! Deconstructor should *not* deallocate data - client code should do that
@@ -140,6 +141,81 @@ namespace mplot {
             this->reinit();
         }
 
+        //! An overridable function to set the colour of rect ri
+        std::array<float, 3> setColour (uint64_t ri)
+        {
+            std::array<float, 3> clr = { 0.0f, 0.0f, 0.0f };
+            if (this->cm.numDatums() == 3) {
+                if constexpr (std::is_integral<std::decay_t<T>>::value) {
+                    // Differs from above as we divide by 255 to get value in range 0-1
+                    clr = this->cm.convert (this->dcolour[ri]/255.0f, this->dcolour2[ri]/255.0f, this->dcolour3[ri]/255.0f);
+                } else {
+                    clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri], this->dcolour3[ri]);
+                }
+            } else if (this->cm.numDatums() == 2) {
+                // Use vectorData
+                clr = this->cm.convert (this->dcolour[ri], this->dcolour2[ri]);
+            } else {
+                clr = this->cm.convert (this->dcolour[ri]);
+            }
+            return clr;
+        }
+
+        //! Find datasize
+        void determine_datasize()
+        {
+            this->datasize = 0;
+            if (this->vectorData != nullptr && !this->vectorData->empty()) {
+                this->datasize = this->vectorData->size();
+            } else if (this->scalarData != nullptr && !this->scalarData->empty()) {
+                this->datasize = this->scalarData->size();
+            } // else datasize remains 0
+        }
+
+        // Common function for setting up the z and colour scaling
+        void setupScaling()
+        {
+            this->dcopy.resize (this->datasize, 0);
+            this->dcolour.resize (this->datasize);
+
+            if (this->scalarData != nullptr) {
+                // What do these scaling operations do to any NaNs in scalarData? They should remain
+                // NaN. Then in dcopy, might want to make them 0.
+                this->zScale.transform (*(this->scalarData), this->dcopy);
+                this->dcopy.replace_nan_with (this->zScale.transform_one(0.0f));
+                this->colourScale.transform (*(this->scalarData), this->dcolour);
+
+            } else if (this->vectorData != nullptr) {
+
+                this->dcolour2.resize (this->datasize);
+                this->dcolour3.resize (this->datasize);
+                sm::vvec<float> veclens(this->dcopy);
+                for (unsigned int i = 0; i < this->datasize; ++i) {
+                    veclens[i] = (*this->vectorData)[i].length();
+                    this->dcolour[i] = (*this->vectorData)[i][0];
+                    this->dcolour2[i] = (*this->vectorData)[i][1];
+                    // Could also extract a third colour for Trichrome vs Duochrome (or for raw RGB signal)
+                    this->dcolour3[i] = (*this->vectorData)[i][2];
+                }
+                this->zScale.transform (veclens, this->dcopy);
+
+                // Handle case where this->cm.getType() == mplot::ColourMapType::RGB and there is
+                // exactly one colour. ColourMapType::RGB (and RGBMono/Grey) assumes R/G/B data all
+                // in range 0->1 ALREADY and therefore they don't need to be re-scaled with
+                // this->colourScale.
+                if (this->cm.getType() != mplot::ColourMapType::RGB
+                    && this->cm.getType() != mplot::ColourMapType::RGBMono
+                    && this->cm.getType() != mplot::ColourMapType::RGBGrey) {
+                    this->colourScale.transform (this->dcolour, this->dcolour);
+                    // Dual axis colour maps like Duochrome and HSV will need to use colourScale2 to
+                    // transform their second colour/axis,
+                    this->colourScale2.transform (this->dcolour2, this->dcolour2);
+                    // Similarly for Triple axis maps
+                    this->colourScale3.transform (this->dcolour3, this->dcolour3);
+                } // else assume dcolour/dcolour2/dcolour3 are all in range 0->1 (or 0-255) already
+            }
+        }
+
         //! All data models use a a colour map. Change the type/hue of this colour map
         //! object to generate different types of map.
         ColourMap<float> cm;
@@ -174,6 +250,24 @@ namespace mplot {
         //! graph, quiver plot). Note fixed type of float, which is suitable for
         //! OpenGL coordinates. Not const as child code may resize or update content.
         std::vector<sm::vec<float>>* dataCoords = nullptr;
+
+        /*
+         * Scaled data. Used in GridVisual classes and PolarVisual or anywhere else where scalarData
+         * or vectorData are scaled to be z values or colours.
+         */
+
+        //! A copy of the scalarData which can be transformed suitably to be the z value of the surface
+        sm::vvec<float> dcopy;
+        //! A copy of the scalarData (or first field of vectorData), scaled to be a colour value
+        sm::vvec<float> dcolour;
+        //! For the second field of vectorData
+        sm::vvec<float> dcolour2;
+        //! For the third field of vectorData
+        sm::vvec<float> dcolour3;
+
+        //! The length of the data structure that will be visualized. May be length of
+        //! this->scalarData or of this->vectorData.
+        unsigned int datasize = 0;
     };
 
 } // namespace mplot
