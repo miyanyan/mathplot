@@ -7,6 +7,7 @@
 #include <sm/mathconst>
 #include <sm/vec>
 
+#include <mplot/unicode.h>
 #include <mplot/VisualDataModel.h>
 #include <mplot/GraphVisual.h>
 
@@ -47,10 +48,10 @@ namespace mplot {
 
             this->setupScaling();
 
-            // Auto-set ticklabelgap
+            // Auto-set autolabelgap
             auto em = this->makeVisualTextModel (this->tf);
             mplot::TextGeometry em_geom = em->getTextGeometry (std::string("m"));
-            this->ticklabelgap = em_geom.width() / 2.0f;
+            this->autolabelgap = em_geom.width() / 2.0f;
             this->drawFrame();
             this->drawTickLabels();
             this->fillFrameWithColour();
@@ -73,12 +74,9 @@ namespace mplot {
             this->ticklabelwidth = 0.0f;
 
             if (this->label_angles.empty()) {
-                // Auto-fill label_angles based on labels size.
-                // example order for 4: mc::pi_over_2, mc::pi, mc::three_pi_over_2, 0.0f
                 this->label_angles.resize (this->labels.size());
                 for (unsigned int i = 0; i < this->labels.size(); ++i) {
-                    // North is pi/2, so that's the start:
-                    this->label_angles[i] = mc::pi_over_2 + i * (mc::two_pi / this->labels.size());
+                    this->label_angles[i] = i * (mc::two_pi / this->labels.size());
                     // Rescale any that exceed 2pi:
                     this->label_angles[i] = this->label_angles[i] < F{0} ? this->label_angles[i] + mc::two_pi : this->label_angles[i];
                     this->label_angles[i] = this->label_angles[i] > mc::two_pi ? this->label_angles[i] - mc::two_pi : this->label_angles[i];
@@ -93,13 +91,13 @@ namespace mplot {
                 this->ticklabelwidth = geom.width() > this->ticklabelwidth ? geom.width() : this->ticklabelwidth;
                 // Dep. on angle, the additional gap for the text will need to be based on different aspects of the text geometry
                 float geom_gap = std::abs(std::cos(label_angles[i]) * geom.half_width()) + std::abs(std::sin(label_angles[i]) * geom.half_height());
-                float lbl_r = this->radius + this->framelinewidth + this->ticklabelgap + geom_gap;
+                float lbl_r = this->radius + this->framelinewidth + this->ticklabelgap + this->autolabelgap + geom_gap;
                 sm::vec<float> lblpos = {
                     lbl_r * std::cos (static_cast<float>(label_angles[i])) - geom.half_width(),
                     lbl_r * std::sin (static_cast<float>(label_angles[i])) - geom.half_height(),
                     this->z
                 };
-                lbl->setupText (s, lblpos+this->mv_offset, this->tf.colour);
+                lbl->setupText (s, lblpos + this->mv_offset, this->tf.colour);
                 this->texts.push_back (std::move(lbl));
             }
         }
@@ -166,19 +164,25 @@ namespace mplot {
         //! The line width of the frame
         float framelinewidth = 0.01f;
         //! The label strings  that should be displayed. Order the elements anti-clockwise, starting from the 'north' element.
-        std::deque<std::string> labels = {"N", "W", "S", "E"};
+        std::deque<std::string> labels = {
+            "0",
+            mplot::unicode::toUtf8 (mplot::unicode::pi) + std::string("/2"),
+            mplot::unicode::toUtf8 (mplot::unicode::pi),
+            std::string ("3") + mplot::unicode::toUtf8 (mplot::unicode::pi) + std::string("/2")
+        };
         //! The positions, as angles for the labels. If empty, these will be auto-computed
         std::deque<F> label_angles = { /*mc::pi_over_2, mc::pi, mc::three_pi_over_2, 0.0f*/ };
         // Stores all the text features for this ColourBar (font, colour, font size, font res)
         mplot::TextFeatures tf;
-        //! Gap to x axis tick labels. Gets auto-set
-        float ticklabelgap = 0.05f;
+        //! Additional gap to x axis tick labels for user to set
+        float ticklabelgap = 0.0f;
         //! The number of segments to make in each ring of the colourmap fill. Depends on your data.
         unsigned int numsegs = 128;
         //! How many rings of colour? Depends on your data. This is really 'the number of rings
         //! you'll see + 1'. It's related to the number of rings of data you have.
         unsigned int numrings = 64;
     protected:
+        float autolabelgap = 0.0f;
         //! tick label height
         float ticklabelheight = 0.0f;
         //! tick label width
