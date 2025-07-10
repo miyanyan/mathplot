@@ -79,6 +79,7 @@ install(
   LengthscaleVisual.h
   PointRowsMeshVisual.h
   PointRowsVisual.h
+  PolarVisual.h
   PolygonVisual.h
   QuadsMeshVisual.h
   QuadsVisual.h
