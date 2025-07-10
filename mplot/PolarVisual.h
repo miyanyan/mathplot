@@ -112,38 +112,47 @@ namespace mplot {
                 throw std::runtime_error ("Uh oh");
             }
 
-            sm::vec<float> centre = {0,0,this->z};
-
             // Note: Going from out to in, rather than in to out
-            for (int ring = this->numrings; ring > 0; ring--) {
+            for (int ring = this->numrings - 1; ring > 0; ring--) {
 
-                float r_out = this->radius * static_cast<float>(ring)/this->numrings;
-                float r_in = this->radius * static_cast<float>(ring-1)/this->numrings;
+                float r_out = this->radius * static_cast<float>(ring)/(this->numrings-1);
+                float r_in = this->radius * static_cast<float>(ring-1)/(this->numrings-1);
 
                 for (int j = 0; j < static_cast<int>(this->numsegs); j++) {
 
                     std::array<float, 3> clr = this->setColour ((ring - 1) * this->numsegs + j);
 
                     float t = j * sm::mathconst<float>::two_pi/static_cast<float>(this->numsegs);
+
+                    float outer_z = this->dcopy[ring * this->numsegs + j];
+                    float inner_z = this->dcopy[(ring - 1) * this->numsegs + j];
+
                     sm::vec<float> c_in = this->uy * sin(t) * r_in + this->ux * cos(t) * r_in;
-                    this->vertex_push (centre+c_in, this->vertexPositions);
+                    // set c_in z value from data
+                    c_in[2] = inner_z;
+
+                    this->vertex_push (c_in, this->vertexPositions);
                     this->vertex_push (this->uz, this->vertexNormals);
                     this->vertex_push (clr, this->vertexColors);
+
                     sm::vec<float> c_out = this->uy * sin(t) * r_out + this->ux * cos(t) * r_out;
-                    this->vertex_push (centre+c_out, this->vertexPositions);
+                    c_out[2] = outer_z;
+
+                    this->vertex_push (c_out, this->vertexPositions);
                     this->vertex_push (this->uz, this->vertexNormals);
                     this->vertex_push (clr, this->vertexColors);
                 }
                 // Added 2*segments vertices to vertexPositions
-
                 for (int j = 0; j < static_cast<int>(this->numsegs); j++) {
-                    int jn = (numsegs + ((j+1) % numsegs)) % numsegs;
-                    this->indices.push_back (this->idx+(2*j));
-                    this->indices.push_back (this->idx+(2*jn));
-                    this->indices.push_back (this->idx+(2*jn+1));
-                    this->indices.push_back (this->idx+(2*j));
-                    this->indices.push_back (this->idx+(2*jn+1));
-                    this->indices.push_back (this->idx+(2*j+1));
+                    int jn = (numsegs + ((j + 1) % numsegs)) % numsegs;
+
+                    this->indices.push_back (this->idx + (2 * j));
+                    this->indices.push_back (this->idx + (2 * jn));
+                    this->indices.push_back (this->idx + (2 * jn + 1));
+
+                    this->indices.push_back (this->idx + (2 * j));
+                    this->indices.push_back (this->idx + (2 * jn + 1));
+                    this->indices.push_back (this->idx + (2 * j + 1));
                 }
                 this->idx += 2 * this->numsegs; // nverts
             }
@@ -167,7 +176,8 @@ namespace mplot {
         float ticklabelgap = 0.05f;
         //! The number of segments to make in each ring of the colourmap fill. Depends on your data.
         unsigned int numsegs = 128;
-        //! How many rings of colour? Depends on your data
+        //! How many rings of colour? Depends on your data. This is really 'the number of rings
+        //! you'll see + 1'. It's related to the number of rings of data you have.
         unsigned int numrings = 64;
     protected:
         //! tick label height

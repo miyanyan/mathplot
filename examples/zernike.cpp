@@ -12,13 +12,13 @@ int main()
 {
     // You can require that n - |m| is even to "ensure the rotational invariant property is met"
     // (see https://doi.org/10.7554/eLife.54026, p 18)
-    constexpr bool require_n_minus_abs_m_even = true;
+    constexpr bool require_n_minus_abs_m_even = false;
 
     using mc = sm::mathconst<double>;
 
     mplot::Visual<> v (1024, 768, "Zernike Polynomials");
 
-    constexpr std::size_t N = 400;
+    constexpr std::size_t N = 200;
     sm::vvec<double> rho;
     rho.linspace (0.0, 1.0, N);
 
@@ -41,6 +41,7 @@ int main()
             pv->zScale.do_autoscale = true;
             pv->numrings = N;
             pv->numsegs = N;
+            pv->addLabel (std::format ("n{}, m{}", n, m), sm::vec<float>{-0.1,-0.58,0}, mplot::TextFeatures(0.08f));
             pv->twodimensional = false;
 
             sm::vvec<double> Vnm_real;
@@ -50,13 +51,11 @@ int main()
                     Vnm_real.push_back (std::real(sm::algo::zern_polynomial (m, r_nm, th)));
                 }
             }
-
             pv->setScalarData (&Vnm_real);
 
             pv->finalize();
             v.addVisualModel (pv);
         }
-
     }
 
     v.keepOpen();

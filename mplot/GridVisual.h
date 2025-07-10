@@ -460,8 +460,8 @@ namespace mplot {
                 std::array<float, 3> clr = this->setColour (ri);
 
                 vidx = vpsz + ri * 3;
-                this->vertexPositions[vidx++] = (*this->grid)[ri][0]+centering_offset[0];
-                this->vertexPositions[vidx++] = (*this->grid)[ri][1]+centering_offset[1];
+                this->vertexPositions[vidx++] = (*this->grid)[ri][0] + centering_offset[0];
+                this->vertexPositions[vidx++] = (*this->grid)[ri][1] + centering_offset[1];
                 this->vertexPositions[vidx++] = this->dcopy[ri];
 
                 vidx = vcsz + ri * 3;
