@@ -29,6 +29,9 @@ int main()
     sm::vvec<double> theta;
     theta.linspace (0.0, mc::two_pi, N);
 
+    // We impose a signal limit to avoid plotting infinitely high graphs
+    constexpr double siglimit = 10.0;
+
     for (unsigned int n = 0; n <= 16; ++n) {
 
         for (int m = 0; m <= static_cast<int>(n); ++m) {
@@ -49,9 +52,9 @@ int main()
 
             sm::vvec<double> Vnm_real;
             for (auto rh : rho) {
-                double r_nm = std::clamp (sm::algo::zern_radial_poly (n, m, rh), -10.0, 10.0);
+                double r_nm = std::clamp (sm::algo::zern_radial_poly (n, m, rh), -siglimit, siglimit);
                 for (auto th : theta) {
-                    Vnm_real.push_back (std::clamp (std::real(sm::algo::zern_polynomial (m, r_nm, th)), -10.0, 10.0));
+                    Vnm_real.push_back (std::real(sm::algo::zern_polynomial (m, r_nm, th)));
                 }
             }
 
@@ -64,8 +67,8 @@ int main()
             if constexpr (flat_plots) {
                 pv->zScale.null_scaling();
             } else {
-                pv->zScale.output_range = {-1.0f, 1.0f};
-                pv->zScale.compute_scaling (-10, 10);
+                pv->zScale.output_range = { -1.0f, 1.0f };
+                pv->zScale.compute_scaling (-siglimit, siglimit);
             }
 
             pv->finalize();
