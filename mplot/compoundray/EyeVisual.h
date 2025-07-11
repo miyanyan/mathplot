@@ -127,7 +127,6 @@ namespace mplot::compoundray
                         // Colour comes from ommData. ringoffset is 1.0f
                         this->computeCone (pos, ommatidial_detector_point, 0.0f, colour, radius, tube_faces);
                     }
-                    std::cout << std::endl;
                 }
             } else {
                 // All our focal_points are 0. Don't have focal point offset to help define our
