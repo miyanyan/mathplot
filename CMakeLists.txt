@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 project(mathplot)
 # Note that the project version is encoded in mplot/version.h and not in this CMakeLists.txt
 
