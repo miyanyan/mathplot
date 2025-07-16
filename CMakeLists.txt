@@ -36,7 +36,7 @@ else()
     if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
       set(CMAKE_CXX_FLAGS "-DNOMINMAX /EHsc /Zc:__cplusplus /constexpr:steps500000000")
     else()
-      set(CMAKE_CXX_FLAGS "-DNOMINMAX /EHsc /Zc:__cplusplus")
+      set(CMAKE_CXX_FLAGS "-DNOMINMAX /EHsc /Zc:__cplusplus /clang:-fconstexpr-steps=500000000")
     endif()
   elseif(CMAKE_CXX_COMPILER_ID MATCHES Intel)
     # To use Intel compiler, you can call cmake as: `cmake -DCMAKE_CXX_COMPILER=icpc ..` or `CXX=icpc cmake ..`
