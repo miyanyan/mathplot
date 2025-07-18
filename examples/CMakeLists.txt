@@ -59,7 +59,7 @@ if(ARMADILLO_FOUND)
 
   # Plots a surface, counts (and shows) the frames per second
   add_executable(fps fps.cpp)
-  if(APPLE AND OpenMP_CXX_FOUND)
+  if(OpenMP_CXX_FOUND)
     target_link_libraries(fps OpenMP::OpenMP_CXX OpenGL::GL glfw Freetype::Freetype)
   else()
     target_link_libraries(fps OpenGL::GL glfw Freetype::Freetype)
