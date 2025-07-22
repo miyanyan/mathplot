@@ -73,7 +73,6 @@ int main()
     v.addVisualModel (gv);
     // Render the scene on the screen until user quits with 'Ctrl-q'
     v.keepOpen();
-    return 0;
 }
 ```
 The program generates a clean looking graph...
